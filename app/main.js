@@ -498,6 +498,8 @@ function render() {
     ? T.intro.palette(n, preset.palette.levels[0], preset.palette.levels.at(-1), preset.palette.baseLevel, state.mode)
     : T.intro[state.tab](n, preset.neutrals.levels[0], preset.neutrals.levels.at(-1), state.mode);
   $('intro').textContent = intro;
+  const first = state.tab === 'palette' ? preset.palette.levels[0] : preset.neutrals.levels[0];
+  $('scale-note').textContent = state.tab === 'behavior' ? '' : T.orderShort(first, state.mode);
   renderTabs();
   renderAlerts();
   renderRibbon();

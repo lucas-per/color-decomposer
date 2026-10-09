@@ -7,7 +7,11 @@ const order = (first, last, mode) =>
     ? `No modo escuro, a ordem se inverte: o ${first} é o mais escuro e o ${last}, o mais claro.`
     : `No modo claro, o ${first} é o mais claro e o ${last}, o mais escuro.`;
 
+const orderShort = (first, mode) =>
+  mode === 'dark' ? `Modo escuro: o ${first} é o mais escuro.` : `Modo claro: o ${first} é o mais claro.`;
+
 export const T = {
+  orderShort,
   tabs: { palette: 'Paleta', neutrals: 'Neutros', behavior: 'Comportamento', grayscale: 'Cinzas' },
   intro: {
     palette: (n, first, last, base, mode) =>

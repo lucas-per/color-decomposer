@@ -62,7 +62,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font-size: 1.25rem; font-weight: 750; font-stretch: 78%; letter-spacing: -.01em; line-height: 1.2;
 }
 .brand__mark { width: 1.75rem; height: 1.25rem; }
-.top__actions { display: flex; align-items: center; gap: .75rem; }
 
 /* Botões */
 .btn {
@@ -140,10 +139,17 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
 .tab:hover { color: var(--fg); }
 .tab[aria-selected="true"] { color: var(--fg); font-weight: 700; }
 .tab[aria-selected="true"]::after { content: ""; position: absolute; left: .75rem; right: .75rem; bottom: -1px; height: 3px; background: var(--fg); border-radius: 3px 3px 0 0; }
-.intro { max-width: 62ch; margin: 1.25rem 0 1.5rem; color: var(--muted); }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.stage > .tabs { grid-row: 1; grid-column: 1 / -1; }
+.stage__export { grid-row: 1; grid-column: 2; position: relative; z-index: 1; }
+.stage__panel { grid-row: 2; grid-column: 1 / -1; min-width: 0; }
+.scale-note { display: none; margin-top: 1.25rem; color: var(--muted); font-weight: 560; }
+.stage__panel > #alerts:not(:empty) { margin-top: 1.25rem; display: grid; gap: .75rem; }
+.stage__panel > #ribbon-host { margin-top: 1.25rem; }
+.intro { max-width: 62ch; margin: 1.5rem 0 0; color: var(--muted); }
 
 /* Avisos */
-.notice { margin: 0 0 1.25rem; padding: .875rem 1rem; border: 1px solid var(--edge); border-left-width: 5px; border-radius: var(--r-panel); background: var(--panel); display: grid; gap: .375rem; max-width: 62ch; }
+.notice { margin: 0; padding: .875rem 1rem; border: 1px solid var(--edge); border-left-width: 5px; border-radius: var(--r-panel); background: var(--panel); display: grid; gap: .375rem; max-width: 62ch; }
 .notice__title { font-weight: 700; }
 .notice__list { margin: .25rem 0 0; padding-left: 1.25rem; font-size: .875rem; font-variant-numeric: tabular-nums; max-height: 11rem; overflow: auto; }
 .notice .btn { justify-self: start; }
@@ -225,6 +231,11 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
   .shell { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; padding-inline: 1rem; }
   .top { padding-inline: 1rem; flex-wrap: wrap; }
   /* uma única margem à esquerda: ajustes, abas, texto e faixa começam no mesmo x */
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .stage > .tabs { grid-column: 1; }
+  .stage__panel { grid-column: 1; }
+  .stage__export { grid-row: 3; grid-column: 1; justify-self: start; margin-top: 1.5rem; }
+  .scale-note { display: block; margin-top: 1.25rem; }
   .rail { padding: 0; background: none; border: 0; border-radius: 0; }
   .tabs { gap: 0; }
   .tab { padding-inline: .5rem; }
