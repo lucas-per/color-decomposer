@@ -208,7 +208,7 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
 .other { grid-column: 1 / -1; display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; font-size: .875rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: .875rem; }
 .other__chip { display: inline-flex; align-items: center; gap: .375rem; font-variant-numeric: tabular-nums; color: var(--fg); text-transform: uppercase; }
 .other__chip i { width: 1.125rem; height: 1.125rem; border-radius: 4px; background: var(--c); border: 1px solid var(--edge); forced-color-adjust: none; }
-.hint { margin-top: 1.25rem; color: var(--muted); font-size: .8125rem; line-height: 1.4; }
+.hint { margin-top: .5rem; color: var(--muted); font-size: .8125rem; line-height: 1.4; }
 
 .foot { max-width: 80rem; margin: 0 auto; padding: 1rem 1.5rem 2.5rem; color: var(--muted); font-size: .8125rem; }
 
