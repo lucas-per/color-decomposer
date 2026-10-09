@@ -492,17 +492,34 @@ function bindExport() {
   });
 }
 
+/* ---------- Saiba mais ---------- */
+
+let learn = null;
+
+function bindLearn() {
+  $('learn-open').addEventListener('click', () => {
+    if (!learn) return;
+    $('learn-title').textContent = learn.title;
+    $('learn-text').replaceChildren(...learn.body.map((t) => Object.assign(document.createElement('p'), { textContent: t })));
+    $('learn').showModal();
+  });
+}
+
 /* ---------- Ciclo principal ---------- */
 
 function render() {
   const preset = current.preset;
   const n = state.tab === 'behavior' ? Object.keys(preset.behavior).length : (state.tab === 'palette' ? preset.palette.levels.length : preset.neutrals.levels.length);
-  const intro = state.tab === 'palette'
-    ? T.intro.palette(n, preset.palette.levels[0], preset.palette.levels.at(-1), preset.palette.baseLevel, state.mode)
-    : T.intro[state.tab](n, preset.neutrals.levels[0], preset.neutrals.levels.at(-1), state.mode);
-  $('intro').textContent = intro;
   const first = state.tab === 'palette' ? preset.palette.levels[0] : preset.neutrals.levels[0];
-  $('scale-note').textContent = state.tab === 'behavior' ? '' : T.orderShort(first, state.mode);
+  const last = state.tab === 'palette' ? preset.palette.levels.at(-1) : preset.neutrals.levels.at(-1);
+  const body = state.tab === 'palette'
+    ? T.learn.body.palette(n, first, last, preset.palette.baseLevel, state.mode)
+    : state.tab === 'behavior' ? null : T.learn.body[state.tab](n, first, last, state.mode);
+  learn = body && { title: T.learn.title[state.tab], body };
+  $('scale-text').textContent = body ? T.orderShort(first, state.mode) : T.intro.behavior(n);
+  const open = $('learn-open');
+  open.hidden = !body;
+  if (body) { open.textContent = T.learn.open; open.setAttribute('aria-label', T.learn.openAria[state.tab]); }
   renderTabs();
   renderAlerts();
   renderRibbon();
@@ -533,5 +550,6 @@ function placeMore() {
 placeMore();
 bindControls();
 bindExport();
+bindLearn();
 matchMedia('(max-width: 56.25rem)').addEventListener('change', () => { placeMore(); $('ribbon-host').dataset.sig = ''; update(); });
 update();

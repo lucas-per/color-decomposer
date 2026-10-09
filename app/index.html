@@ -165,10 +165,9 @@
       <div class="tabs" role="tablist" aria-label="Grupos de tons" id="tabs"></div>
       <button type="button" class="btn btn--solid stage__export" id="open-export">Exportar tokens</button>
       <div id="panel" role="tabpanel" tabindex="-1" class="stage__panel">
-        <p class="scale-note" id="scale-note" aria-hidden="true"></p>
+        <p class="scale-note" id="scale-note"><span id="scale-text"></span> <button type="button" class="link" id="learn-open" aria-haspopup="dialog" hidden></button></p>
         <div id="alerts"></div>
         <div id="ribbon-host"></div>
-        <p class="intro" id="intro"></p>
       </div>
     </main>
   </div>
@@ -202,6 +201,16 @@
         <button type="button" class="btn btn--solid" id="export-copy">Copiar tudo</button>
         <button type="button" class="btn" id="export-download">Baixar arquivo</button>
         <button type="submit" class="btn btn--quiet" value="close">Fechar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog dialog--narrow" id="learn" aria-labelledby="learn-title">
+    <form method="dialog" class="dialog__body">
+      <h2 class="dialog__title" id="learn-title"></h2>
+      <div class="learn__text" id="learn-text"></div>
+      <div class="dialog__actions">
+        <button type="submit" class="btn btn--solid" value="close">Fechar</button>
       </div>
     </form>
   </dialog>

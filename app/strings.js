@@ -13,17 +13,33 @@ const orderShort = (first, mode) =>
 export const T = {
   orderShort,
   tabs: { palette: 'Paleta', neutrals: 'Neutros', behavior: 'Comportamento', grayscale: 'Cinzas' },
+  // Texto curto, sempre visível perto da faixa. No comportamento ele já é o texto inteiro.
   intro: {
-    palette: (n, first, last, base, mode) =>
-      `${n} tons da sua cor, numerados de ${first} a ${last}. ${order(first, last, mode)} ` +
-      (mode === 'dark'
-        ? `O nível ${base} é a base da sua cor, ajustada para o modo escuro.`
-        : `O nível ${base} é a cor que você informou.`),
-    neutrals: (n, first, last, mode) =>
-      `${n} cinzas com um toque da sua cor, numerados de ${first} a ${last}. Servem para fundos, textos e bordas. ${order(first, last, mode)}`,
-    behavior: (n) => `${n} tons da paleta com nome de uso. Aparecem em estados como foco, passar o mouse e clicar.`,
-    grayscale: (n, first, last, mode) =>
-      `${n} cinzas puros e fixos, iguais para qualquer cor, numerados de ${first} a ${last}. ${order(first, last, mode)}`
+    behavior: (n) => `${n} tons da paleta com nome de uso. Aparecem em estados como foco, passar o mouse e clicar.`
+  },
+  // Texto completo, no pop-up "Saiba mais".
+  learn: {
+    open: 'Saiba mais',
+    openAria: { palette: 'Saiba mais sobre a paleta', neutrals: 'Saiba mais sobre os neutros', grayscale: 'Saiba mais sobre os cinzas' },
+    title: { palette: 'Sobre a paleta', neutrals: 'Sobre os neutros', grayscale: 'Sobre os cinzas' },
+    body: {
+      palette: (n, first, last, base, mode) => [
+        `${n} tons da sua cor, numerados de ${first} a ${last}.`,
+        order(first, last, mode),
+        mode === 'dark'
+          ? `O nível ${base} é a base da sua cor, ajustada para o modo escuro.`
+          : `O nível ${base} é a cor que você informou.`
+      ],
+      neutrals: (n, first, last, mode) => [
+        `${n} cinzas com um toque da sua cor, numerados de ${first} a ${last}.`,
+        'Servem para fundos, textos e bordas.',
+        order(first, last, mode)
+      ],
+      grayscale: (n, first, last, mode) => [
+        `${n} cinzas puros e fixos, iguais para qualquer cor, numerados de ${first} a ${last}.`,
+        order(first, last, mode)
+      ]
+    }
   },
   groupLabel: {
     palette: 'Tons da paleta, em ordem numérica',

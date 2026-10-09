@@ -142,11 +142,17 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
 .stage { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
 .stage > .tabs { grid-row: 1; grid-column: 1 / -1; }
 .stage__export { grid-row: 1; grid-column: 2; position: relative; z-index: 1; }
-.stage__panel { grid-row: 2; grid-column: 1 / -1; min-width: 0; }
-.scale-note { display: none; margin-top: 1.25rem; color: var(--muted); font-size: .8125rem; line-height: 1.4; font-weight: 560; }
+.stage__panel { grid-row: 2; grid-column: 1 / -1; min-width: 0; display: flex; flex-direction: column; }
+.scale-note { order: 1; margin: 1.5rem 0 0; color: var(--muted); font-size: .8125rem; line-height: 1.4; }
+.link {
+  display: inline; padding: 0; border: 0; background: none; cursor: pointer;
+  font: inherit; font-weight: 600; color: var(--fg); text-decoration: underline; text-underline-offset: .2em;
+}
+.link[hidden] { display: none; }
+.dialog--narrow { width: min(30rem, calc(100vw - 2rem)); }
+.learn__text { display: grid; gap: .75rem; max-width: 62ch; line-height: 1.55; }
 .stage__panel > #alerts:not(:empty) { margin-top: 1.25rem; display: grid; gap: .75rem; }
 .stage__panel > #ribbon-host { margin-top: 1.25rem; }
-.intro { max-width: 62ch; margin: 1.5rem 0 0; color: var(--muted); font-size: .8125rem; line-height: 1.4; }
 
 /* Avisos */
 .notice { margin: 0; padding: .875rem 1rem; border: 1px solid var(--edge); border-left-width: 5px; border-radius: var(--r-panel); background: var(--panel); display: grid; gap: .375rem; max-width: 62ch; }
@@ -235,7 +241,7 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
   .stage > .tabs { grid-column: 1; }
   .stage__panel { grid-column: 1; }
   .stage__export { grid-row: 3; grid-column: 1; justify-self: start; margin-top: 1.5rem; }
-  .scale-note { display: block; margin-top: 1.25rem; }
+  .scale-note { order: -1; margin-top: 1.25rem; }
   .rail { padding: 0; background: none; border: 0; border-radius: 0; }
   .tabs { gap: 0; }
   .tab { padding-inline: .5rem; }
