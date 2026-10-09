@@ -138,6 +138,7 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 - O estado fica na URL: dá para compartilhar um ajuste.
 - Exporta tokens do Aplica (JSON), variáveis CSS, JSON completo e variables do Figma (para o plugin).
 - Verificada com axe (WCAG 2.2 AA) em claro, escuro e mobile.
+- Decisões de espaçamento, agrupamento e destaque: [`docs/principios-visuais.md`](docs/principios-visuais.md).
 - Textos escritos em PT-BR com a skill `ux-microcopy`. Os fixos estão em `app/index.html`; os dinâmicos, em `app/strings.js`.
 - Fonte: [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL), incluída em `app/fonts/`.
 
