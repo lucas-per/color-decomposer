@@ -121,12 +121,13 @@ function renderAlerts() {
   if (acc.length) {
     const accepted = acc.every((w) => w.accepted === 'AA');
     const req = fmt(acc[0].required).replace(',0', '');
-    const d = add(`<p class="notice__title">${T.warnings.title}</p><p>${(accepted ? T.warnings.accept : T.warnings.keep)(acc.length, req)}</p>
-      <button type="button" class="btn" aria-expanded="false" aria-controls="warn-list">${T.warnings.show}</button>
-      <ul class="notice__list" id="warn-list" hidden>${acc.map((w) => `<li>${T.warnings.item(T.warnings.groups[w.group], w.level, w.ratio)}</li>`).join('')}</ul>`, 'status');
+    const d = add(`<p class="notice__line">${T.warnings.short(acc.length)} <button type="button" class="link" aria-expanded="false" aria-controls="warn-list">${T.warnings.show}</button></p>
+      <div id="warn-list" hidden><p>${(accepted ? T.warnings.accept : T.warnings.keep)(acc.length, req)}</p>
+      <ul class="notice__list">${acc.map((w) => `<li>${T.warnings.item(T.warnings.groups[w.group], w.level, w.ratio)}</li>`).join('')}</ul></div>`, 'status');
+    d.classList.add('notice--compact');
     const btn = d.querySelector('button');
     btn.addEventListener('click', () => {
-      const list = d.querySelector('ul');
+      const list = d.querySelector('#warn-list');
       const open = list.hidden;
       list.hidden = !open;
       btn.setAttribute('aria-expanded', String(open));
@@ -134,8 +135,8 @@ function renderAlerts() {
     });
   }
   const ov = ws.filter((x) => x.type === 'override');
-  if (ov.length) add(`<p>${T.warnings.override(ov.length)}</p>`, 'status');
-  if (ws.some((x) => x.type === 'config')) add(`<p>${T.warnings.config}</p>`, 'status');
+  if (ov.length) add(`<p>${T.warnings.override(ov.length)}</p>`, 'status').classList.add('notice--compact');
+  if (ws.some((x) => x.type === 'config')) add(`<p>${T.warnings.config}</p>`, 'status').classList.add('notice--compact');
 }
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);

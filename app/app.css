@@ -151,12 +151,14 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
 .link[hidden] { display: none; }
 .dialog--narrow { width: min(30rem, calc(100vw - 2rem)); }
 .learn__text { display: grid; gap: .75rem; max-width: 62ch; line-height: 1.55; }
-.stage__panel > #alerts:not(:empty) { margin-top: 1.25rem; display: grid; gap: .75rem; }
+.stage__panel > #alerts:not(:empty) { order: 2; margin-top: .5rem; display: grid; gap: .75rem; }
 .stage__panel > #ribbon-host { margin-top: 1.25rem; }
 
 /* Avisos */
 .notice { margin: 0; padding: .875rem 1rem; border: 1px solid var(--edge); border-left-width: 5px; border-radius: var(--r-panel); background: var(--panel); display: grid; gap: .375rem; max-width: 62ch; }
 .notice__title { font-weight: 700; }
+.notice--compact { padding: .5rem .75rem; border-left-width: 1px; border-radius: 8px; background: none; font-size: .8125rem; line-height: 1.4; color: var(--muted); gap: .375rem; }
+.notice--compact .notice__list { font-size: .8125rem; }
 .notice__list { margin: .25rem 0 0; padding-left: 1.25rem; font-size: .875rem; font-variant-numeric: tabular-nums; max-height: 11rem; overflow: auto; }
 .notice .btn { justify-self: start; }
 
