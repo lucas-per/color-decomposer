@@ -4,19 +4,22 @@
 export const T = {
   tabs: { palette: 'Paleta', neutrals: 'Neutros', behavior: 'Comportamento', grayscale: 'Cinzas' },
   intro: {
-    palette: (n, first, last, base) =>
-      `${n} tons da sua cor, do mais claro (${first}) ao mais escuro (${last}). O nível ${base} é a cor que você informou.`,
+    palette: (n, first, last, base, mode) =>
+      `${n} tons da sua cor, numerados de ${first} a ${last}. ` +
+      (mode === 'dark'
+        ? `No modo escuro, a ordem se inverte: o ${first} é o mais escuro e o ${last}, o mais claro. O nível ${base} é a base da sua cor, ajustada para o modo escuro.`
+        : `No modo claro, o ${first} é o mais claro e o ${last}, o mais escuro. O nível ${base} é a cor que você informou.`),
     neutrals: (n) => `${n} cinzas com um toque da sua cor. Servem para fundos, textos e bordas.`,
     behavior: (n) => `${n} tons da paleta com nome de uso. Aparecem em estados como foco, passar o mouse e clicar.`,
     grayscale: (n) => `${n} cinzas puros e fixos, iguais para qualquer cor. No modo escuro, a ordem se inverte.`
   },
   groupLabel: {
-    palette: 'Tons da paleta, do mais claro ao mais escuro',
-    neutrals: 'Neutros, do mais claro ao mais escuro',
+    palette: 'Tons da paleta, em ordem numérica',
+    neutrals: 'Neutros, em ordem numérica',
     behavior: 'Tons de comportamento',
-    grayscale: 'Cinzas, do mais claro ao mais escuro'
+    grayscale: 'Cinzas, em ordem numérica'
   },
-  behaviorNames: { lightest: 'Mais claro', active: 'Ativo', normal: 'Normal', action: 'Ação', pressed: 'Pressionado', darkest: 'Mais escuro' },
+  behaviorNames: { lightest: 'Início da escala', active: 'Ativo', normal: 'Normal', action: 'Ação', pressed: 'Pressionado', darkest: 'Fim da escala' },
   yourColor: 'Sua cor',
   overlapOff: 'Desligado',
   resetDone: 'Ajustes voltaram ao padrão.',
