@@ -1,0 +1,53 @@
+{
+  "source": "aplica-ds/aplica-tokens-themes-sample",
+  "theme": "aplica_blue_sky",
+  "colors": {
+    "brand_primary": "#265ED9",
+    "brand_secondary": "#FECB01",
+    "brand_accent": "#8952E0",
+    "action_primary": "#013FC4",
+    "action_secondary": "#A68A18",
+    "action_link": "#5000D1",
+    "feedback_info": "#02D9FF",
+    "feedback_info_alt": "#46B9CE",
+    "feedback_success": "#00AD26",
+    "feedback_success_alt": "#228137",
+    "feedback_warning": "#FF9A00",
+    "feedback_warning_alt": "#C18933",
+    "feedback_error": "#F53232",
+    "feedback_error_alt": "#C43B3B",
+    "product_promo": "#6BC200",
+    "product_promo_alt": "#D2FD9D",
+    "product_cashback": "#FFBB00",
+    "product_cashback_alt": "#FFF94F",
+    "product_premium": "#B200AF",
+    "product_premium_alt": "#EBC2DD"
+  },
+  "options": {
+    "txtOnStrategy": "high-contrast",
+    "darkModeChroma": 0.85,
+    "accessibilityLevel": "AA"
+  },
+  "neutralsOverrides": {
+    "brand_primary": {
+      "surface": {
+        "5": "#F6F3F5",
+        "10": "#ECE7EA",
+        "20": "#EBD4E3",
+        "30": "#E6BBD6",
+        "40": "#E7A1DC",
+        "50": "#D38FE0",
+        "60": "#AA74C5",
+        "70": "#8B69CE",
+        "80": "#6C47D1",
+        "90": "#4828A0",
+        "100": "#352184",
+        "110": "#181144",
+        "120": "#0C0A28",
+        "130": "#020208",
+        "140": "#010104"
+      }
+    }
+  },
+  "grayscaleOverrides": null
+}

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Color Decomposer: uma cor vira paleta, neutros e estados</title>
+  <meta name="description" content="Informe a cor da marca e veja a paleta completa, os neutros e os tons de comportamento, em modo claro e escuro, com o contraste de cada texto.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <a class="skip" href="#tons">Ir para os tons</a>
+
+  <header class="top">
+    <h1 class="brand">
+      <svg class="brand__mark" viewBox="0 0 28 20" aria-hidden="true" focusable="false">
+        <rect x="0" y="0" width="8" height="20" rx="2" fill="currentColor" opacity=".25"/>
+        <rect x="10" y="0" width="8" height="20" rx="2" fill="currentColor" opacity=".6"/>
+        <rect x="20" y="0" width="8" height="20" rx="2" fill="currentColor"/>
+      </svg>
+      Color Decomposer
+    </h1>
+    <div class="top__actions">
+      <div class="segmented" role="radiogroup" aria-label="Modo de cor" id="mode">
+        <label class="segmented__item"><input type="radio" name="mode" value="light"><span>Claro</span></label>
+        <label class="segmented__item"><input type="radio" name="mode" value="dark"><span>Escuro</span></label>
+      </div>
+      <button type="button" class="btn btn--solid" id="open-export">Exportar</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <form class="rail" id="rail" aria-labelledby="rail-title" novalidate>
+      <h2 class="rail__title" id="rail-title">Ajustes</h2>
+
+      <div class="field">
+        <label class="field__label" for="hex">Cor da marca</label>
+        <div class="hexrow">
+          <input class="color" type="color" id="picker" aria-label="Escolher a cor no seletor">
+          <input class="input input--hex" type="text" id="hex" inputmode="text" autocomplete="off" spellcheck="false" maxlength="7" aria-describedby="hex-help hex-error" placeholder="#E7398A">
+        </div>
+        <p class="field__help" id="hex-help">Use 6 letras ou números, como #E7398A.</p>
+        <p class="field__error" id="hex-error" hidden></p>
+      </div>
+
+      <details class="more more--static" id="more" open>
+        <summary class="more__summary">Mais ajustes</summary>
+      <div class="field">
+        <label class="field__label" for="preset">Sistema de níveis</label>
+        <select class="input" id="preset" aria-describedby="preset-help">
+          <option value="aplica">Aplica: 19 tons e 15 neutros</option>
+          <option value="custom">Personalizado: 9 tons e 9 neutros</option>
+        </select>
+        <p class="field__help" id="preset-help">Define quantos tons a paleta e os neutros têm.</p>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="strategy">Cor do texto sobre cada tom</label>
+        <select class="input" id="strategy" aria-describedby="strategy-help">
+          <option value="high-contrast">Preto ou branco</option>
+          <option value="brand-tint">Tom da sua cor</option>
+          <option value="custom-tint">Cor própria</option>
+        </select>
+        <p class="field__help" id="strategy-help">O texto sempre respeita o contraste mínimo escolhido.</p>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="level">Contraste mínimo</label>
+        <select class="input" id="level" aria-describedby="level-help">
+          <option value="AA">AA: 4,5 para 1</option>
+          <option value="AAA">AAA: 7 para 1</option>
+        </select>
+        <p class="field__help" id="level-help">AA é o recomendado. No AAA, alguns tons não chegam a 7 para 1 com preto ou branco.</p>
+      </div>
+
+      <details class="adv" id="adv">
+        <summary class="adv__summary">Ajustes avançados</summary>
+
+        <div class="field" data-when="custom">
+          <label class="field__label" for="customLight">Texto no modo claro</label>
+          <input class="input input--hex" type="text" id="customLight" maxlength="7" autocomplete="off" spellcheck="false" placeholder="#1A1A1A" aria-describedby="custom-help">
+        </div>
+        <div class="field" data-when="custom">
+          <label class="field__label" for="customDark">Texto no modo escuro</label>
+          <input class="input input--hex" type="text" id="customDark" maxlength="7" autocomplete="off" spellcheck="false" placeholder="#F5F5F5" aria-describedby="custom-help">
+          <p class="field__help" id="custom-help">Deixe em branco para não usar cor própria nesse modo.</p>
+        </div>
+        <div class="field" data-when="custom">
+          <label class="field__label" for="customFallback">Se a cor própria não passar no contraste</label>
+          <select class="input" id="customFallback">
+            <option value="high-contrast">Usar preto ou branco</option>
+            <option value="brand-tint">Usar o tom da sua cor</option>
+          </select>
+        </div>
+
+        <div class="field" data-when="order">
+          <label class="field__label" for="order">Texto: tentar primeiro</label>
+          <select class="input" id="order" aria-describedby="order-help">
+            <option value="startDark">Cores escuras</option>
+            <option value="startLight">Cores claras</option>
+          </select>
+          <p class="field__help" id="order-help">Escolhe qual ponta da escala o texto tenta antes. O Aplica começa pelas cores escuras.</p>
+        </div>
+
+        <div class="field" data-when="overlap">
+          <label class="field__label" for="overlap">Preto ou branco direto a partir do nível</label>
+          <select class="input" id="overlap" aria-describedby="overlap-help"></select>
+          <p class="field__help" id="overlap-help">Do nível escolhido em diante, o texto não procura na paleta.</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="darkChroma">Saturação no modo escuro: <output id="darkChroma-out" for="darkChroma">85%</output></label>
+          <input class="range" type="range" id="darkChroma" min="50" max="120" step="5" aria-describedby="darkChroma-help">
+          <p class="field__help" id="darkChroma-help">100% mantém a saturação do modo claro. O Aplica usa 85%.</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="borderPalette">Distância da borda na paleta</label>
+          <input class="input" type="number" id="borderPalette" min="1" step="1" inputmode="numeric" aria-describedby="borderPalette-help">
+          <p class="field__help" id="borderPalette-help">A borda de um tom é o tom que está esta distância à frente. O Aplica usa 10.</p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="borderNeutrals">Distância da borda nos neutros</label>
+          <input class="input" type="number" id="borderNeutrals" min="1" step="1" inputmode="numeric" aria-describedby="borderNeutrals-help">
+          <p class="field__help" id="borderNeutrals-help">Em passos da escala. O Aplica usa 1.</p>
+        </div>
+
+        <div class="field" data-when="failure">
+          <label class="field__label" for="failure">Se o contraste pedido não for possível</label>
+          <select class="input" id="failure">
+            <option value="accept-aa">Usar 4,5 para 1 e avisar</option>
+            <option value="warn">Manter o texto gerado e avisar</option>
+            <option value="throw">Parar e mostrar o problema</option>
+          </select>
+        </div>
+
+        <div class="field field--check">
+          <input type="checkbox" id="neutralsOwn" aria-describedby="neutrals-help">
+          <label for="neutralsOwn">Usar outra cor nos neutros</label>
+        </div>
+        <div class="field" data-when="neutrals">
+          <label class="field__label" for="neutralsBase">Cor dos neutros</label>
+          <input class="input input--hex" type="text" id="neutralsBase" maxlength="7" autocomplete="off" spellcheck="false" placeholder="#6B7280">
+        </div>
+        <div class="field" data-when="neutrals">
+          <label class="field__label" for="neutralsRef">Nível dessa cor</label>
+          <select class="input" id="neutralsRef" aria-describedby="neutrals-help"></select>
+          <p class="field__help" id="neutrals-help">Os neutros passam por essa cor no nível escolhido.</p>
+        </div>
+
+        <div class="field field--check">
+          <input type="checkbox" id="txt" aria-describedby="txt-help">
+          <label for="txt">Incluir o token de texto geral (txt)</label>
+        </div>
+        <p class="field__help field__help--check" id="txt-help">Uma cor de texto para usar direto sobre o fundo da interface.</p>
+      </details>
+      </details>
+
+      <button type="button" class="btn btn--quiet" id="reset">Voltar ao padrão</button>
+    </form>
+
+    <main class="stage" id="tons" tabindex="-1">
+      <div class="tabs" role="tablist" aria-label="Grupos de tons" id="tabs"></div>
+      <div id="panel" role="tabpanel" tabindex="-1">
+        <p class="intro" id="intro"></p>
+        <div id="alerts"></div>
+        <div id="ribbon-host"></div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="foot">
+    <p>Segue as regras de cor do Aplica Design System (engine 3.23.4). Projeto independente, sem vínculo com a Aplica.</p>
+  </footer>
+
+  <dialog class="dialog" id="export" aria-labelledby="export-title">
+    <form method="dialog" class="dialog__body" id="export-form">
+      <h2 class="dialog__title" id="export-title">Exportar tokens</h2>
+      <div class="field">
+        <label class="field__label" for="export-name">Nome da cor</label>
+        <input class="input" type="text" id="export-name" maxlength="40" autocomplete="off" aria-describedby="export-name-help">
+        <p class="field__help" id="export-name-help">Aparece nos nomes dos tokens, como marca-palette-surface-100.</p>
+      </div>
+      <fieldset class="field fieldset">
+        <legend class="field__label">Formato</legend>
+        <label class="radio"><input type="radio" name="format" value="aplica" checked> Tokens do Aplica (JSON)</label>
+        <label class="radio"><input type="radio" name="format" value="css"> Variáveis CSS</label>
+        <label class="radio"><input type="radio" name="format" value="json"> JSON completo</label>
+      </fieldset>
+      <div class="field">
+        <label class="field__label" for="export-preview">Prévia do arquivo</label>
+        <textarea class="input input--area" id="export-preview" readonly rows="10" spellcheck="false"></textarea>
+      </div>
+      <p class="dialog__status" id="export-status" role="status"></p>
+      <div class="dialog__actions">
+        <button type="button" class="btn btn--solid" id="export-copy">Copiar tudo</button>
+        <button type="button" class="btn" id="export-download">Baixar arquivo</button>
+        <button type="submit" class="btn btn--quiet" value="close">Fechar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="sr-only" id="live" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

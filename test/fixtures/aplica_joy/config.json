@@ -1,0 +1,33 @@
+{
+  "source": "aplica-ds/aplica-tokens-themes-sample",
+  "theme": "aplica_joy",
+  "colors": {
+    "joy_pink": "#E7398A",
+    "joy_blue": "#38C2D0",
+    "joy_purple": "#8F58BD",
+    "action_magenta": "#C40145",
+    "action_cyan": "#1872A6",
+    "link_pink": "#FF0F80",
+    "info_blue": "#CBF6ED",
+    "info_blue_dark": "#A5E7D9",
+    "success_green": "#D7F6CB",
+    "success_green_dark": "#86C46D",
+    "warning_orange": "#FEE6C2",
+    "warning_orange_dark": "#FDB750",
+    "danger_red": "#F9C8C8",
+    "danger_red_dark": "#EE5A5A",
+    "promo_green": "#E3F6CC",
+    "promo_green_dark": "#AEE071",
+    "cashback_pink": "#FCE0D4",
+    "cashback_pink_dark": "#FEA680",
+    "premium_purple": "#ECE2E9",
+    "premium_purple_dark": "#B200AF"
+  },
+  "options": {
+    "txtOnStrategy": "brand-tint",
+    "darkModeChroma": 0.85,
+    "accessibilityLevel": "AAA"
+  },
+  "neutralsOverrides": {},
+  "grayscaleOverrides": null
+}
