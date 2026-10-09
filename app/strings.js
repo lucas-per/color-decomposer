@@ -82,6 +82,7 @@ export const T = {
   export: {
     copied: 'Copiado para a área de transferência.',
     copyFail: 'Não deu para copiar. Selecione o texto e use Ctrl+C.',
+    figmaHelp: 'Cole este arquivo no plugin Color Decomposer, dentro do Figma. Ele cria as coleções Primitivos e Semântica, cada uma com os modos Claro e Escuro.',
     downloaded: (file) => `Arquivo ${file} baixado.`
   },
 };

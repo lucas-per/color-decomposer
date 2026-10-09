@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Color Decomposer</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 16px; display: grid; gap: 14px;
+    font: 12px/1.45 Inter, system-ui, sans-serif;
+    color: var(--figma-color-text, #1e1e1e); background: var(--figma-color-bg, #fff);
+  }
+  h1 { margin: 0; font-size: 14px; font-weight: 650; }
+  p { margin: 0; color: var(--figma-color-text-secondary, #555); }
+  label { font-weight: 600; }
+  .field { display: grid; gap: 6px; }
+  textarea {
+    width: 100%; height: 190px; resize: vertical; padding: 8px; border-radius: 6px;
+    font: 11px/1.4 ui-monospace, Menlo, Consolas, monospace;
+    color: inherit; background: var(--figma-color-bg, #fff);
+    border: 1px solid var(--figma-color-border, #c4c4c4);
+  }
+  .row { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+  .row input[type="checkbox"] { margin: 0; width: 16px; height: 16px; }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  button {
+    min-height: 32px; padding: 0 14px; border-radius: 6px; font: inherit; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--figma-color-border, #c4c4c4); background: transparent; color: inherit;
+  }
+  button.primary { background: var(--figma-color-bg-brand, #0d99ff); border-color: transparent; color: var(--figma-color-text-onbrand, #fff); }
+  button:disabled { opacity: .5; cursor: default; }
+  :focus-visible { outline: 2px solid var(--figma-color-border-brand, #0d99ff); outline-offset: 2px; }
+  #status { min-height: 1.45em; font-weight: 600; }
+  #status.error { color: var(--figma-color-text-danger, #d4351c); }
+  input[type="file"] { display: none; }
+</style>
+</head>
+<body>
+  <h1>Criar variables a partir do Color Decomposer</h1>
+  <p>Cole o arquivo exportado no formato Figma (plugin). Se você rodar de novo, as variables que já existem são atualizadas.</p>
+
+  <div class="field">
+    <label for="json">Arquivo exportado</label>
+    <textarea id="json" spellcheck="false" placeholder='{ "format": "color-decomposer/figma-variables", ... }'></textarea>
+    <div class="actions">
+      <button type="button" id="pick">Escolher arquivo</button>
+      <input type="file" id="file" accept=".json,application/json" aria-label="Escolher o arquivo exportado">
+    </div>
+  </div>
+
+  <div class="row">
+    <input type="checkbox" id="samples" checked>
+    <label for="samples" style="font-weight:500">Criar também uma página de amostras</label>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="primary" id="go">Criar variables</button>
+    <button type="button" id="close">Fechar</button>
+  </div>
+  <p id="status" role="status" aria-live="polite"></p>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const status = (text, error) => { $('status').textContent = text; $('status').className = error ? 'error' : ''; };
+  $('pick').onclick = () => $('file').click();
+  $('file').onchange = async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    $('json').value = await f.text();
+    status('Arquivo carregado. Falta só criar as variables.');
+  };
+  $('go').onclick = () => {
+    const json = $('json').value.trim();
+    if (!json) { status('Cole o arquivo exportado ou escolha o arquivo antes de continuar.', true); $('json').focus(); return; }
+    $('go').disabled = true;
+    status('Criando as variables...');
+    let name = 'Color Decomposer';
+    try { const first = JSON.parse(json).samples?.[0]?.title?.split(':')[0]; if (first) name = `Paletas ${first}`; } catch {}
+    parent.postMessage({ pluginMessage: { type: 'apply', json, samples: $('samples').checked, pageName: name } }, '*');
+  };
+  $('close').onclick = () => parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
+  onmessage = (e) => {
+    const m = e.data.pluginMessage;
+    if (!m) return;
+    $('go').disabled = false;
+    if (m.type === 'error') { status(m.message, true); return; }
+    const parts = [`${m.created} variables criadas`, `${m.updated} atualizadas`];
+    status(`Pronto. ${parts.join(' e ')}.${m.samples ? ' A página de amostras está aberta.' : ''}`);
+  };
+</script>
+</body>
+</html>

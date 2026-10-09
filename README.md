@@ -44,7 +44,7 @@ const theme = decomposeTheme({
 });
 ```
 
-`toPrimitiveTheme`, `toGrayscaleTheme`, `toCssVariables` e `toPlainJson` exportam o resultado.
+`toPrimitiveTheme`, `toGrayscaleTheme`, `toCssVariables`, `toPlainJson` e `toFigmaJson` exportam o resultado.
 `auditResult` lista o contraste de cada par superfície/texto.
 
 ### Opções
@@ -136,10 +136,33 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 - Cada tom informa superfície, texto, borda, contraste (com o veredito em texto, não só em cor) e o equivalente no outro modo.
 - Em telas estreitas, a faixa vira uma lista e o detalhe abre logo abaixo do tom.
 - O estado fica na URL: dá para compartilhar um ajuste.
-- Exporta tokens do Aplica (JSON), variáveis CSS e JSON completo.
+- Exporta tokens do Aplica (JSON), variáveis CSS, JSON completo e variables do Figma (para o plugin).
 - Verificada com axe (WCAG 2.2 AA) em claro, escuro e mobile.
 - Textos escritos em PT-BR com a skill `ux-microcopy`. Os fixos estão em `app/index.html`; os dinâmicos, em `app/strings.js`.
 - Fonte: [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL), incluída em `app/fonts/`.
+
+## Figma
+
+O plugin em [`figma-plugin/`](figma-plugin) cria as paletas como variables no Figma.
+
+1. No Color Decomposer, abra **Exportar**, escolha **Variables do Figma (para o plugin)** e copie ou baixe o arquivo.
+2. No app desktop do Figma: **Plugins → Desenvolvimento → Importar plugin do manifest** e escolha `figma-plugin/manifest.json`.
+3. Rode o plugin, cole o arquivo e clique em **Criar variables**.
+
+O que ele cria:
+
+| Coleção | Conteúdo | Modos |
+| --- | --- | --- |
+| **Primitivos** | palette, neutros e cinzas, cada um com `surface`, `txtOn`, `border` (e `txt`, se ligado) | Claro e Escuro, com o valor de cada modo |
+| **Semântica** | os tons de comportamento (`lightest`, `active`, `normal`, `action`, `pressed`, `darkest`) | Claro e Escuro, como alias do tom da paleta |
+
+- Nomes em grupos do Figma: `marca/palette/surface/100`, `marca/neutrals/border/60`, `grayscale/txtOn/5` e, na semântica, `marca/behavior/normal/surface`.
+- Cada variable tem escopo próprio (superfície em preenchimentos, texto em texto, borda em contornos), em vez de "todos os usos".
+- Rodar de novo atualiza as variables de mesmo nome, sem duplicar.
+- A opção **Criar também uma página de amostras** desenha uma tela por modo, com as faixas ligadas às variables.
+- O plugin não usa rede: ele só lê o que você cola.
+
+Como foi verificado: o formato é coberto por testes (`test/figma.test.js`) e a mesma lógica do plugin rodou num arquivo de teste do Figma, com os dois modos, os aliases, os escopos e a segunda execução sem duplicar. A interface do plugin (`ui.html`) não foi aberta no Figma.
 
 ## Publicar no GitHub Pages (quando você quiser)
 
