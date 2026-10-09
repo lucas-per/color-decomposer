@@ -224,6 +224,13 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
 @media (max-width: 56.25rem) {
   .shell { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; padding-inline: 1rem; }
   .top { padding-inline: 1rem; flex-wrap: wrap; }
+  /* uma única margem à esquerda: ajustes, abas, texto e faixa começam no mesmo x */
+  .rail { padding: 0; background: none; border: 0; border-radius: 0; }
+  .tabs { gap: 0; }
+  .tab { padding-inline: .5rem; }
+  .tab:first-child { margin-left: -.5rem; }
+  .tab[aria-selected="true"]::after { left: .5rem; right: .5rem; }
+  .rail > .btn--quiet { justify-self: start; padding-inline: 0; }
   .foot { padding-inline: 1rem; }
   .ribbon { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .swatch {
@@ -252,4 +259,11 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
 @media (forced-colors: active) {
   .swatch[aria-checked="true"], .swatch:focus-visible { outline-color: Highlight; }
   .tab[aria-selected="true"]::after { background: Highlight; }
+}
+
+/* Telas muito estreitas: as abas rolam na horizontal em vez de quebrar de linha */
+@media (max-width: 23.75rem) {
+  .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .tab { flex: none; }
+  .tab[aria-selected="true"]::after { bottom: 0; }
 }
