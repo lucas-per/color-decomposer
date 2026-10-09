@@ -496,7 +496,7 @@ function render() {
   const n = state.tab === 'behavior' ? Object.keys(preset.behavior).length : (state.tab === 'palette' ? preset.palette.levels.length : preset.neutrals.levels.length);
   const intro = state.tab === 'palette'
     ? T.intro.palette(n, preset.palette.levels[0], preset.palette.levels.at(-1), preset.palette.baseLevel, state.mode)
-    : T.intro[state.tab](n);
+    : T.intro[state.tab](n, preset.neutrals.levels[0], preset.neutrals.levels.at(-1), state.mode);
   $('intro').textContent = intro;
   renderTabs();
   renderAlerts();

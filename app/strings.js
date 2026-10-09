@@ -1,17 +1,25 @@
 // Textos dinâmicos da interface (os fixos ficam no index.html). Escritos com a skill ux-microcopy:
 // PT-BR, "você", sentence case, sem pontuação em rótulos e botões.
 
+// A numeração é fixa; o que muda com o modo é qual ponta fica clara.
+const order = (first, last, mode) =>
+  mode === 'dark'
+    ? `No modo escuro, a ordem se inverte: o ${first} é o mais escuro e o ${last}, o mais claro.`
+    : `No modo claro, o ${first} é o mais claro e o ${last}, o mais escuro.`;
+
 export const T = {
   tabs: { palette: 'Paleta', neutrals: 'Neutros', behavior: 'Comportamento', grayscale: 'Cinzas' },
   intro: {
     palette: (n, first, last, base, mode) =>
-      `${n} tons da sua cor, numerados de ${first} a ${last}. ` +
+      `${n} tons da sua cor, numerados de ${first} a ${last}. ${order(first, last, mode)} ` +
       (mode === 'dark'
-        ? `No modo escuro, a ordem se inverte: o ${first} é o mais escuro e o ${last}, o mais claro. O nível ${base} é a base da sua cor, ajustada para o modo escuro.`
-        : `No modo claro, o ${first} é o mais claro e o ${last}, o mais escuro. O nível ${base} é a cor que você informou.`),
-    neutrals: (n) => `${n} cinzas com um toque da sua cor. Servem para fundos, textos e bordas.`,
+        ? `O nível ${base} é a base da sua cor, ajustada para o modo escuro.`
+        : `O nível ${base} é a cor que você informou.`),
+    neutrals: (n, first, last, mode) =>
+      `${n} cinzas com um toque da sua cor, numerados de ${first} a ${last}. Servem para fundos, textos e bordas. ${order(first, last, mode)}`,
     behavior: (n) => `${n} tons da paleta com nome de uso. Aparecem em estados como foco, passar o mouse e clicar.`,
-    grayscale: (n) => `${n} cinzas puros e fixos, iguais para qualquer cor. No modo escuro, a ordem se inverte.`
+    grayscale: (n, first, last, mode) =>
+      `${n} cinzas puros e fixos, iguais para qualquer cor, numerados de ${first} a ${last}. ${order(first, last, mode)}`
   },
   groupLabel: {
     palette: 'Tons da paleta, em ordem numérica',
