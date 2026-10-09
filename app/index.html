@@ -22,10 +22,6 @@
       Color Decomposer
     </h1>
     <div class="top__actions">
-      <div class="segmented" role="radiogroup" aria-label="Modo de cor" id="mode">
-        <label class="segmented__item"><input type="radio" name="mode" value="light"><span>Claro</span></label>
-        <label class="segmented__item"><input type="radio" name="mode" value="dark"><span>Escuro</span></label>
-      </div>
       <button type="button" class="btn btn--solid" id="open-export">Exportar</button>
     </div>
   </header>
@@ -46,6 +42,14 @@
 
       <details class="more more--static" id="more" open>
         <summary class="more__summary">Mais ajustes</summary>
+      <div class="field">
+        <span class="field__label" id="mode-label">Modo de cor</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="mode-label" id="mode">
+          <label class="segmented__item"><input type="radio" name="mode" value="light"><span>Claro</span></label>
+          <label class="segmented__item"><input type="radio" name="mode" value="dark"><span>Escuro</span></label>
+        </div>
+      </div>
+
       <div class="field">
         <label class="field__label" for="preset">Sistema de níveis</label>
         <select class="input" id="preset" aria-describedby="preset-help">
