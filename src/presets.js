@@ -54,7 +54,7 @@ export const APLICA = Object.freeze({
 // (primeiro mais claro, 100 = marca, espelho = primeiro + último - nível).
 export const CUSTOM = Object.freeze({
   id: 'custom',
-  label: 'Personalizado (9 níveis)',
+  label: 'Padrão (9 níveis)',
   palette: {
     levels: range(20, 180, 20),
     baseLevel: 100,

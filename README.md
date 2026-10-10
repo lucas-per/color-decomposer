@@ -133,7 +133,7 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 
 ## Interface
 
-- **Sistema de níveis padrão:** a interface abre no preset Personalizado (9 tons e 9 neutros). O Aplica (19 tons e 15 neutros) continua disponível no seletor "Sistema de níveis". O motor (`decompose`, `decomposeTheme`) mantém o `aplica` como padrão.
+- **Sistema de níveis padrão:** a interface abre no preset Padrão (9 tons e 9 neutros). O Aplica (19 tons e 15 neutros) continua disponível no seletor "Sistema de níveis". O motor (`decompose`, `decomposeTheme`) mantém o `aplica` como padrão.
 - **A interface usa o próprio motor:** fundo, texto e bordas saem dos neutros da cor escolhida, em claro e escuro.
 - Faixa de tons navegável por teclado (setas, Home, End, Esc), com um único ponto de foco.
 - Cada tom informa superfície, texto, borda, contraste (com o veredito em texto, não só em cor) e o equivalente no outro modo.

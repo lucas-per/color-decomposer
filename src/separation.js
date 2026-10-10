@@ -1,6 +1,6 @@
 // Separação entre tons vizinhos: avisa quando dois tons seguidos da paleta quase não se distinguem.
 // Mede a distância perceptual (ΔE em OKLab) entre vizinhos e a normaliza por 10 níveis, para que
-// escalas com mais ou menos tons (19 no Aplica, 9 no personalizado) usem o mesmo limite.
+// escalas com mais ou menos tons (19 no Aplica, 9 no Padrão) usem o mesmo limite.
 import { deltaEOk, hexToOklab } from './color.js';
 import { resolvePreset } from './presets.js';
 
