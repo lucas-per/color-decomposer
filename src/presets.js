@@ -52,8 +52,8 @@ export const APLICA = Object.freeze({
 
 // Escala enxuta de 9 níveis para o UaiUI. Não existe no Aplica: segue as mesmas regras
 // (primeiro mais claro, 100 = marca, espelho = primeiro + último - nível).
-export const PADRAO = Object.freeze({
-  id: 'padrao',
+export const STANDARD = Object.freeze({
+  id: 'standard',
   label: 'Padrão (9 níveis)',
   palette: {
     levels: range(20, 180, 20),
@@ -73,7 +73,7 @@ export const PADRAO = Object.freeze({
   grayscale: null // gerada como rampa neutra; ver grayscale.js
 });
 
-export const PRESETS = Object.freeze({ aplica: APLICA, padrao: PADRAO });
+export const PRESETS = Object.freeze({ aplica: APLICA, standard: STANDARD });
 
 // Aceita um id ("aplica") ou um objeto de preset e valida a estrutura.
 export function resolvePreset(preset = 'aplica') {

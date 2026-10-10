@@ -53,7 +53,7 @@ Os nomes seguem os do Aplica sempre que existem lá.
 
 | Opção | Valores (padrão em negrito) | Efeito |
 |---|---|---|
-| `preset` | **`aplica`**, `padrao` ou um objeto | Escala de níveis (ver abaixo). |
+| `preset` | **`aplica`**, `standard` ou um objeto | Escala de níveis (ver abaixo). |
 | `txtOnStrategy` | **`high-contrast`**, `brand-tint`, `custom-tint` | Cor do texto sobre cada tom. |
 | `txtOnCustomTint` | `{ light?, dark?, fallback }` | Obrigatório no `custom-tint`. `fallback`: `brand-tint` ou `high-contrast`. |
 | `colorContrastDecompose` | **`startDark`**, `startLight` | Ponta da escala que o texto tenta primeiro. |
@@ -81,9 +81,9 @@ Um preset é um dado (`src/presets.js`), sem código. Regras comuns:
 | Preset | Paleta | Neutros | Espelho (paleta / neutros) |
 |---|---|---|---|
 | `aplica` | 19 níveis, de 10 a 190 | 15 níveis, de 5 a 140 | 200 / 145 |
-| `padrao` | 9 níveis, de 20 a 180 | 9 níveis, de 10 a 130 | 200 / 140 |
+| `standard` | 9 níveis, de 20 a 180 | 9 níveis, de 10 a 130 | 200 / 140 |
 
-O `padrao` é uma extensão para o UaiUI: **não existe no Aplica**. Aplica as mesmas regras a uma escala menor.
+O `standard` é uma extensão para o UaiUI: **não existe no Aplica**. Aplica as mesmas regras a uma escala menor.
 
 ## Como sabemos que bate com o Aplica
 
@@ -112,7 +112,7 @@ O token `txt` não entra no golden: os arquivos de exemplo vieram da engine ^3.6
 | 4 | `onAccessibilityFailure` tem padrão `accept-aa`, com aviso. | O oficial, sem terminal interativo, mantém o texto que falha. O modo `warn` reproduz isso. |
 | 5 | Bloco único de neutros com `baseColor`: o dark mantém a cor própria. | O oficial a descarta quando há `surface` junto. |
 | 6 | Cinzas `{ light, dark }`: sobrescritas do dark partem dos padrões já espelhados. | O oficial mistura com a orientação do light. |
-| 7 | Cinzas do preset `padrao` são uma rampa neutra gerada. | O Aplica só tem a tabela fixa de 15 níveis. |
+| 7 | Cinzas do preset `standard` são uma rampa neutra gerada. | O Aplica só tem a tabela fixa de 15 níveis. |
 
 ### Regras do `color-engine` sem equivalente no Aplica
 
@@ -126,7 +126,7 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 | `borderOffset` único e sem efeito | Substituída | Deslocamento por grupo, como no Aplica. |
 | Tabela de cinzas própria (`#efefef`, `#e3e3e3`…) | Removida | Vale a tabela do Aplica. |
 | `validate.js` exigindo AAA em tudo | Substituída | `accessibilityLevel` + política de falha + `auditResult` + testes. |
-| Preset `padrao` | Mantida | Necessidade real (UaiUI). Virou dado, com a regra de espelho do Aplica. |
+| Preset `standard` | Mantida | Necessidade real (UaiUI). Virou dado, com a regra de espelho do Aplica. |
 | `run()` com `mapping` (brand, interface, product) | Não implementada | Faz parte do gerador de temas completo do Aplica (`_brand.json`), fora do escopo do decomposer. |
 | Dependência do `culori` e servidor Express | Removidas | Matemática própria, idêntica à oficial; a interface é estática. |
 | Interface com abas, modo claro/escuro, detalhe e copiar | Mantida como ideia, refeita | Ver abaixo. |

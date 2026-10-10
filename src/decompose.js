@@ -164,7 +164,7 @@ export function normalizeNeutralsOverride(raw, preset) {
  * @param {object} input
  * @param {string} input.base            cor da marca (#RRGGBB)
  * @param {string} [input.name]          nome do alias (só para identificar o resultado)
- * @param {string|object} [input.preset] "aplica" (padrão), "padrao" ou um objeto de preset
+ * @param {string|object} [input.preset] "aplica" (padrão), "standard" ou um objeto de preset
  * @param {object} [input.options]       opções (ver options.js)
  * @param {object} [input.neutralsOverride]
  * @param {object[]} [input.warnings]    lista onde acumular avisos (uso interno de decomposeTheme)

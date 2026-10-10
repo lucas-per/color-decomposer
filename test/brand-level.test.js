@@ -27,14 +27,14 @@ test('a escala continua do mais claro ao mais escuro passando pela marca', () =>
 
 test('brandLevel fora da paleta dá erro claro', () => {
   assert.throws(() => decompose({ base: '#336699', options: { brandLevel: 45 } }), /brandLevel inválido/);
-  assert.throws(() => decompose({ base: '#336699', preset: 'padrao', options: { brandLevel: 10 } }), /brandLevel inválido/);
+  assert.throws(() => decompose({ base: '#336699', preset: 'standard', options: { brandLevel: 10 } }), /brandLevel inválido/);
 });
 
 test('suggestBrandLevel: claras vão para níveis baixos, escuras para altos, e o resultado é um nível da paleta', () => {
   assert.equal(suggestBrandLevel('#f5b700'), 40);
   assert.equal(suggestBrandLevel('#ffd23f'), 30);
   assert.ok(suggestBrandLevel('#1e3a8a') > 100);
-  for (const preset of ['aplica', 'padrao']) {
+  for (const preset of ['aplica', 'standard']) {
     for (const c of ['#ffffff', '#000000', '#e7398a', '#fde68a']) {
       assert.ok(PRESETS[preset].palette.levels.includes(suggestBrandLevel(c, preset)));
     }
@@ -42,7 +42,7 @@ test('suggestBrandLevel: claras vão para níveis baixos, escuras para altos, e 
 });
 
 test('o Auto resolve os tons parecidos em marcas claras e escuras, nos dois presets e nos dois modos', () => {
-  for (const preset of ['aplica', 'padrao']) {
+  for (const preset of ['aplica', 'standard']) {
     for (const color of ['#ffd23f', '#f5b700', '#d4e157', '#22d3ee', '#fde68a', '#0a0a14', '#111827']) {
       const level = suggestBrandLevel(color, preset);
       for (const mode of ['light', 'dark']) {
@@ -68,7 +68,7 @@ test('behaviorFollowsBrand com a marca no 100 não muda nada', () => {
 });
 
 test('behaviorFollowsBrand: o normal é a marca e os estados mantêm a ordem, no claro e no escuro', () => {
-  for (const preset of ['aplica', 'padrao']) {
+  for (const preset of ['aplica', 'standard']) {
     const { levels } = PRESETS[preset].palette;
     const sum = levels[0] + levels.at(-1);
     for (const brandLevel of levels) {

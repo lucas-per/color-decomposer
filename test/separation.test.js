@@ -11,7 +11,7 @@ test('ΔE OK: igual é 0 e preto contra branco é 1', () => {
 });
 
 test('marcas muito claras ficam com tons colados, nos dois presets', () => {
-  for (const preset of ['aplica', 'padrao']) {
+  for (const preset of ['aplica', 'standard']) {
     for (const color of ['#ffd23f', '#d4e157', '#22d3ee', '#fde68a']) {
       const r = checkToneSeparation(paletteOf(color, preset), color);
       assert.ok(r.runs.length > 0, `${color} (${preset}) devia ter tons colados`);
@@ -25,7 +25,7 @@ test('o âmbar #f5b700 fica com tons colados no Aplica (19 tons)', () => {
 });
 
 test('marcas de claridade média ficam bem separadas, nos dois presets', () => {
-  for (const preset of ['aplica', 'padrao']) {
+  for (const preset of ['aplica', 'standard']) {
     for (const color of ['#e7398a', '#2563eb', '#16a34a', '#7c3aed', '#dc2626', '#ff8a00']) {
       const r = checkToneSeparation(paletteOf(color, preset), color);
       assert.equal(r.runs.length, 0, `${color} (${preset}) não devia ter tons colados`);
