@@ -234,7 +234,7 @@ function swatchHtml(it, tab) {
     ? `<span class="swatch__num">${it.num}</span><span class="swatch__stack"><span class="swatch__aa" aria-hidden="true">Aa</span><span class="swatch__name">${esc(it.name)}</span></span>`
     : `<span class="swatch__num">${it.num}</span><span class="swatch__aa" aria-hidden="true">Aa</span>`);
   const tag = it.base ? `<span class="swatch__tag">${T.yourColor}</span>` : '';
-  return `${inner}<span class="swatch__meta" aria-hidden="true"><span class="swatch__hex">${up(it.a.s)}</span>${tag}<br>${fmt(it.ratio)} para 1</span>`;
+  return `${inner}<span class="swatch__meta" aria-hidden="true">${tag}<span class="swatch__hex">${up(it.a.s)}</span><br>${fmt(it.ratio)} para 1</span>`;
 }
 
 function paintSwatch(btn, it, tab) {
@@ -459,7 +459,7 @@ function bindControls() {
   }
   $('darkChroma').addEventListener('input', (e) => { state.darkChroma = Number(e.target.value); $('darkChroma-out').textContent = `${state.darkChroma}%`; update(); });
   for (const id of ['neutralsOwn', 'txt']) $(id).addEventListener('change', (e) => { state[id] = e.target.checked; update(); });
-  for (const r of document.querySelectorAll('input[name="normal"]')) r.addEventListener('change', () => { state.normal = r.value; update(); });
+  $('normal-switch').addEventListener('change', (e) => { state.normal = e.target.checked ? 'brand' : 'mid'; update(); });
   for (const r of document.querySelectorAll('input[name="mode"]')) r.addEventListener('change', () => { state.mode = r.value; update(); });
   $('reset').addEventListener('click', () => {
     state = { ...DEFAULTS, mode: state.mode };
@@ -634,10 +634,9 @@ function render() {
   const choice = $('normal-choice');
   choice.hidden = !(state.tab === 'behavior' && anchored());
   if (!choice.hidden) {
-    $('normal-mid').textContent = T.normal.mid;
-    $('normal-brand').textContent = T.normal.brand(brandLevelIn(state.mode));
-    $('normal-help').textContent = T.normal.help;
-    document.querySelector(`input[name="normal"][value="${state.normal}"]`).checked = true;
+    const brand = state.normal === 'brand';
+    $('normal-switch').checked = brand;
+    $('normal-help').textContent = brand ? T.normal.on(brandLevelIn(state.mode)) : T.normal.off(current.preset.palette.baseLevel);
   }
   renderTabs();
   renderAlerts();

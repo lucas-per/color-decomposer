@@ -65,10 +65,8 @@ export const T = {
   },
 
   normal: {
-    label: 'O estado normal usa',
-    mid: 'Nível 100',
-    brand: (level) => `Sua cor (nível ${level})`,
-    help: 'Escolha se o estado normal usa a sua cor ou o tom do meio da escala. Os outros estados se ajustam junto.'
+    on: (level) => `Ligado: o estado normal usa o nível ${level}, onde está a sua cor. Os outros estados se ajustam junto.`,
+    off: (level) => `Desligado: o estado normal usa o nível ${level}, o tom do meio da escala.`
   },
 
   similar: {

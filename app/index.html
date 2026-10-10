@@ -189,11 +189,11 @@
       <button type="button" class="btn btn--solid stage__export" id="open-export">Exportar tokens</button>
       <div id="panel" role="tabpanel" tabindex="-1" class="stage__panel">
         <div class="choice" id="normal-choice" hidden>
-          <span class="choice__label" id="normal-label">O estado normal usa</span>
-          <div class="segmented" role="radiogroup" aria-labelledby="normal-label" aria-describedby="normal-help" id="normal">
-            <label class="segmented__item"><input type="radio" name="normal" value="mid"><span id="normal-mid">Nível 100</span></label>
-            <label class="segmented__item"><input type="radio" name="normal" value="brand"><span id="normal-brand">Sua cor</span></label>
-          </div>
+          <label class="switch" for="normal-switch">
+            <input type="checkbox" role="switch" id="normal-switch" aria-describedby="normal-help">
+            <span class="switch__track" aria-hidden="true"></span>
+            <span class="switch__label">Usar sua cor no estado normal</span>
+          </label>
           <p class="field__help choice__help" id="normal-help"></p>
         </div>
         <p class="scale-note" id="scale-note"><span id="scale-text"></span> <button type="button" class="link" id="learn-open" aria-haspopup="dialog" hidden></button></p>
