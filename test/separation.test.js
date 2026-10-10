@@ -19,9 +19,14 @@ test('marcas muito claras ficam com tons colados, nos dois presets', () => {
   }
 });
 
+test('o âmbar #f5b700 fica com tons colados no Aplica (19 tons)', () => {
+  const r = checkToneSeparation(paletteOf('#f5b700'), '#f5b700');
+  assert.ok(r.runs.length > 0);
+});
+
 test('marcas de claridade média ficam bem separadas, nos dois presets', () => {
   for (const preset of ['aplica', 'custom']) {
-    for (const color of ['#e7398a', '#2563eb', '#16a34a', '#7c3aed', '#dc2626', '#f5b700']) {
+    for (const color of ['#e7398a', '#2563eb', '#16a34a', '#7c3aed', '#dc2626', '#ff8a00']) {
       const r = checkToneSeparation(paletteOf(color, preset), color);
       assert.equal(r.runs.length, 0, `${color} (${preset}) não devia ter tons colados`);
     }

@@ -56,7 +56,7 @@ export const T = {
     lightness: 'Claridade',
     chroma: 'Intensidade',
     hue: 'Matiz',
-    clipped: (c) => `A tela não exibe tanta intensidade nessa claridade e matiz. Usamos ${c}.`,
+    clipped: (c) => `Essa intensidade passa do máximo possível para esta cor. Ajustamos para ${c}. Para ter mais, mude a claridade ou o matiz.`,
     ok: 'Tons bem separados.',
     some: (n, total) => `${n} de ${total} tons quase iguais ao tom ao lado. Veja as marcas abaixo da barra.`
   },

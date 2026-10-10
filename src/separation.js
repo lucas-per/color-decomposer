@@ -3,9 +3,10 @@
 // escalas com mais ou menos tons (19 no Aplica, 9 no personalizado) usem o mesmo limite.
 import { deltaEOk, hexToOklab } from './color.js';
 
-// Calibrado com cores conhecidas: amarelos, limões, ciano e cremes ficam abaixo (tons colados);
-// âmbar, laranja, rosa, azul e verde ficam acima. Não é um padrão de mercado: é um limite prático.
-export const SEPARATION_LIMIT = 0.012;
+// Calibrado com cores conhecidas e com o olho de quem usa: amarelos, âmbar, limões, ciano, cremes e
+// marcas quase pretas ficam abaixo (tons colados); laranja, rosa, azul, verde e roxo ficam acima.
+// Não é um padrão de mercado: é um limite prático.
+export const SEPARATION_LIMIT = 0.016;
 
 /**
  * @param {Record<string,string>} surface  nível → hex (a paleta de um modo)

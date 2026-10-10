@@ -456,8 +456,9 @@ function syncTune() {
   $('tuneH').style.setProperty('--track', stops(Array.from({ length: 13 }, (_, i) => `oklch(${L} ${C} ${i * 30})`)));
   const used = oklchToHex(L, C, tune.h);
   const note = $('tune-note');
-  note.hidden = !used.clipped;
-  if (used.clipped) note.textContent = T.tune.clipped(decimal(used.chroma));
+  const clipped = C - used.chroma > 0.005; // só avisa quando a diferença aparece na escala do controle (0,01)
+  note.hidden = !clipped;
+  if (clipped) note.textContent = T.tune.clipped(decimal(used.chroma));
 }
 
 function renderMini() {
