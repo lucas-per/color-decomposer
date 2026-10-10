@@ -69,8 +69,8 @@ test('figma: sem o token txt, nada de txt; nomes com barra não quebram os grupo
   assert.ok(names.includes('a-b/palette/surface/100'));
 });
 
-test('figma: funciona com o preset custom (Padrão) e vira JSON válido', () => {
-  const t = decomposeTheme({ colors: { marca: '#E7398A' }, preset: 'custom' });
+test('figma: funciona com o preset padrao (Padrão) e vira JSON válido', () => {
+  const t = decomposeTheme({ colors: { marca: '#E7398A' }, preset: 'padrao' });
   const f = JSON.parse(toFigmaJson(t));
   assert.equal(f.collections[0].variables.filter((v) => v.name.startsWith('marca/palette/surface/')).length, 9);
   assert.equal(f.collections[1].variables.length, 6 * 3);

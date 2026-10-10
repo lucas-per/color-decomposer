@@ -2,7 +2,7 @@
 
 export const DEFAULTS = {
   color: '#e7398a',
-  preset: 'custom',
+  preset: 'padrao',
   strategy: 'high-contrast',
   level: 'AA',
   mode: 'light',
@@ -26,7 +26,7 @@ export const DEFAULTS = {
 };
 
 const ENUMS = {
-  preset: ['custom', 'aplica'],
+  preset: ['padrao', 'aplica'],
   strategy: ['high-contrast', 'brand-tint', 'custom-tint'],
   level: ['AA', 'AAA'],
   mode: ['light', 'dark'],

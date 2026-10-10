@@ -87,11 +87,11 @@ for (const presetId of Object.keys(PRESETS)) {
   });
 }
 
-test('custom: 9 níveis na paleta e nos neutros, espelho 200 e 140', () => {
-  assert.equal(PRESETS.custom.palette.levels.length, 9);
-  assert.equal(PRESETS.custom.neutrals.levels.length, 9);
-  assert.equal(PRESETS.custom.palette.levels[0] + PRESETS.custom.palette.levels.at(-1), 200);
-  assert.equal(PRESETS.custom.neutrals.levels[0] + PRESETS.custom.neutrals.levels.at(-1), 140);
+test('padrao: 9 níveis na paleta e nos neutros, espelho 200 e 140', () => {
+  assert.equal(PRESETS.padrao.palette.levels.length, 9);
+  assert.equal(PRESETS.padrao.neutrals.levels.length, 9);
+  assert.equal(PRESETS.padrao.palette.levels[0] + PRESETS.padrao.palette.levels.at(-1), 200);
+  assert.equal(PRESETS.padrao.neutrals.levels[0] + PRESETS.padrao.neutrals.levels.at(-1), 140);
 });
 
 test('aceita um preset próprio (dado, sem código)', () => {
@@ -204,8 +204,8 @@ test('escala de cinzas: sobrescrita light/dark parte dos padrões já na orienta
   assert.equal(g.dark.surface[5], '#111111'); // o resto continua espelhado (o oficial misturaria com a orientação do light)
 });
 
-test('escala de cinzas do preset custom é uma rampa neutra legível', () => {
-  const g = generateGrayscale({ preset: 'custom' });
+test('escala de cinzas do preset padrao é uma rampa neutra legível', () => {
+  const g = generateGrayscale({ preset: 'padrao' });
   assert.equal(Object.keys(g.light.surface).length, 9);
   for (const l of Object.keys(g.light.surface)) {
     assert.ok(contrastRatio(g.light.surface[l], g.light.txtOn[l]) >= 4.5);
