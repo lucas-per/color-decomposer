@@ -467,13 +467,20 @@ function renderMini() {
   const surface = current.theme.colors[NAME][state.mode].palette.surface;
   const flagged = new Set(sep.tones);
   const mini = $('mini');
-  mini.replaceChildren(...Object.keys(surface).map(Number).sort((a, b) => a - b).map((l) => {
-    const cell = document.createElement('span');
-    cell.className = `mini__cell${flagged.has(l) ? ' mini__cell--flag' : ''}`;
-    cell.innerHTML = '<i></i><b></b>';
-    cell.firstChild.style.setProperty('--c', surface[l]);
-    return cell;
-  }));
+  const levels = Object.keys(surface).map(Number).sort((x, y) => x - y);
+  const strip = document.createElement('div'); strip.className = 'mini__strip';
+  const flags = document.createElement('div'); flags.className = 'mini__flags';
+  levels.forEach((l, i) => {
+    const sw = document.createElement('i'); sw.style.setProperty('--c', surface[l]); strip.append(sw);
+    const f = document.createElement('b');
+    if (flagged.has(l)) {
+      f.className = 'is-flag';
+      if (!flagged.has(levels[i - 1])) f.classList.add('is-start');
+      if (!flagged.has(levels[i + 1])) f.classList.add('is-end');
+    }
+    flags.append(f);
+  });
+  mini.replaceChildren(strip, flags);
   $('tune-status').textContent = sep.tones.length ? T.tune.some(sep.tones.length, sep.total) : T.tune.ok;
 }
 
