@@ -1,8 +1,10 @@
 // A própria interface usa a paleta gerada: fundo, texto e bordas saem dos neutros da cor escolhida.
 import { contrastRatio } from '../src/index.js';
 
-function firstLevelWith(scale, levels, bg, min) {
-  for (const l of levels) if (contrastRatio(bg, scale[l]) >= min) return scale[l];
+// Primeiro neutro que chega ao contraste mínimo contra todos os fundos informados.
+function firstLevelWith(scale, levels, bgs, min) {
+  const list = Array.isArray(bgs) ? bgs : [bgs];
+  for (const l of levels) if (list.every((bg) => contrastRatio(bg, scale[l]) >= min)) return scale[l];
   return scale[levels.at(-1)];
 }
 
@@ -17,8 +19,9 @@ export function chromeTokens(theme, name, mode, preset) {
     bg,
     panel,
     fg,
-    // texto secundário: o primeiro neutro que chega a 5 para 1 (passa no AA com folga)
-    muted: firstLevelWith(n.surface, levels, bg, 5),
+    // texto secundário: o primeiro neutro que chega a 5 para 1 (passa no AA com folga) no fundo e no painel.
+    // Em escalas com poucos neutros o painel é mais escuro, então o painel também conta.
+    muted: firstLevelWith(n.surface, levels, [bg, panel], 5),
     // contornos de campos precisam de 3 para 1 contra o fundo (WCAG 1.4.11)
     edge: firstLevelWith(n.surface, levels, bg, 3.2),
     // divisores decorativos
