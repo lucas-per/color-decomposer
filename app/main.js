@@ -615,6 +615,9 @@ function placeMore() {
   more.classList.toggle('more--static', !narrow());
   if (!narrow()) more.open = true; else if (!more.dataset.seen) more.open = false;
   more.dataset.seen = '1';
+  const tm = $('tune-more');
+  if (!tm.dataset.seen) tm.open = !narrow();
+  tm.dataset.seen = '1';
 }
 placeMore();
 bindControls();

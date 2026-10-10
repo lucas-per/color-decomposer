@@ -35,23 +35,27 @@
         </div>
         <p class="field__help" id="hex-help">Use 6 letras ou números, como #E7398A.</p>
         <p class="field__error" id="hex-error" hidden></p>
-        <div class="tune" id="tune" role="group" aria-label="Ajustar a cor por claridade, intensidade e matiz">
-          <div class="tune__row">
-            <label class="tune__label" for="tuneL">Claridade <output id="tuneL-out" for="tuneL"></output></label>
-            <input class="range range--tune" type="range" id="tuneL" min="0" max="100" step="1">
-          </div>
-          <div class="tune__row">
-            <label class="tune__label" for="tuneC">Intensidade <output id="tuneC-out" for="tuneC"></output></label>
-            <input class="range range--tune" type="range" id="tuneC" min="0" max="40" step="1" aria-describedby="tune-note">
-            <p class="field__help" id="tune-note" hidden></p>
-          </div>
-          <div class="tune__row">
-            <label class="tune__label" for="tuneH">Matiz <output id="tuneH-out" for="tuneH"></output></label>
-            <input class="range range--tune" type="range" id="tuneH" min="0" max="360" step="1">
-          </div>
+        <div class="tune" id="tune">
           <div class="mini" id="mini" aria-hidden="true"></div>
           <p class="field__help tune__status" id="tune-status"></p>
+          <details class="tune__more" id="tune-more" open>
+            <summary class="tune__summary">Ajustar a cor</summary>
+            <div class="tune__row">
+              <label class="tune__label" for="tuneL">Claridade <output id="tuneL-out" for="tuneL"></output></label>
+              <input class="range range--tune" type="range" id="tuneL" min="0" max="100" step="1">
+            </div>
+            <div class="tune__row">
+              <label class="tune__label" for="tuneC">Intensidade <output id="tuneC-out" for="tuneC"></output></label>
+              <input class="range range--tune" type="range" id="tuneC" min="0" max="40" step="1" aria-describedby="tune-note">
+              <p class="field__help" id="tune-note" hidden></p>
+            </div>
+            <div class="tune__row">
+              <label class="tune__label" for="tuneH">Matiz <output id="tuneH-out" for="tuneH"></output></label>
+              <input class="range range--tune" type="range" id="tuneH" min="0" max="360" step="1">
+            </div>
+          </details>
         </div>
+      </div>
       </div>
 
       <details class="more more--static" id="more" open>
