@@ -24,16 +24,17 @@ function borderBySteps(levels, surface, steps) {
 }
 
 function generatePalette(cfg, preset, baseHex, mode, warnings) {
-  const { levels, baseLevel } = preset.palette;
+  const { levels } = preset.palette;
+  const anchor = cfg.brandLevel;
   const base = hexToOklch(baseHex);
   const sum = mirrorSum(levels);
   const chroma = mode === 'dark' ? cfg.darkModeChroma : 1;
 
   const surface = {};
   for (const level of levels) {
-    if (level === baseLevel) { surface[level] = baseHex; continue; } // a marca, sem ida e volta por OKLCh
     const source = mode === 'dark' ? sum - level : level;
-    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset), chroma);
+    if (source === anchor) { surface[level] = baseHex; continue; } // a marca, sem ida e volta por OKLCh
+    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma);
   }
 
   const border = borderBySteps(levels, surface, cfg.borderSteps.palette);

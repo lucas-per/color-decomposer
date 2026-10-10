@@ -62,6 +62,7 @@ Os nomes seguem os do Aplica sempre que existem lá.
 | `onAccessibilityFailure` | **`accept-aa`**, `warn`, `throw` | O que fazer quando o AAA é impossível (ver divergências). |
 | `darkModeChroma` | **0.85** | Multiplicador de croma no modo escuro. |
 | `borderOffset` | `{ palette: 10, neutrals: 1, grayscale: 1 }` | Distância da borda: paleta em níveis; neutros e cinzas em passos. |
+| `brandLevel` | **100** (o `baseLevel` do preset), ou outro nível da paleta | **Extensão, não existe no Aplica.** Nível onde a cor da marca fica, exata. A escala passa por ela; no escuro, a marca fica no nível espelhado. Os estados de comportamento seguem nos níveis do preset (o `normal` continua no 100). `suggestBrandLevel(hex, preset)` devolve o nível de claridade mais próxima. |
 | `generateTxt`, `txtBaseColorLevel` | `false`, 140 | Token `txt` (texto geral sobre o fundo da interface). |
 
 Sobrescrita dos neutros (`neutralsOverride` em `decompose`, `neutralsOverrides` em `decomposeTheme`):
@@ -137,6 +138,7 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 - Em telas estreitas, a faixa vira uma lista e o detalhe abre logo abaixo do tom.
 - **Ajuste da cor da marca:** sliders de claridade, intensidade e matiz em OKLCh (a mesma base da decomposição), sincronizados com o campo hexadecimal. Se a intensidade não cabe no sRGB, o croma é reduzido e a interface avisa.
 - **Tons parecidos:** `checkToneSeparation` mede a distância perceptual (ΔE em OKLab) entre tons vizinhos, por 10 níveis, e avisa quando fica abaixo de `SEPARATION_LIMIT` (0,016). O limite foi calibrado com cores conhecidas e com o olho de quem usa (amarelos, âmbar, limões e ciano ficam abaixo; laranja, rosa, azul e verde, acima). Não é um padrão de mercado.
+- **Auto:** botão ao lado da barra de tons. Fica desabilitado quando a gradação está ok e habilitado quando há tons parecidos. Ao clicar, coloca a cor da marca no nível de claridade mais próxima (`suggestBrandLevel`) e refaz a paleta. O nível fica na URL (`lvl`) e volta ao 100 quando você muda a cor ou o sistema de níveis.
 - O estado fica na URL: dá para compartilhar um ajuste.
 - Exporta tokens do Aplica (JSON), variáveis CSS, JSON completo e variables do Figma (para o plugin).
 - Verificada com axe (WCAG 2.2 AA) em claro, escuro e mobile.

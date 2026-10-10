@@ -12,6 +12,7 @@ export const DEFAULTS = {
   darkChroma: 85,
   borderPalette: '',
   borderNeutrals: '',
+  lvl: '',
   failure: 'accept-aa',
   customLight: '',
   customDark: '',
@@ -47,7 +48,7 @@ export function parseHash(hash, systemMode) {
     if (key === 'color' || key === 'neutralsBase') { if (HEX.test(`#${v}`)) s[key] = `#${v}`; continue; }
     if (key === 'customLight' || key === 'customDark') { if (v === '' || HEX.test(`#${v}`)) s[key] = v ? `#${v}` : ''; continue; }
     if (key === 'darkChroma') { const n = Number(v); if (n >= 0 && n <= 150) s[key] = n; continue; }
-    if (['overlap', 'borderPalette', 'borderNeutrals', 'neutralsRef'].includes(key)) { if (v === '' || Number.isFinite(Number(v))) s[key] = v; continue; }
+    if (['overlap', 'borderPalette', 'borderNeutrals', 'neutralsRef', 'lvl'].includes(key)) { if (v === '' || Number.isFinite(Number(v))) s[key] = v; continue; }
     if (key === 'sel') s[key] = v.slice(0, 40);
   }
   return s;

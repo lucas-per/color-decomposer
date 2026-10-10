@@ -1,8 +1,10 @@
 // Interpolação de luminosidade (L em OKLCh) e espelhamento para o dark.
 
 // Paleta: do primeiro nível (lightest) até a cor da marca, e da marca até o último (darkest).
-export function paletteLightness(level, baseL, preset) {
-  const { levels, baseLevel, lightest, darkest } = preset.palette;
+// `anchor` é o nível onde a cor da marca fica (padrão: o baseLevel do preset).
+export function paletteLightness(level, baseL, preset, anchor = preset.palette.baseLevel) {
+  const { levels, lightest, darkest } = preset.palette;
+  const baseLevel = anchor;
   const first = levels[0], last = levels[levels.length - 1];
   if (level <= baseLevel) {
     const t = (level - first) / (baseLevel - first);

@@ -58,12 +58,15 @@ export const T = {
     hue: 'Matiz',
     clipped: (c) => `Essa intensidade passa do máximo possível para esta cor. Ajustamos para ${c}. Para ter mais, mude a claridade ou o matiz.`,
     ok: 'Tons bem separados.',
-    some: (n, total) => `${n} de ${total} tons quase iguais ao tom ao lado. Veja as marcas abaixo da barra.`
+    okAt: (level) => `Tons bem separados. Sua cor está no nível ${level}.`,
+    some: (n, total, level) => `${n} de ${total} tons quase iguais ao tom ao lado, marcados abaixo da barra.${level ? ` O Auto coloca sua cor no nível ${level} e refaz a paleta.` : ''}`,
+    auto: 'Auto',
+    autoAria: 'Auto: colocar a cor no melhor nível da paleta'
   },
 
   similar: {
-    msg: (ranges, side) => {
-      const tip = side === 'lighter' ? 'Tente deixar a cor da marca menos clara.'
+    msg: (ranges, side, canAuto) => {
+      const tip = canAuto ? 'Use o Auto, ao lado da barra de tons, para refazer a paleta.' : side === 'lighter' ? 'Tente deixar a cor da marca menos clara.'
         : side === 'darker' ? 'Tente deixar a cor da marca mais clara.' : 'Tente ajustar a claridade da cor da marca.';
       return `${ranges.length === 1 ? 'Os tons' : 'Os trechos'} ${ranges.join(' e ')} estão muito parecidos entre si. ${tip}`;
     }

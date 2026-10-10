@@ -36,8 +36,11 @@
         <p class="field__help" id="hex-help">Use 6 letras ou números, como #E7398A.</p>
         <p class="field__error" id="hex-error" hidden></p>
         <div class="tune" id="tune">
-          <div class="mini" id="mini" aria-hidden="true"></div>
-          <p class="field__help tune__status" id="tune-status"></p>
+          <div class="tune__check">
+            <div class="mini" id="mini" aria-hidden="true"></div>
+            <button type="button" class="btn" id="auto" disabled aria-describedby="tune-status" aria-label="Auto: colocar a cor no melhor nível da paleta">Auto</button>
+          </div>
+          <p class="field__help tune__status" id="tune-status" tabindex="-1"></p>
           <details class="tune__more" id="tune-more" open>
             <summary class="tune__summary">Ajustar a cor</summary>
             <div class="tune__row">

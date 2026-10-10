@@ -61,6 +61,12 @@ export function resolveOptions(raw = {}, preset, warnings = []) {
   const rawGray = Number(o.borderOffset?.grayscale);
   const grayscaleSteps = Number.isFinite(rawGray) ? Math.max(1, Math.round(rawGray)) : 1;
 
+  // Nível onde a cor da marca fica na paleta. O padrão do Aplica é o baseLevel (100); outro nível é uma extensão.
+  const brandLevel = o.brandLevel ?? preset.palette.baseLevel;
+  if (!preset.palette.levels.includes(brandLevel)) {
+    throw new Error(`brandLevel inválido: ${brandLevel}. Use um nível da paleta (${preset.palette.levels.join(', ')}).`);
+  }
+
   const txtBase = Number(o.txtBaseColorLevel);
 
   return {
@@ -73,6 +79,7 @@ export function resolveOptions(raw = {}, preset, warnings = []) {
     requiredRatio: accessibilityLevel === 'AAA' ? WCAG_AAA : WCAG_AA,
     onAccessibilityFailure,
     borderSteps: { palette: paletteSteps, neutrals: neutralsSteps, grayscale: grayscaleSteps },
+    brandLevel,
     generateTxt: o.generateTxt === true,
     txtBaseColorLevel: Number.isFinite(txtBase) ? txtBase : 140
   };

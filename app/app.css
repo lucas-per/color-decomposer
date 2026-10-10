@@ -137,7 +137,12 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after, det
 .range--tune::-moz-range-track { height: .75rem; border-radius: 999px; border: 1px solid var(--edge); background: var(--track, var(--panel)); }
 .range--tune::-webkit-slider-thumb { -webkit-appearance: none; width: 1.5rem; height: 1.5rem; margin-top: -.5625rem; border-radius: 50%; background: var(--bg); border: 3px solid var(--fg); box-shadow: 0 0 0 1px var(--bg); }
 .range--tune::-moz-range-thumb { width: 1.5rem; height: 1.5rem; box-sizing: border-box; border-radius: 50%; background: var(--bg); border: 3px solid var(--fg); box-shadow: 0 0 0 1px var(--bg); }
-.mini { margin-top: .25rem; }
+.tune__check { display: grid; grid-template-columns: 1fr auto; gap: .5rem; align-items: center; margin-top: .25rem; }
+.tune__check .btn { padding-inline: .875rem; }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn:disabled:hover { background: transparent; }
+.tune__status:focus { outline: none; }
+.mini { min-width: 0; }
 .mini__strip, .mini__flags { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
 .mini__strip { border-radius: var(--r-control); overflow: hidden; }
 .mini__strip i { height: 1.5rem; background: var(--c); }

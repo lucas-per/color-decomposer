@@ -1,5 +1,5 @@
 import {
-  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, oklchToHex, hexToOklch
+  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, suggestBrandLevel, oklchToHex, hexToOklch
 } from '../src/index.js';
 import { T, fmt } from './strings.js';
 import { chromeTokens, applyChrome } from './chrome.js';
@@ -28,6 +28,7 @@ function buildOptions(s) {
     onAccessibilityFailure: s.failure,
     generateTxt: s.txt
   };
+  if (s.lvl !== '' && PRESETS[s.preset].palette.levels.includes(Number(s.lvl))) o.brandLevel = Number(s.lvl);
   if (s.overlap !== '') o.overlap = { level: Number(s.overlap) };
   if (s.strategy === 'custom-tint') {
     o.txtOnCustomTint = { fallback: s.customFallback, ...(s.customLight && { light: s.customLight }), ...(s.customDark && { dark: s.customDark }) };
@@ -80,7 +81,7 @@ function itemsFor(tab, mode) {
     return Object.entries(preset.behavior).map(([name, level]) => {
       const nice = T.behaviorNames[name] ?? name;
       return mk(name, level, T.detail.behavior(nice, level), T.detail.behavior(nice, level),
-        pair(c[mode].behavior, name), pair(c[other].behavior, name), { name: nice, base: level === preset.palette.baseLevel });
+        pair(c[mode].behavior, name), pair(c[other].behavior, name), { name: nice, base: level === preset.palette.baseLevel && !anchored() });
     });
   }
   if (tab === 'grayscale') {
@@ -89,11 +90,24 @@ function itemsFor(tab, mode) {
   }
   const levels = preset[tab].levels;
   return levels.map((l) => {
-    const base = tab === 'palette' && l === preset.palette.baseLevel;
+    const base = tab === 'palette' && l === brandLevelIn(mode);
     const label = base ? `${T.detail.level(l)}, ${T.yourColor.toLowerCase()}` : T.detail.level(l);
     return mk(l, l, label, T.detail.level(l), pair(c[mode][tab], l), pair(c[other][tab], l), { base });
   });
 }
+
+/* ---------- Nível da cor da marca ---------- */
+
+// Nível onde a marca está na paleta (100 por padrão; outro depois do Auto) e o nível equivalente em cada modo.
+function brandLevel() {
+  const levels = current.preset.palette.levels;
+  return state.lvl !== '' && levels.includes(Number(state.lvl)) ? Number(state.lvl) : current.preset.palette.baseLevel;
+}
+function brandLevelIn(mode) {
+  const { levels } = current.preset.palette;
+  return mode === 'dark' ? levels[0] + levels.at(-1) - brandLevel() : brandLevel();
+}
+const anchored = () => brandLevel() !== current.preset.palette.baseLevel;
 
 /* ---------- Tons parecidos ---------- */
 
@@ -101,6 +115,14 @@ function separation() {
   if (!current) return null;
   const palette = current.theme.colors[NAME][state.mode].palette.surface;
   return checkToneSeparation(palette, state.color);
+}
+
+// Estado do Auto: só vale a pena quando há tons parecidos e o melhor nível é outro que o atual.
+function autoState() {
+  const sep = separation();
+  const suggested = suggestBrandLevel(state.color, state.preset);
+  const can = !!sep && sep.runs.length > 0 && suggested !== brandLevel();
+  return { sep, suggested, can };
 }
 
 const rangeText = (r) => `${r.from} a ${r.to}`;
@@ -145,11 +167,11 @@ function renderAlerts() {
       btn.textContent = open ? T.warnings.hide : T.warnings.show;
     });
   }
-  const sep = separation();
+  const { sep, can } = autoState();
   if (sep && sep.runs.length) {
     const sides = new Set(sep.runs.map((r) => r.side));
     const side = sides.size === 1 ? [...sides][0] : 'both';
-    add(`<p>${T.similar.msg(sep.runs.map(rangeText), side)}</p>`, 'status').classList.add('notice--compact');
+    add(`<p>${T.similar.msg(sep.runs.map(rangeText), side, can)}</p>`, 'status').classList.add('notice--compact');
   }
   const ov = ws.filter((x) => x.type === 'override');
   if (ov.length) add(`<p>${T.warnings.override(ov.length)}</p>`, 'status').classList.add('notice--compact');
@@ -224,7 +246,7 @@ function renderRibbon() {
   const host = $('ribbon-host');
   const tab = state.tab;
   const items = itemsFor(tab, state.mode);
-  const sig = `${tab}|${state.preset}|${items.map((i) => i.key).join(',')}|${narrow()}`;
+  const sig = `${tab}|${state.preset}|${items.map((i) => i.key + (i.base ? '*' : '')).join(',')}|${narrow()}`;
   const focusedKey = document.activeElement?.closest?.('.swatch')?.dataset.key;
 
   let ribbon = host.firstElementChild;
@@ -394,7 +416,7 @@ function bindControls() {
     input.addEventListener('input', () => {
       const v = input.value.trim();
       const hex = toHex(v);
-      if (hex) { state[f.key] = hex; setInvalid(input, false); if (f.id === 'hex') $('picker').value = hex; update(); }
+      if (hex) { if (f.key === 'color' && hex !== state.color) state.lvl = ''; state[f.key] = hex; setInvalid(input, false); if (f.id === 'hex') $('picker').value = hex; update(); }
       else if (f.optional && v === '') { state[f.key] = ''; setInvalid(input, false); update(); }
       else if (v.replace('#', '').length >= 6) setInvalid(input, true);
     });
@@ -405,7 +427,7 @@ function bindControls() {
     });
   }
   $('picker').addEventListener('input', (e) => {
-    state.color = e.target.value.toLowerCase();
+    state.color = e.target.value.toLowerCase(); state.lvl = '';
     $('hex').value = up(state.color); setInvalid($('hex'), false);
     update();
   });
@@ -414,15 +436,20 @@ function bindControls() {
       tune = { ...tune, L: Number($('tuneL').value), C: Number($('tuneC').value), h: Number($('tuneH').value) };
       const r = oklchToHex(tune.L / 100, tune.C / 100, tune.h);
       tune.hex = r.hex;
-      state.color = r.hex;
+      state.color = r.hex; state.lvl = '';
       $('hex').value = up(r.hex); setInvalid($('hex'), false);
       update();
     });
   }
+  $('auto').addEventListener('click', () => {
+    state.lvl = String(suggestBrandLevel(state.color, state.preset));
+    update();
+    $('tune-status').focus(); // o botão fica desabilitado: o foco vai para o resultado, que é lido em seguida
+  });
   for (const id of FIELD_SIMPLE) {
     $(id).addEventListener('change', (e) => {
       state[id] = e.target.value;
-      if (id === 'preset') { state.overlap = ''; state.neutralsRef = ''; state.sel = ''; }
+      if (id === 'preset') { state.lvl = ''; state.overlap = ''; state.neutralsRef = ''; state.sel = ''; }
       update();
     });
   }
@@ -462,8 +489,9 @@ function syncTune() {
 }
 
 function renderMini() {
-  const sep = separation();
+  const { sep, suggested, can } = autoState();
   if (!sep) return;
+  $('auto').disabled = !can;
   const surface = current.theme.colors[NAME][state.mode].palette.surface;
   const flagged = new Set(sep.tones);
   const mini = $('mini');
@@ -481,7 +509,10 @@ function renderMini() {
     flags.append(f);
   });
   mini.replaceChildren(strip, flags);
-  $('tune-status').textContent = sep.tones.length ? T.tune.some(sep.tones.length, sep.total) : T.tune.ok;
+  const shown = (lvl) => (state.mode === 'dark' ? levels[0] + levels.at(-1) - lvl : lvl);
+  $('tune-status').textContent = sep.tones.length
+    ? T.tune.some(sep.tones.length, sep.total, can ? shown(suggested) : null)
+    : (anchored() ? T.tune.okAt(brandLevelIn(state.mode)) : T.tune.ok);
 }
 
 function syncControls() {
@@ -588,7 +619,7 @@ function render() {
   const first = state.tab === 'palette' ? preset.palette.levels[0] : preset.neutrals.levels[0];
   const last = state.tab === 'palette' ? preset.palette.levels.at(-1) : preset.neutrals.levels.at(-1);
   const body = state.tab === 'palette'
-    ? T.learn.body.palette(n, first, last, preset.palette.baseLevel, state.mode)
+    ? T.learn.body.palette(n, first, last, brandLevelIn(state.mode), state.mode)
     : state.tab === 'behavior' ? null : T.learn.body[state.tab](n, first, last, state.mode);
   learn = body && { title: T.learn.title[state.tab], body };
   $('scale-text').textContent = body ? T.orderShort(first, state.mode) : T.intro.behavior(n);
@@ -613,6 +644,7 @@ function update() {
     applyChrome(chromeTokens(r.theme, NAME, state.mode, r.preset), state.mode);
   }
   if (!current) { current = build(DEFAULTS); }
+  if (state.lvl !== '' && !PRESETS[state.preset].palette.levels.includes(Number(state.lvl))) state.lvl = '';
   syncControls();
   render();
 }

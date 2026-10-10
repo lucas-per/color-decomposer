@@ -2,6 +2,7 @@
 // Mede a distância perceptual (ΔE em OKLab) entre vizinhos e a normaliza por 10 níveis, para que
 // escalas com mais ou menos tons (19 no Aplica, 9 no personalizado) usem o mesmo limite.
 import { deltaEOk, hexToOklab } from './color.js';
+import { resolvePreset } from './presets.js';
 
 // Calibrado com cores conhecidas e com o olho de quem usa: amarelos, âmbar, limões, ciano, cremes e
 // marcas quase pretas ficam abaixo (tons colados); laranja, rosa, azul, verde e roxo ficam acima.
@@ -38,4 +39,17 @@ export function checkToneSeparation(surface, base, limit = SEPARATION_LIMIT) {
   }
   const tones = [...new Set(pairs.flatMap((p) => [p.from, p.to]))].sort((a, b) => a - b);
   return { limit, pairs, runs, tones, total: levels.length, min: levels.length > 1 ? min : 0 };
+}
+
+/**
+ * Melhor nível da paleta para a cor da marca: o passo da escala cuja claridade é a mais próxima da dela.
+ * A escala vai de `lightest` (primeiro nível) a `darkest` (último) em passos iguais; ancorar a marca no
+ * passo mais próximo mantém os tons com espaçamento quase uniforme nos dois lados.
+ */
+export function suggestBrandLevel(baseHex, preset = 'aplica') {
+  const { levels, lightest, darkest } = resolvePreset(preset).palette;
+  const L = hexToOklab(baseHex).L;
+  const t = (lightest - L) / (lightest - darkest);
+  const idx = Math.max(0, Math.min(levels.length - 1, Math.round(t * (levels.length - 1))));
+  return levels[idx];
 }
