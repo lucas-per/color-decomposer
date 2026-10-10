@@ -13,6 +13,7 @@ export const DEFAULTS = {
   borderPalette: '',
   borderNeutrals: '',
   lvl: '',
+  normal: 'mid',
   failure: 'accept-aa',
   customLight: '',
   customDark: '',
@@ -31,6 +32,7 @@ const ENUMS = {
   mode: ['light', 'dark'],
   tab: ['palette', 'neutrals', 'behavior', 'grayscale'],
   order: ['startDark', 'startLight'],
+  normal: ['mid', 'brand'],
   failure: ['accept-aa', 'warn', 'throw'],
   customFallback: ['high-contrast', 'brand-tint']
 };

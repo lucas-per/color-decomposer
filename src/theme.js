@@ -71,7 +71,7 @@ function applyAmbientTxt(colors, grayscale, preset, cfg, ambient) {
       const m = c[mode];
       m.palette.txt = txtScaleFor(m.palette.surface, background, cfg);
       m.neutrals.txt = txtScaleFor(m.neutrals.surface, background, cfg);
-      for (const [name, lvl] of Object.entries(preset.behavior)) m.behavior.txt[name] = m.palette.txt[lvl];
+      for (const [name, lvl] of Object.entries(m.behavior.level)) m.behavior.txt[name] = m.palette.txt[lvl];
     }
     grayscale[mode].txt = txtScaleFor(grayscale[mode].surface, background, cfg);
   }

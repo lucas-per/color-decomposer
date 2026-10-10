@@ -64,6 +64,13 @@ export const T = {
     autoAria: 'Auto: colocar a cor no melhor nível da paleta'
   },
 
+  normal: {
+    label: 'O estado normal usa',
+    mid: 'Nível 100',
+    brand: (level) => `Sua cor (nível ${level})`,
+    help: 'Escolha se o estado normal usa a sua cor ou o tom do meio da escala. Os outros estados se ajustam junto.'
+  },
+
   similar: {
     msg: (ranges, side, canAuto) => {
       const tip = canAuto ? 'Use o Auto, ao lado da barra de tons, para refazer a paleta.' : side === 'lighter' ? 'Tente deixar a cor da marca menos clara.'

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { decomposeTheme, decompose, checkToneSeparation, suggestBrandLevel, PRESETS } from '../src/index.js';
+import { decomposeTheme, decompose, checkToneSeparation, suggestBrandLevel, toFigmaVariables, PRESETS } from '../src/index.js';
 
 const palette = (color, preset, brandLevel, mode = 'light') =>
   decomposeTheme({ colors: { c: color }, preset, options: brandLevel ? { brandLevel } : {} }).colors.c[mode].palette.surface;
@@ -51,4 +51,62 @@ test('o Auto resolve os tons parecidos em marcas claras e escuras, nos dois pres
       }
     }
   }
+});
+
+const behaviorOf = (color, preset, options, mode = 'light') =>
+  decompose({ base: color, preset, options })[mode].behavior;
+
+test('behaviorFollowsBrand desligado: os estados continuam nos níveis do preset (normal no 100)', () => {
+  const b = behaviorOf('#f5b700', 'aplica', { brandLevel: 40 });
+  assert.deepEqual(b.level, PRESETS.aplica.behavior);
+});
+
+test('behaviorFollowsBrand com a marca no 100 não muda nada', () => {
+  const a = behaviorOf('#336699', 'aplica', {});
+  const b = behaviorOf('#336699', 'aplica', { behaviorFollowsBrand: true });
+  assert.deepEqual(a, b);
+});
+
+test('behaviorFollowsBrand: o normal é a marca e os estados mantêm a ordem, no claro e no escuro', () => {
+  for (const preset of ['aplica', 'custom']) {
+    const { levels } = PRESETS[preset].palette;
+    const sum = levels[0] + levels.at(-1);
+    for (const brandLevel of levels) {
+      const options = { brandLevel, behaviorFollowsBrand: true };
+      const light = behaviorOf('#f5b700', preset, options, 'light');
+      const dark = behaviorOf('#f5b700', preset, options, 'dark');
+      assert.equal(light.level.normal, brandLevel);
+      assert.equal(dark.level.normal, sum - brandLevel);
+      assert.equal(light.surface.normal, '#f5b700');
+      assert.equal(dark.surface.normal, '#f5b700');
+      for (const b of [light, dark]) {
+        const order = Object.keys(PRESETS[preset].behavior).map((n) => b.level[n]);
+        const orig = Object.values(PRESETS[preset].behavior);
+        for (let i = 1; i < order.length; i++) {
+          assert.ok(orig[i] > orig[i - 1] ? order[i] >= order[i - 1] : true, `ordem quebrada (${preset}, marca ${brandLevel})`);
+          assert.ok(levels.includes(order[i]));
+        }
+      }
+    }
+  }
+});
+
+test('behaviorFollowsBrand com a marca no 40 (Aplica): níveis esperados', () => {
+  const light = behaviorOf('#f5b700', 'aplica', { brandLevel: 40, behaviorFollowsBrand: true }, 'light').level;
+  assert.deepEqual(light, { lightest: 10, active: 20, normal: 40, action: 70, pressed: 110, darkest: 160 });
+  const dark = behaviorOf('#f5b700', 'aplica', { brandLevel: 40, behaviorFollowsBrand: true }, 'dark').level;
+  assert.deepEqual(dark, { lightest: 10, active: 80, normal: 160, action: 170, pressed: 180, darkest: 190 });
+});
+
+test('níveis distintos quando há espaço', () => {
+  const l = behaviorOf('#f5b700', 'aplica', { brandLevel: 40, behaviorFollowsBrand: true }).level;
+  assert.equal(new Set(Object.values(l)).size, Object.keys(l).length);
+});
+
+test('as variables do Figma apontam o normal para o nível da marca em cada modo', () => {
+  const theme = decomposeTheme({ colors: { c: '#f5b700' }, options: { brandLevel: 40, behaviorFollowsBrand: true } });
+  const fig = toFigmaVariables(theme);
+  const v = fig.collections.find((c) => c.name === 'Semântica').variables.find((x) => x.name === 'c/behavior/normal/surface');
+  assert.equal(v.aliases.Claro, 'c/palette/surface/40');
+  assert.equal(v.aliases.Escuro, 'c/palette/surface/160');
 });

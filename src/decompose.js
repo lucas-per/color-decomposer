@@ -2,7 +2,7 @@
 import { normalizeHex, hexToOklch, colorAtLightness } from './color.js';
 import { resolvePreset } from './presets.js';
 import { resolveOptions } from './options.js';
-import { paletteLightness, neutralsLightness, mirrorSum } from './scale.js';
+import { paletteLightness, neutralsLightness, mirrorSum, behaviorLevels } from './scale.js';
 import { txtOnFor, checkPair, resolveFailures } from './txton.js';
 
 const MODES = ['light', 'dark'];
@@ -120,10 +120,15 @@ function assertLevel(levels, level, where) {
 }
 
 // Behavior são apelidos de níveis da paleta; guardamos o valor já resolvido e o nível de origem.
-function generateBehavior(cfg, preset, palette) {
+function generateBehavior(cfg, preset, palette, mode) {
   const out = { surface: {}, txtOn: {}, border: {}, level: {} };
   if (cfg.generateTxt) out.txt = {};
-  for (const [name, level] of Object.entries(preset.behavior)) {
+  // Por padrão os estados ficam nos níveis do preset. Com `behaviorFollowsBrand`, o "normal" acompanha a marca
+  // (no escuro, o nível espelhado) e os outros estados se ajustam em volta dela.
+  const { levels } = preset.palette;
+  const brand = mode === 'dark' ? levels[0] + levels[levels.length - 1] - cfg.brandLevel : cfg.brandLevel;
+  const behavior = cfg.behaviorFollowsBrand ? behaviorLevels(preset, brand) : preset.behavior;
+  for (const [name, level] of Object.entries(behavior)) {
     out.surface[name] = palette.surface[level];
     out.txtOn[name] = palette.txtOn[level];
     out.border[name] = palette.border[level];
@@ -174,7 +179,7 @@ export function decompose({ base, name = 'color', preset = 'aplica', options = {
   for (const mode of MODES) {
     const palette = generatePalette(cfg, p, baseHex, mode, warnings);
     const neutrals = generateNeutrals(cfg, p, baseHex, mode, overrides[mode], warnings);
-    result[mode] = { palette, neutrals, behavior: generateBehavior(cfg, p, palette) };
+    result[mode] = { palette, neutrals, behavior: generateBehavior(cfg, p, palette, mode) };
   }
   return result;
 }

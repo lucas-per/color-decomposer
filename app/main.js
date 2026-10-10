@@ -28,7 +28,10 @@ function buildOptions(s) {
     onAccessibilityFailure: s.failure,
     generateTxt: s.txt
   };
-  if (s.lvl !== '' && PRESETS[s.preset].palette.levels.includes(Number(s.lvl))) o.brandLevel = Number(s.lvl);
+  if (s.lvl !== '' && PRESETS[s.preset].palette.levels.includes(Number(s.lvl))) {
+    o.brandLevel = Number(s.lvl);
+    o.behaviorFollowsBrand = s.normal === 'brand';
+  }
   if (s.overlap !== '') o.overlap = { level: Number(s.overlap) };
   if (s.strategy === 'custom-tint') {
     o.txtOnCustomTint = { fallback: s.customFallback, ...(s.customLight && { light: s.customLight }), ...(s.customDark && { dark: s.customDark }) };
@@ -78,10 +81,10 @@ function itemsFor(tab, mode) {
     return { key: String(key), num, label, title, a, o, ratio, ...extra };
   };
   if (tab === 'behavior') {
-    return Object.entries(preset.behavior).map(([name, level]) => {
+    return Object.entries(c[mode].behavior.level).map(([name, level]) => {
       const nice = T.behaviorNames[name] ?? name;
       return mk(name, level, T.detail.behavior(nice, level), T.detail.behavior(nice, level),
-        pair(c[mode].behavior, name), pair(c[other].behavior, name), { name: nice, base: level === preset.palette.baseLevel && !anchored() });
+        pair(c[mode].behavior, name), pair(c[other].behavior, name), { name: nice, base: anchored() ? (state.normal === 'brand' && name === 'normal') : level === preset.palette.baseLevel });
     });
   }
   if (tab === 'grayscale') {
@@ -108,6 +111,7 @@ function brandLevelIn(mode) {
   return mode === 'dark' ? levels[0] + levels.at(-1) - brandLevel() : brandLevel();
 }
 const anchored = () => brandLevel() !== current.preset.palette.baseLevel;
+const resetLevel = () => { state.lvl = ''; state.normal = 'mid'; };
 
 /* ---------- Tons parecidos ---------- */
 
@@ -246,7 +250,7 @@ function renderRibbon() {
   const host = $('ribbon-host');
   const tab = state.tab;
   const items = itemsFor(tab, state.mode);
-  const sig = `${tab}|${state.preset}|${items.map((i) => i.key + (i.base ? '*' : '')).join(',')}|${narrow()}`;
+  const sig = `${tab}|${state.preset}|${items.map((i) => `${i.key}:${i.num}${i.base ? '*' : ''}`).join(',')}|${narrow()}`;
   const focusedKey = document.activeElement?.closest?.('.swatch')?.dataset.key;
 
   let ribbon = host.firstElementChild;
@@ -416,7 +420,7 @@ function bindControls() {
     input.addEventListener('input', () => {
       const v = input.value.trim();
       const hex = toHex(v);
-      if (hex) { if (f.key === 'color' && hex !== state.color) state.lvl = ''; state[f.key] = hex; setInvalid(input, false); if (f.id === 'hex') $('picker').value = hex; update(); }
+      if (hex) { if (f.key === 'color' && hex !== state.color) resetLevel(); state[f.key] = hex; setInvalid(input, false); if (f.id === 'hex') $('picker').value = hex; update(); }
       else if (f.optional && v === '') { state[f.key] = ''; setInvalid(input, false); update(); }
       else if (v.replace('#', '').length >= 6) setInvalid(input, true);
     });
@@ -427,7 +431,7 @@ function bindControls() {
     });
   }
   $('picker').addEventListener('input', (e) => {
-    state.color = e.target.value.toLowerCase(); state.lvl = '';
+    state.color = e.target.value.toLowerCase(); resetLevel();
     $('hex').value = up(state.color); setInvalid($('hex'), false);
     update();
   });
@@ -436,7 +440,7 @@ function bindControls() {
       tune = { ...tune, L: Number($('tuneL').value), C: Number($('tuneC').value), h: Number($('tuneH').value) };
       const r = oklchToHex(tune.L / 100, tune.C / 100, tune.h);
       tune.hex = r.hex;
-      state.color = r.hex; state.lvl = '';
+      state.color = r.hex; resetLevel();
       $('hex').value = up(r.hex); setInvalid($('hex'), false);
       update();
     });
@@ -449,12 +453,13 @@ function bindControls() {
   for (const id of FIELD_SIMPLE) {
     $(id).addEventListener('change', (e) => {
       state[id] = e.target.value;
-      if (id === 'preset') { state.lvl = ''; state.overlap = ''; state.neutralsRef = ''; state.sel = ''; }
+      if (id === 'preset') { resetLevel(); state.overlap = ''; state.neutralsRef = ''; state.sel = ''; }
       update();
     });
   }
   $('darkChroma').addEventListener('input', (e) => { state.darkChroma = Number(e.target.value); $('darkChroma-out').textContent = `${state.darkChroma}%`; update(); });
   for (const id of ['neutralsOwn', 'txt']) $(id).addEventListener('change', (e) => { state[id] = e.target.checked; update(); });
+  for (const r of document.querySelectorAll('input[name="normal"]')) r.addEventListener('change', () => { state.normal = r.value; update(); });
   for (const r of document.querySelectorAll('input[name="mode"]')) r.addEventListener('change', () => { state.mode = r.value; update(); });
   $('reset').addEventListener('click', () => {
     state = { ...DEFAULTS, mode: state.mode };
@@ -626,6 +631,14 @@ function render() {
   const open = $('learn-open');
   open.hidden = !body;
   if (body) { open.textContent = T.learn.open; open.setAttribute('aria-label', T.learn.openAria[state.tab]); }
+  const choice = $('normal-choice');
+  choice.hidden = !(state.tab === 'behavior' && anchored());
+  if (!choice.hidden) {
+    $('normal-mid').textContent = T.normal.mid;
+    $('normal-brand').textContent = T.normal.brand(brandLevelIn(state.mode));
+    $('normal-help').textContent = T.normal.help;
+    document.querySelector(`input[name="normal"][value="${state.normal}"]`).checked = true;
+  }
   renderTabs();
   renderAlerts();
   renderMini();
@@ -644,7 +657,8 @@ function update() {
     applyChrome(chromeTokens(r.theme, NAME, state.mode, r.preset), state.mode);
   }
   if (!current) { current = build(DEFAULTS); }
-  if (state.lvl !== '' && !PRESETS[state.preset].palette.levels.includes(Number(state.lvl))) state.lvl = '';
+  if (state.lvl !== '' && !PRESETS[state.preset].palette.levels.includes(Number(state.lvl))) resetLevel();
+  if (state.lvl === '') state.normal = 'mid';
   syncControls();
   render();
 }
