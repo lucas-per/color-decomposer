@@ -159,9 +159,12 @@
           </select>
         </div>
 
-        <div class="field field--check">
-          <input type="checkbox" id="neutralsOwn" aria-describedby="neutrals-help">
-          <label for="neutralsOwn">Usar outra cor nos neutros</label>
+        <div class="field">
+          <label class="switch" for="neutralsOwn">
+            <input type="checkbox" role="switch" id="neutralsOwn" aria-describedby="neutrals-help">
+            <span class="switch__track" aria-hidden="true"></span>
+            <span class="switch__label">Usar outra cor nos neutros</span>
+          </label>
         </div>
         <div class="field" data-when="neutrals">
           <label class="field__label" for="neutralsBase">Cor dos neutros</label>
@@ -173,9 +176,12 @@
           <p class="field__help" id="neutrals-help">Os neutros passam por essa cor no nível escolhido.</p>
         </div>
 
-        <div class="field field--check">
-          <input type="checkbox" id="txt" aria-describedby="txt-help">
-          <label for="txt">Incluir o token de texto geral (txt)</label>
+        <div class="field">
+          <label class="switch" for="txt">
+            <input type="checkbox" role="switch" id="txt" aria-describedby="txt-help">
+            <span class="switch__track" aria-hidden="true"></span>
+            <span class="switch__label">Incluir o token de texto geral (txt)</span>
+          </label>
         </div>
         <p class="field__help field__help--check" id="txt-help">Uma cor de texto para usar direto sobre o fundo da interface.</p>
       </details>
