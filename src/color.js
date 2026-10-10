@@ -77,3 +77,38 @@ export function colorAtLightness(base, targetL, chromaFactor = 1) {
   const { r, g, b } = oklchToRgb(targetL, C, base.h);
   return rgbToHex(r, g, b);
 }
+
+// OKLab (L, a, b) de um hex. Serve para medir a distância perceptual entre duas cores.
+export function hexToOklab(hex) {
+  const { L, C, h } = hexToOklch(hex);
+  const hr = (h * Math.PI) / 180;
+  return { L, a: C * Math.cos(hr), b: C * Math.sin(hr) };
+}
+
+// Distância perceptual (ΔE OK): distância euclidiana em OKLab. Perto de 0,02 já é o mínimo perceptível.
+export function deltaEOk(hex1, hex2) {
+  const x = hexToOklab(hex1), y = hexToOklab(hex2);
+  return Math.hypot(x.L - y.L, x.a - y.a, x.b - y.b);
+}
+
+// Maior croma que o sRGB consegue exibir para uma claridade e um matiz (busca binária).
+export function maxChroma(L, h) {
+  const inGamut = (C) => {
+    const { r, g, b } = oklchToRgb(L, C, h);
+    return r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255;
+  };
+  if (L <= 0 || L >= 1) return 0;
+  let lo = 0, hi = 0.4;
+  for (let i = 0; i < 24; i++) {
+    const mid = (lo + hi) / 2;
+    if (inGamut(mid)) lo = mid; else hi = mid;
+  }
+  return lo;
+}
+
+// Hex a partir de L, C e matiz. Se o croma não cabe no sRGB, reduz o croma e mantém claridade e matiz.
+export function oklchToHex(L, C, h) {
+  const used = Math.min(C, maxChroma(L, h));
+  const { r, g, b } = oklchToRgb(L, used, h);
+  return { hex: rgbToHex(r, g, b), chroma: used, clipped: C > used + 1e-6 };
+}

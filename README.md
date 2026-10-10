@@ -135,6 +135,8 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 - Faixa de tons navegável por teclado (setas, Home, End, Esc), com um único ponto de foco.
 - Cada tom informa superfície, texto, borda, contraste (com o veredito em texto, não só em cor) e o equivalente no outro modo.
 - Em telas estreitas, a faixa vira uma lista e o detalhe abre logo abaixo do tom.
+- **Ajuste da cor da marca:** sliders de claridade, intensidade e matiz em OKLCh (a mesma base da decomposição), sincronizados com o campo hexadecimal. Se a intensidade não cabe no sRGB, o croma é reduzido e a interface avisa.
+- **Tons parecidos:** `checkToneSeparation` mede a distância perceptual (ΔE em OKLab) entre tons vizinhos, por 10 níveis, e avisa quando fica abaixo de `SEPARATION_LIMIT` (0,012). O limite foi calibrado com cores conhecidas (amarelos, limões e ciano ficam abaixo; âmbar, laranja, rosa e azul, acima). Não é um padrão de mercado.
 - O estado fica na URL: dá para compartilhar um ajuste.
 - Exporta tokens do Aplica (JSON), variáveis CSS, JSON completo e variables do Figma (para o plugin).
 - Verificada com axe (WCAG 2.2 AA) em claro, escuro e mobile.

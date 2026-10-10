@@ -51,6 +51,24 @@ export const T = {
   yourColor: 'Sua cor',
   overlapOff: 'Desligado',
   resetDone: 'Ajustes voltaram ao padrão.',
+  tune: {
+    group: 'Ajustar a cor por claridade, intensidade e matiz',
+    lightness: 'Claridade',
+    chroma: 'Intensidade',
+    hue: 'Matiz',
+    clipped: (c) => `A tela não exibe tanta intensidade nessa claridade e matiz. Usamos ${c}.`,
+    ok: 'Tons bem separados.',
+    some: (n, total) => `${n} de ${total} tons quase iguais ao tom ao lado. Veja as marcas abaixo da barra.`
+  },
+
+  similar: {
+    msg: (ranges, side) => {
+      const tip = side === 'lighter' ? 'Tente deixar a cor da marca menos clara.'
+        : side === 'darker' ? 'Tente deixar a cor da marca mais clara.' : 'Tente ajustar a claridade da cor da marca.';
+      return `${ranges.length === 1 ? 'Os tons' : 'Os trechos'} ${ranges.join(' e ')} estão muito parecidos entre si. ${tip}`;
+    }
+  },
+
   hexError: 'Esse código não funciona. Use 6 letras ou números, como #E7398A.',
   pickHint: 'Selecione um tom para ver o texto, a borda e o contraste dele.',
 

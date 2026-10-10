@@ -1,5 +1,5 @@
 import {
-  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson
+  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, oklchToHex, hexToOklch
 } from '../src/index.js';
 import { T, fmt } from './strings.js';
 import { chromeTokens, applyChrome } from './chrome.js';
@@ -15,6 +15,7 @@ const up = (hex) => hex.toUpperCase();
 let state = parseHash(location.hash, systemMode());
 let current = null; // último resultado válido: { theme, preset }
 let lastError = '';
+let tune = null; // { L, C, h, hex }: valores dos controles de claridade, intensidade e matiz
 
 /* ---------- Motor ---------- */
 
@@ -94,6 +95,16 @@ function itemsFor(tab, mode) {
   });
 }
 
+/* ---------- Tons parecidos ---------- */
+
+function separation() {
+  if (!current) return null;
+  const palette = current.theme.colors[NAME][state.mode].palette.surface;
+  return checkToneSeparation(palette, state.color);
+}
+
+const rangeText = (r) => `${r.from} a ${r.to}`;
+
 /* ---------- Avisos ---------- */
 
 function renderAlerts() {
@@ -133,6 +144,12 @@ function renderAlerts() {
       btn.setAttribute('aria-expanded', String(open));
       btn.textContent = open ? T.warnings.hide : T.warnings.show;
     });
+  }
+  const sep = separation();
+  if (sep && sep.runs.length) {
+    const sides = new Set(sep.runs.map((r) => r.side));
+    const side = sides.size === 1 ? [...sides][0] : 'both';
+    add(`<p>${T.similar.msg(sep.runs.map(rangeText), side)}</p>`, 'status').classList.add('notice--compact');
   }
   const ov = ws.filter((x) => x.type === 'override');
   if (ov.length) add(`<p>${T.warnings.override(ov.length)}</p>`, 'status').classList.add('notice--compact');
@@ -392,6 +409,16 @@ function bindControls() {
     $('hex').value = up(state.color); setInvalid($('hex'), false);
     update();
   });
+  for (const id of ['tuneL', 'tuneC', 'tuneH']) {
+    $(id).addEventListener('input', () => {
+      tune = { ...tune, L: Number($('tuneL').value), C: Number($('tuneC').value), h: Number($('tuneH').value) };
+      const r = oklchToHex(tune.L / 100, tune.C / 100, tune.h);
+      tune.hex = r.hex;
+      state.color = r.hex;
+      $('hex').value = up(r.hex); setInvalid($('hex'), false);
+      update();
+    });
+  }
   for (const id of FIELD_SIMPLE) {
     $(id).addEventListener('change', (e) => {
       state[id] = e.target.value;
@@ -411,11 +438,50 @@ function bindControls() {
   $('rail').addEventListener('submit', (e) => e.preventDefault());
 }
 
+const decimal = (n) => n.toFixed(2).replace('.', ',');
+
+function syncTune() {
+  if (!tune || tune.hex !== state.color) {
+    const o = hexToOklch(state.color);
+    tune = { L: Math.round(o.L * 100), C: Math.min(40, Math.round(o.C * 100)), h: Math.round(o.h) % 360, hex: state.color };
+  }
+  $('tuneL').value = tune.L; $('tuneC').value = tune.C; $('tuneH').value = tune.h;
+  $('tuneL-out').textContent = `${tune.L}%`;
+  $('tuneC-out').textContent = decimal(tune.C / 100);
+  $('tuneH-out').textContent = `${tune.h}°`;
+  const L = tune.L / 100, C = tune.C / 100;
+  const stops = (arr) => `linear-gradient(to right, ${arr.join(', ')})`;
+  $('tuneL').style.setProperty('--track', stops([0, 0.25, 0.5, 0.75, 1].map((l) => `oklch(${l} ${C} ${tune.h})`)));
+  $('tuneC').style.setProperty('--track', stops([0, 0.1, 0.2, 0.3, 0.4].map((c) => `oklch(${L} ${c} ${tune.h})`)));
+  $('tuneH').style.setProperty('--track', stops(Array.from({ length: 13 }, (_, i) => `oklch(${L} ${C} ${i * 30})`)));
+  const used = oklchToHex(L, C, tune.h);
+  const note = $('tune-note');
+  note.hidden = !used.clipped;
+  if (used.clipped) note.textContent = T.tune.clipped(decimal(used.chroma));
+}
+
+function renderMini() {
+  const sep = separation();
+  if (!sep) return;
+  const surface = current.theme.colors[NAME][state.mode].palette.surface;
+  const flagged = new Set(sep.tones);
+  const mini = $('mini');
+  mini.replaceChildren(...Object.keys(surface).map(Number).sort((a, b) => a - b).map((l) => {
+    const cell = document.createElement('span');
+    cell.className = `mini__cell${flagged.has(l) ? ' mini__cell--flag' : ''}`;
+    cell.innerHTML = '<i></i><b></b>';
+    cell.firstChild.style.setProperty('--c', surface[l]);
+    return cell;
+  }));
+  $('tune-status').textContent = sep.tones.length ? T.tune.some(sep.tones.length, sep.total) : T.tune.ok;
+}
+
 function syncControls() {
   const preset = PRESETS[state.preset];
   $('hex').value = up(state.color);
   if (document.activeElement !== $('hex')) setInvalid($('hex'), false);
   $('picker').value = state.color;
+  syncTune();
   for (const id of FIELD_SIMPLE) if (!['overlap', 'neutralsRef'].includes(id)) $(id).value = state[id];
   $('borderPalette').placeholder = String(preset.palette.step);
   $('borderNeutrals').placeholder = '1';
@@ -523,6 +589,7 @@ function render() {
   if (body) { open.textContent = T.learn.open; open.setAttribute('aria-label', T.learn.openAria[state.tab]); }
   renderTabs();
   renderAlerts();
+  renderMini();
   renderRibbon();
   const hash = serialize(state, systemMode());
   history.replaceState(null, '', hash || location.pathname + location.search);

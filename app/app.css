@@ -126,6 +126,22 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after { tr
 .color::-moz-color-swatch { border: 0; border-radius: 5px; }
 .range { width: 100%; accent-color: var(--fg); height: var(--control); margin: 0; }
 
+.tune { margin-top: 1rem; display: grid; gap: .25rem; }
+.tune__row { display: grid; }
+.tune__label { font-size: .875rem; font-weight: 600; display: flex; justify-content: space-between; gap: .5rem; }
+.tune__label output { font-weight: 400; color: var(--muted); font-variant-numeric: tabular-nums; }
+.range--tune { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+.range--tune::-webkit-slider-runnable-track { height: .75rem; border-radius: 999px; border: 1px solid var(--edge); background: var(--track, var(--panel)); }
+.range--tune::-moz-range-track { height: .75rem; border-radius: 999px; border: 1px solid var(--edge); background: var(--track, var(--panel)); }
+.range--tune::-webkit-slider-thumb { -webkit-appearance: none; width: 1.5rem; height: 1.5rem; margin-top: -.5625rem; border-radius: 50%; background: var(--bg); border: 3px solid var(--fg); box-shadow: 0 0 0 1px var(--bg); }
+.range--tune::-moz-range-thumb { width: 1.5rem; height: 1.5rem; box-sizing: border-box; border-radius: 50%; background: var(--bg); border: 3px solid var(--fg); box-shadow: 0 0 0 1px var(--bg); }
+.mini { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin-top: .5rem; border-radius: 6px; overflow: hidden; }
+.mini__cell { display: grid; }
+.mini__cell i { height: 1.5rem; background: var(--c); }
+.mini__cell b { height: 4px; background: transparent; }
+.mini__cell--flag b { background: var(--fg); }
+.tune__status { margin-top: .25rem; }
+
 .adv { border-top: 1px solid var(--line); padding-top: .5rem; }
 .adv > .field, .adv > p { margin-top: 1rem; }
 .adv__summary { cursor: pointer; font-weight: 600; height: var(--control); display: flex; align-items: center; }
