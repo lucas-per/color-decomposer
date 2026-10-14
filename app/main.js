@@ -1,5 +1,5 @@
 import {
-  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, suggestBrandLevel, oklchToHex, hexToOklch, vividGain, VIVID_VISIBLE_LIMIT
+  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, suggestBrandLevel, supportLevel, oklchToHex, hexToOklch, vividGain, VIVID_VISIBLE_LIMIT
 } from '../src/index.js';
 import { T, fmt } from './strings.js';
 import { chromeTokens, applyChrome } from './chrome.js';
@@ -123,7 +123,7 @@ const resetLevel = () => { state.lvl = ''; state.normal = 'mid'; state.vivid = f
 
 const hasSupport = () => state.support !== '';
 const mirror = (level) => { const { levels } = current.preset.palette; return levels[0] + levels.at(-1) - level; };
-const supportLevelLight = () => suggestBrandLevel(state.support, state.preset);
+const supportLevelLight = () => supportLevel(state.color, state.support, current.preset);
 const supportLevelIn = (mode) => (mode === 'dark' ? mirror(supportLevelLight()) : supportLevelLight());
 // Problema da cor de apoio que o motor devolveu: { reason: 'same-level' | 'order' } ou null.
 const supportIssue = () => (hasSupport() && current?.theme.warnings.find((w) => w.type === 'anchors')) || null;
@@ -257,6 +257,9 @@ function setTab(tab) {
 
 /* ---------- Faixa de tons ---------- */
 
+const COPY_ICON = '<svg class="swatch__copy-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="7" y="7" width="9" height="9" rx="2"/><path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/></svg><svg class="swatch__copy-done" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4.5 10.5l3.5 3.5 7.5-8"/></svg>';
+const COPYABLE = ['palette', 'neutrals'];
+
 const narrow = () => matchMedia('(max-width: 56.25rem)').matches;
 
 function swatchHtml(it, tab) {
@@ -270,8 +273,7 @@ function swatchHtml(it, tab) {
 }
 
 function paintSwatch(btn, it, tab) {
-  btn.style.setProperty('--s', it.a.s);
-  btn.style.setProperty('--t', it.a.t);
+  for (const el of [btn, btn.parentElement]) { el.style.setProperty('--s', it.a.s); el.style.setProperty('--t', it.a.t); }
   const flag = it.ratio < requiredRatio();
   const v = verdictOf(it.ratio);
   btn.setAttribute('aria-label', T.swatchAria(it.label, up(it.a.s), up(it.a.t), it.ratio, v.text) + (flag ? ` ${T.flagBelow(state.level)}.` : ''));
@@ -294,9 +296,18 @@ function renderRibbon() {
     ribbon.setAttribute('aria-label', T.groupLabel[tab]);
     ribbon.style.setProperty('--n', items.length);
     items.forEach((it, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'swatch'; b.role = 'radio'; b.dataset.key = it.key; b.dataset.i = i;
-      ribbon.append(b);
+      cell.append(b);
+      if (COPYABLE.includes(tab)) {
+        const c = document.createElement('button');
+        c.type = 'button'; c.className = 'swatch__copy'; c.innerHTML = COPY_ICON;
+        cell.classList.add('cell--copy');
+        cell.append(c);
+      }
+      ribbon.append(cell);
       if (it.base && !narrow() && tab !== 'behavior') {
         const tagEl = document.createElement('span');
         tagEl.className = 'ribbon__base'; tagEl.style.gridColumn = String(i + 1); tagEl.textContent = it.tag || T.yourColor;
@@ -304,18 +315,38 @@ function renderRibbon() {
         ribbon.append(tagEl);
       }
     });
-    ribbon.addEventListener('click', (e) => { const b = e.target.closest('.swatch'); if (b) select(b.dataset.key); });
+    ribbon.addEventListener('click', (e) => {
+      const c = e.target.closest('.swatch__copy');
+      if (c) {
+        copyText(c.dataset.hex, T.detail.copied(c.dataset.hex), T.detail.copyFail);
+        c.classList.add('is-done');
+        clearTimeout(c.doneTimer);
+        c.doneTimer = setTimeout(() => c.classList.remove('is-done'), 1500);
+        return;
+      }
+      const b = e.target.closest('.swatch');
+      if (b) select(b.dataset.key);
+    });
     ribbon.addEventListener('keydown', onRibbonKey);
     host.replaceChildren(ribbon);
   }
 
   const buttons = [...ribbon.querySelectorAll('.swatch')];
-  items.forEach((it, i) => paintSwatch(buttons[i], it, tab));
+  items.forEach((it, i) => {
+    paintSwatch(buttons[i], it, tab);
+    const copy = buttons[i].parentElement.querySelector('.swatch__copy');
+    if (copy) {
+      copy.dataset.hex = up(it.a.s);
+      copy.setAttribute('aria-label', T.detail.copyLevelAria(it.title, up(it.a.s)));
+    }
+  });
   const selIndex = items.findIndex((it) => it.key === state.sel);
   buttons.forEach((b, i) => {
     const on = i === selIndex;
     b.setAttribute('aria-checked', String(on));
     b.tabIndex = on || (selIndex < 0 && i === 0) ? 0 : -1;
+    const copy = b.parentElement.querySelector('.swatch__copy');
+    if (copy) copy.tabIndex = b.tabIndex; // uma só parada de Tab a mais: a do tom ativo
   });
 
   ribbon.querySelectorAll('.detail, .hint').forEach((n) => n.remove());
@@ -325,7 +356,7 @@ function renderRibbon() {
     ribbon.append(p);
   } else {
     const panel = detailPanel(items[selIndex], selIndex, items.length);
-    if (narrow()) buttons[selIndex].after(panel); else ribbon.append(panel);
+    if (narrow()) buttons[selIndex].parentElement.after(panel); else ribbon.append(panel);
   }
   if (focusedKey) ribbon.querySelector(`.swatch[data-key="${CSS.escape(focusedKey)}"]`)?.focus({ preventScroll: true });
 }

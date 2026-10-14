@@ -102,6 +102,7 @@ export const T = {
     txtOn: 'Texto sobre a superfície',
     border: 'Borda',
     copy: 'Copiar',
+    copyLevelAria: (title, hex) => `Copiar o código do ${title.toLowerCase()}, ${hex}`,
     copyAria: (what, hex) => `Copiar ${what.toLowerCase()} ${hex}`,
     copied: (hex) => `Copiado: ${hex}`,
     copyFail: 'Não deu para copiar. Selecione o código e use Ctrl+C.',

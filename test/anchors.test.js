@@ -82,3 +82,21 @@ test('as cores de apoio não alteram o Aplica sem extensões (golden/oráculo se
   const b = decompose({ base: '#336699', options: {} });
   assert.deepEqual(a, b);
 });
+
+test('sem nível informado, a cor de apoio vai para o lado certo da principal', async () => {
+  const { supportLevel } = await import('../src/index.js');
+  for (const preset of ['aplica', 'standard']) {
+    const p = PRESETS[preset];
+    // principal clara (amarelo) com apoio de claridade média: mais escura que a principal, então depois do 100
+    assert.ok(supportLevel('#ffd23f', '#808080', p) > 100);
+    assert.ok(supportLevel('#ffd23f', '#6b7280', p) > 100);
+    // principal escura com apoio mais claro: antes do 100
+    assert.ok(supportLevel('#1e3a8a', '#4a6ac0', p) < 100);
+    // fora da faixa de conflito, continua o nível de claridade mais próxima
+    assert.equal(supportLevel('#ffd23f', '#fcfbf2', p), suggestBrandLevel('#fcfbf2', preset));
+    for (const [m, s] of [['#ffd23f', '#808080'], ['#1e3a8a', '#4a6ac0'], ['#e7398a', '#fff0f6'], ['#e7398a', '#7a1d4a']]) {
+      const r = decompose({ base: m, preset, options: { anchors: [{ hex: s }] } });
+      assert.equal(r.warnings.length, 0, `${m} + ${s} (${preset})`);
+    }
+  }
+});

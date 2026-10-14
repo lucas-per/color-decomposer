@@ -54,11 +54,12 @@ Os níveis aparecem só como resultado ("Fica no nível 20").
 - O rótulo "Cor da marca" vira "Cor principal" enquanto houver cor de apoio.
 - Os sliders têm a alternância "Cor a ajustar".
 - O tom de apoio ganha a etiqueta "Cor de apoio" na faixa. Avisos: níveis iguais e cor que não cabe na ordem de claridade.
-- Observação: a cor principal fica sempre no nível 100. Uma cor de apoio de claridade média, perto da principal, cai do lado "errado" (por exemplo, #FFD23F com um cinza médio) e gera o aviso de ordem.
+- Nível da cor de apoio (`supportLevel`): o de claridade mais próxima, mas sempre do lado certo da principal. Mais clara que a principal fica antes do 100; mais escura, depois. Assim o aviso de ordem e o de níveis iguais só aparecem com nível informado à mão ou sem espaço do lado certo.
+- Botão de copiar o hex em cada tom das abas Paleta e Neutros (ícone no canto do tom; aparece com foco, seleção ou mouse; sempre visível no celular).
 
 ## Decisões abertas
 
-- **Dois níveis iguais:** o desenho usa só a cor principal e avisa. Alternativa: empurrar a de apoio para o nível vizinho.
+- **Dois níveis iguais:** decidido. Com nível automático, a cor de apoio vai para o lado certo da principal; só com nível informado o motor avisa e usa só a principal.
 - **Interpolação:** monotônica suave. Alternativa: linhas retas entre âncoras.
 - **Nome do campo:** hoje é "Cor da marca". Com papéis, os nomes viram "Cor principal" e "Cor de apoio". O nome da cor única fica para decidir (ver `docs/backlog.md`).
 

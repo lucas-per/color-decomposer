@@ -5,6 +5,20 @@ import { suggestBrandLevel } from './separation.js';
 
 const MIN_CHROMA = 0.004; // abaixo disso o matiz não tem significado (cinzas)
 
+/**
+ * Nível de uma cor de apoio quando a pessoa não informa um: o de claridade mais próxima, mas sempre do lado certo da
+ * cor principal. Uma cor de apoio mais clara que a principal fica antes do `brandLevel`; uma mais escura, depois.
+ * Sem espaço desse lado (a principal já está na ponta), vale o nível mais próximo e o motor avisa.
+ */
+export function supportLevel(mainHex, supportHex, preset, brandLevel = preset.palette.baseLevel) {
+  const { levels } = preset.palette;
+  const nearest = suggestBrandLevel(supportHex, preset);
+  const mainL = hexToOklch(mainHex).L, supL = hexToOklch(supportHex).L;
+  if (supL > mainL + 1e-9 && nearest >= brandLevel) return [...levels].reverse().find((l) => l < brandLevel) ?? nearest;
+  if (supL < mainL - 1e-9 && nearest <= brandLevel) return levels.find((l) => l > brandLevel) ?? nearest;
+  return nearest;
+}
+
 // Valida as âncoras extras. `level` é opcional: sem ele, vale o nível de claridade mais próxima (o mesmo do Auto).
 export function parseAnchors(raw) {
   if (raw == null) return [];
@@ -18,7 +32,7 @@ export function parseAnchors(raw) {
 /**
  * Junta a cor principal (no brandLevel) e as de apoio numa lista ordenada por nível.
  * Devolve null quando só sobra uma âncora (a escala é a de sempre). Problemas viram avisos e a âncora é ignorada:
- *   - 'same-level': dois níveis iguais (vale a primeira);
+ *   - 'same-level': dois níveis iguais (vale a primeira; só acontece com nível informado ou sem espaço do lado certo);
  *   - 'order': a claridade subiria com o nível (a cor de apoio não cabe nessa posição).
  */
 export function resolveAnchors(baseHex, brandLevel, extras, preset, warnings = []) {
@@ -28,7 +42,7 @@ export function resolveAnchors(baseHex, brandLevel, extras, preset, warnings = [
   const list = [main];
 
   for (const e of extras) {
-    const level = e.level ?? suggestBrandLevel(e.hex, preset);
+    const level = e.level ?? supportLevel(baseHex, e.hex, preset, brandLevel);
     if (!levels.includes(level)) throw new Error(`anchors: o nível ${level} não existe (${levels.join(', ')}).`);
     const taken = list.find((a) => a.level === level);
     if (taken) {
