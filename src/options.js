@@ -1,5 +1,6 @@
 // Leitura e validação das opções. Os nomes seguem os do Aplica sempre que existem lá.
 import { normalizeHex } from './color.js';
+import { parseAnchors } from './anchors.js';
 
 export const WCAG_AA = 4.5;
 export const WCAG_AAA = 7.0;
@@ -82,6 +83,7 @@ export function resolveOptions(raw = {}, preset, warnings = []) {
     brandLevel,
     behaviorFollowsBrand: o.behaviorFollowsBrand === true,
     vividChroma: o.vividChroma === true,
+    anchors: parseAnchors(o.anchors),
     generateTxt: o.generateTxt === true,
     txtBaseColorLevel: Number.isFinite(txtBase) ? txtBase : 140
   };

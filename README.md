@@ -55,6 +55,7 @@ Os nomes seguem os do Aplica sempre que existem lá.
 |---|---|---|
 | `preset` | **`aplica`**, `standard` ou um objeto | Escala de níveis (ver abaixo). |
 | `vividChroma` | `false` (padrão) ou `true` | Extensão: dá intensidade aos tons de uma cor com pouca intensidade (até 85% do máximo do matiz, de forma gradual: a intensidade sobe a partir da cor base e chega ao máximo no nível 100). A cor base fica exata e nenhum tom perde intensidade. Ver `docs/cor-viva-design.md`. |
+| `anchors` | lista de `{ hex, level? }` (padrão: vazia) | Extensão: cores de apoio. A cor principal fica no `brandLevel`; cada cor de apoio fica no nível informado ou, sem `level`, no de claridade mais próxima. Entre as cores, a claridade segue uma curva suave que nunca sobe e o matiz e a intensidade se interpolam. Dois níveis iguais ou uma cor que faria a claridade subir viram aviso (`type: 'anchors'`, `reason: 'same-level'` ou `'order'`) e a cor é ignorada. Neutros e estados de comportamento vêm da cor principal; a Cor viva não se aplica com cor de apoio. Ver `docs/duas-cores-design.md`. |
 | `txtOnStrategy` | **`high-contrast`**, `brand-tint`, `custom-tint` | Cor do texto sobre cada tom. |
 | `txtOnCustomTint` | `{ light?, dark?, fallback }` | Obrigatório no `custom-tint`. `fallback`: `brand-tint` ou `high-contrast`. |
 | `colorContrastDecompose` | **`startDark`**, `startLight` | Ponta da escala que o texto tenta primeiro. |

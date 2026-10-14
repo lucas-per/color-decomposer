@@ -3,6 +3,7 @@ import { normalizeHex, hexToOklch, colorAtLightness } from './color.js';
 import { resolvePreset } from './presets.js';
 import { resolveOptions } from './options.js';
 import { paletteLightness, neutralsLightness, mirrorSum, behaviorLevels, vividWeight } from './scale.js';
+import { resolveAnchors, buildCurves } from './anchors.js';
 import { txtOnFor, checkPair, resolveFailures } from './txton.js';
 
 const MODES = ['light', 'dark'];
@@ -23,7 +24,7 @@ function borderBySteps(levels, surface, steps) {
   return border;
 }
 
-function generatePalette(cfg, preset, baseHex, mode, warnings) {
+function generatePalette(cfg, preset, baseHex, mode, warnings, curves) {
   const { levels } = preset.palette;
   const anchor = cfg.brandLevel;
   const base = hexToOklch(baseHex);
@@ -33,6 +34,13 @@ function generatePalette(cfg, preset, baseHex, mode, warnings) {
   const surface = {};
   for (const level of levels) {
     const source = mode === 'dark' ? sum - level : level;
+    if (curves) { // com cor de apoio: curva por todas as âncoras (cada uma exata no seu nível)
+      const hit = curves.anchors.list.find((a) => a.level === source);
+      if (hit) { surface[level] = hit.hex; continue; }
+      const { C, h } = curves.colorAt(source);
+      surface[level] = colorAtLightness({ C, h }, curves.lightness(source), chroma);
+      continue;
+    }
     if (source === anchor) { surface[level] = baseHex; continue; } // a marca, sem ida e volta por OKLCh
     surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma, cfg.vividChroma ? vividWeight(source, anchor, preset) : 0);
   }
@@ -176,8 +184,10 @@ export function decompose({ base, name = 'color', preset = 'aplica', options = {
   const overrides = normalizeNeutralsOverride(neutralsOverride, p);
 
   const result = { name, base: baseHex, preset: p.id, light: null, dark: null, warnings };
+  const anchors = resolveAnchors(baseHex, cfg.brandLevel, cfg.anchors, p, warnings);
+  const curves = anchors && { anchors, ...buildCurves(anchors) };
   for (const mode of MODES) {
-    const palette = generatePalette(cfg, p, baseHex, mode, warnings);
+    const palette = generatePalette(cfg, p, baseHex, mode, warnings, curves);
     const neutrals = generateNeutrals(cfg, p, baseHex, mode, overrides[mode], warnings);
     result[mode] = { palette, neutrals, behavior: generateBehavior(cfg, p, palette, mode) };
   }

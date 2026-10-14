@@ -1,0 +1,84 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { decompose, suggestBrandLevel, hexToOklch, PRESETS } from '../src/index.js';
+
+const MAIN = '#ffd23f', SUPPORT = '#fcfbf2';
+const run = (extra = {}, preset = 'aplica') =>
+  decompose({ base: MAIN, preset, options: { anchors: [{ hex: SUPPORT }], ...extra } });
+const L = (hex) => hexToOklch(hex).L;
+const sorted = (surface) => Object.keys(surface).map(Number).sort((a, b) => a - b);
+
+test('sem anchors, ou com anchors vazio, o resultado é o de sempre', () => {
+  const a = decompose({ base: MAIN });
+  assert.deepEqual(decompose({ base: MAIN, options: { anchors: [] } }).light, a.light);
+  assert.deepEqual(decompose({ base: MAIN, options: { anchors: [] } }).dark, a.dark);
+});
+
+test('a cor principal fica no 100 e a de apoio no nível de claridade mais próxima, ambas exatas', () => {
+  for (const preset of ['aplica', 'standard']) {
+    const r = run({}, preset);
+    const lvl = suggestBrandLevel(SUPPORT, preset);
+    assert.equal(r.warnings.length, 0);
+    assert.equal(r.light.palette.surface[100], MAIN);
+    assert.equal(r.light.palette.surface[lvl], SUPPORT);
+    const { levels } = PRESETS[preset].palette;
+    const sum = levels[0] + levels.at(-1);
+    assert.equal(r.dark.palette.surface[sum - 100], MAIN);
+    assert.equal(r.dark.palette.surface[sum - lvl], SUPPORT);
+  }
+});
+
+test('a claridade nunca sobe quando o nível sobe, e todos os tons são hex válidos', () => {
+  for (const [main, support] of [[MAIN, SUPPORT], ['#1e3a8a', '#dbeafe'], ['#e7398a', '#fff0f6']]) {
+    for (const preset of ['aplica', 'standard']) {
+      const r = decompose({ base: main, preset, options: { anchors: [{ hex: support }] } });
+      const s = r.light.palette.surface;
+      const lv = sorted(s);
+      for (let i = 1; i < lv.length; i++) assert.ok(L(s[lv[i]]) <= L(s[lv[i - 1]]) + 0.004, `${main} ${preset} nível ${lv[i]}`);
+      for (const v of Object.values(r.dark.palette.surface)) assert.match(v, /^#[0-9a-f]{6}$/);
+    }
+  }
+});
+
+test('o matiz dos tons escuros vem da cor principal, não do off-white', () => {
+  const r = run();
+  const dark = hexToOklch(r.light.palette.surface[160]);
+  const olive = hexToOklch(SUPPORT).h; // 101°: o matiz que os tons escuros herdariam se só o off-white mandasse
+  assert.ok(dark.h < olive - 15, `matiz ${dark.h} deveria ficar bem longe de ${olive}`);
+  assert.ok(dark.C > 0.05, 'tons escuros mantêm intensidade, não ficam oliva apagados');
+});
+
+test('dois níveis iguais avisam e usam só a cor principal', () => {
+  const r = decompose({ base: MAIN, options: { anchors: [{ hex: '#ffd240', level: 100 }] } });
+  assert.equal(r.warnings.length, 1);
+  assert.equal(r.warnings[0].type, 'anchors');
+  assert.equal(r.warnings[0].reason, 'same-level');
+  assert.deepEqual(r.light.palette, decompose({ base: MAIN }).light.palette);
+});
+
+test('cor de apoio que faria a claridade subir é ignorada com aviso', () => {
+  // O nível 20 vai para o off-white, mas informar um nível mais escuro que a principal numa cor clara quebra a ordem.
+  const r = decompose({ base: SUPPORT, options: { anchors: [{ hex: '#ffffff', level: 150 }] } });
+  assert.ok(r.warnings.some((w) => w.type === 'anchors' && w.reason === 'order'));
+  assert.deepEqual(r.light.palette, decompose({ base: SUPPORT }).light.palette);
+});
+
+test('o nível pode ser informado à mão e precisa existir', () => {
+  const r = decompose({ base: '#1e3a8a', options: { anchors: [{ hex: '#dbeafe', level: 40 }] } });
+  assert.equal(r.light.palette.surface[40], '#dbeafe');
+  assert.throws(() => decompose({ base: MAIN, options: { anchors: [{ hex: SUPPORT, level: 45 }] } }), /não existe/);
+  assert.throws(() => decompose({ base: MAIN, options: { anchors: 'x' } }), /lista/);
+});
+
+test('neutros e estados de comportamento vêm da cor principal', () => {
+  const a = decompose({ base: MAIN });
+  const b = run();
+  assert.deepEqual(b.light.neutrals.surface, a.light.neutrals.surface);
+  assert.deepEqual(b.light.behavior.level, a.light.behavior.level);
+});
+
+test('as cores de apoio não alteram o Aplica sem extensões (golden/oráculo seguem passando)', () => {
+  const a = decompose({ base: '#336699' });
+  const b = decompose({ base: '#336699', options: {} });
+  assert.deepEqual(a, b);
+});

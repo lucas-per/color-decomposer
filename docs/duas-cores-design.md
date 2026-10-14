@@ -1,6 +1,6 @@
 # Duas cores: desenho
 
-Status: aguardando revisão. Data: 2026-10-14.
+Status: aprovado. Entrega 1 (motor e testes) feita; entrega 2 (interface) pendente. Data: 2026-10-14.
 
 ## Objetivo
 
@@ -19,13 +19,14 @@ Os níveis aparecem só como resultado ("Fica no nível 20").
 
 ## Motor
 
-- Uma opção nova, em lista de âncoras: `anchors: [{ hex, level }]`. O `brandLevel` atual equivale a uma âncora e continua existindo.
+- Uma opção nova, `anchors: [{ hex, level? }]`, com as cores de apoio. A cor principal (`base`) fica no `brandLevel`; sem `level`, a de apoio vai para o nível de claridade mais próxima. Implementado em `src/anchors.js`.
 - Com uma âncora, o resultado é idêntico ao de hoje. Sem nenhuma extensão, o Aplica continua igual ao oficial (3.23.4).
 - Com duas âncoras, a claridade em função do nível deixa de ser uma reta: passa pelos pontos das duas cores, pelo tom mais claro e pelo mais escuro. Interpolação monotônica (sem subir e descer no meio), para não ter quebras.
 - Entre as âncoras, a intensidade e o matiz se interpolam (o matiz pelo caminho mais curto no círculo).
 - Depois da última âncora, vale a regra atual a partir dela (matiz e intensidade da última âncora, claridade até o mais escuro). Antes da primeira, o mesmo, em direção ao mais claro.
 - Modo escuro: os níveis das âncoras são espelhados.
-- Dois níveis iguais: o motor devolve um aviso e usa só a cor principal.
+- Dois níveis iguais: o motor devolve um aviso (`type: 'anchors'`, `reason: 'same-level'`) e usa só a cor principal. Se a de apoio fizesse a claridade subir, o aviso é `reason: 'order'` e ela é ignorada.
+- Cor viva: não se aplica com cor de apoio.
 - Neutros e estados de comportamento: vêm da cor principal (o estado normal fica sempre no 100).
 
 ## Interface
