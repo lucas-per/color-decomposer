@@ -154,3 +154,12 @@ test('Padrão: um azul muito claro continua azul quase branco, sem virar ciano',
   // o Aplica segue o corte por canal dele
   assert.ok(hexToOklch(decompose({ base: '#057abd', preset: 'aplica' }).light.palette.surface[10]).h < 215);
 });
+
+test('Padrão: o neutro 10 é mais claro e menos saturado que o do Aplica', () => {
+  for (const color of ['#057abd', '#e7398a', '#7c3aed']) {
+    const std = hexToOklch(decompose({ base: color, preset: 'standard' }).light.neutrals.surface[10]);
+    const apl = hexToOklch(decompose({ base: color, preset: 'aplica' }).light.neutrals.surface[5]);
+    assert.ok(std.L > apl.L - 0.001 && std.L > 0.985, `${color}: claridade ${std.L}`);
+    assert.ok(std.C < 0.008, `${color}: intensidade ${std.C}`);
+  }
+});

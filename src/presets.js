@@ -70,7 +70,7 @@ export const STANDARD = Object.freeze({
     levels: range(10, 130, 15),
     referenceLevel: 100,
     chroma: 0.1,
-    lightest: 0.98,
+    lightest: 0.99, // o Aplica usa 0,98: o neutro 10 fica mais perto do branco e, no sRGB, com menos cor
     darkest: 0.21 // o Aplica usa 0,05; igual ao último tom da paleta do Padrão
   },
   behavior: { lightest: 20, active: 60, normal: 100, action: 120, pressed: 140, darkest: 180 },
