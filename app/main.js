@@ -133,15 +133,19 @@ const rangeText = (r) => `${r.from} a ${r.to}`;
 
 /* ---------- Avisos ---------- */
 
+const WARN_ICON = '<svg class="notice__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 22 20.5H2L12 3.5Z"/><path d="M12 10v4.5"/><path d="M12 17.6v.01"/></svg>';
+
 function renderAlerts() {
   const host = $('alerts');
+  const similarHost = $('similar-host');
   host.replaceChildren();
-  const add = (html, role) => {
+  similarHost.replaceChildren();
+  const add = (html, role, into = host) => {
     const d = document.createElement('div');
     d.className = 'notice';
     if (role) d.setAttribute('role', role);
     d.innerHTML = html;
-    host.append(d);
+    into.append(d);
     return d;
   };
   if (lastError) {
@@ -175,7 +179,7 @@ function renderAlerts() {
   if (sep && sep.runs.length) {
     const sides = new Set(sep.runs.map((r) => r.side));
     const side = sides.size === 1 ? [...sides][0] : 'both';
-    add(`<p>${T.similar.msg(sep.runs.map(rangeText), side, can)}</p>`, 'status').classList.add('notice--compact');
+    add(`${WARN_ICON}<p>${T.similar.msg(sep.runs.map(rangeText), side, can)}</p>`, 'status', similarHost).classList.add('notice--warn');
   }
   const ov = ws.filter((x) => x.type === 'override');
   if (ov.length) add(`<p>${T.warnings.override(ov.length)}</p>`, 'status').classList.add('notice--compact');
@@ -515,6 +519,7 @@ function renderMini() {
   });
   mini.replaceChildren(strip, flags);
   const shown = (lvl) => (state.mode === 'dark' ? levels[0] + levels.at(-1) - lvl : lvl);
+  $('tune-status').classList.toggle('is-warn', sep.tones.length > 0);
   $('tune-status').textContent = sep.tones.length
     ? T.tune.some(sep.tones.length, sep.total, can ? shown(suggested) : null)
     : (anchored() ? T.tune.okAt(brandLevelIn(state.mode)) : T.tune.ok);
