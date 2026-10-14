@@ -1,13 +1,32 @@
 // Cor do texto sobre cada superfície (txtOn) e verificação de contraste.
-import { contrastRatio, hexToOklch } from './color.js';
+import { contrastRatio, hexToOklch, hexToRgb, rgbToHex, deltaEOk } from './color.js';
 import { WCAG_AA, WCAG_AAA, PURE_INK } from './options.js';
+
+// Cor de texto do preset (`ink`) em uma superfície. Se nenhuma das duas passa no contraste, devolve a cor mais próxima
+// delas que passa: o `dark` escurecido ou o `light` clareado o mínimo necessário, o que ficar mais perto do original.
+export function softInk(ink, surface, required, keys = ['dark', 'light']) {
+  for (const k of keys) if (contrastRatio(surface, ink[k]) >= required) return ink[k];
+  let best = null;
+  for (const k of keys) {
+    const from = hexToRgb(ink[k]);
+    const to = hexToRgb(k === 'dark' ? PURE_INK.dark : PURE_INK.light);
+    const at = (t) => rgbToHex(...['r', 'g', 'b'].map((c) => Math.round(from[c] + (to[c] - from[c]) * t)));
+    if (contrastRatio(surface, at(1)) < required) continue; // nem o extremo puro alcança
+    let lo = 0, hi = 1; // contraste cresce com t: busca o menor t que passa (já com os 8 bits arredondados)
+    for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (contrastRatio(surface, at(mid)) >= required) hi = mid; else lo = mid; }
+    const hex = at(hi);
+    const dist = deltaEOk(ink[k], hex);
+    if (!best || dist < best.dist) best = { hex, dist };
+  }
+  return best ? best.hex : null;
+}
 
 export function highContrast(cfg, surface, required = cfg.requiredRatio) {
   const ink = cfg.ink ?? PURE_INK;
   if (ink !== PURE_INK) {
-    const keys = cfg.order === 'startLight' ? ['light', 'dark'] : ['dark', 'light'];
-    for (const k of keys) if (contrastRatio(surface, ink[k]) >= required) return ink[k];
-    // nenhum dos dois passa: cai para preto ou branco puros, como no Aplica
+    const soft = softInk(ink, surface, required, cfg.order === 'startLight' ? ['light', 'dark'] : ['dark', 'light']);
+    if (soft) return soft;
+    // nem o preto nem o branco puros alcançam: segue como no Aplica
   }
   if (cfg.order === 'startLight') {
     return contrastRatio(surface, '#ffffff') >= required ? '#ffffff' : '#000000';

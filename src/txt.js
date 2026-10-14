@@ -2,6 +2,7 @@
 // um único valor por escala, escolhido na própria escala e validado contra o fundo ambiente.
 import { contrastRatio } from './color.js';
 import { PURE_INK } from './options.js';
+import { softInk } from './txton.js';
 
 const prefersDarkText = (bg, ink = PURE_INK) => contrastRatio(bg, ink.dark) >= contrastRatio(bg, ink.light);
 
@@ -25,8 +26,10 @@ export function resolveTxt(surface, background, { requiredRatio, txtBaseColorLev
     const candidate = surface[level];
     if (candidate && contrastRatio(background, candidate) >= requiredRatio) return candidate;
   }
-  const preferred = prefersDarkText(background, ink) ? ink.dark : ink.light;
-  if (ink === PURE_INK || contrastRatio(background, preferred) >= requiredRatio) return preferred;
+  if (ink !== PURE_INK) {
+    const soft = softInk(ink, background, requiredRatio, prefersDarkText(background, ink) ? ['dark', 'light'] : ['light', 'dark']);
+    if (soft) return soft;
+  }
   return prefersDarkText(background) ? PURE_INK.dark : PURE_INK.light;
 }
 

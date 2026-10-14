@@ -119,20 +119,29 @@ test('Padrão: o tom mais escuro não vira quase preto e mantém o matiz da cor'
   assert.ok(hexToOklch(decompose({ base: MAIN, preset: 'aplica' }).light.palette.surface[190]).L < 0.1);
 });
 
-test('Padrão: o texto usa #242121 e #FDFDFD, e cai para preto ou branco só quando nenhum dos dois passa', async () => {
-  const { contrastRatio } = await import('../src/index.js');
-  for (const color of ['#ffd23f', '#e7398a', '#1e3a8a', '#22c55e', '#808080']) {
+test('Padrão: o texto usa #242121 e #FDFDFD e, quando nenhum passa, a cor mais próxima que passa no AA', async () => {
+  const { contrastRatio, deltaEOk } = await import('../src/index.js');
+  let adjusted = 0;
+  for (const color of ['#ffd23f', '#e7398a', '#1e3a8a', '#22c55e', '#808080', '#ef4444', '#7c3aed', '#6b7280']) {
     const r = decompose({ base: color, preset: 'standard' });
     for (const mode of ['light', 'dark']) {
       for (const group of ['palette', 'neutrals']) {
         const { surface, txtOn } = r[mode][group];
         for (const level of Object.keys(surface)) {
           assert.ok(contrastRatio(surface[level], txtOn[level]) >= 4.5, `${color} ${mode} ${group} ${level}`);
-          assert.ok(['#242121', '#fdfdfd', '#000000', '#ffffff'].includes(txtOn[level]));
+          if (!['#242121', '#fdfdfd'].includes(txtOn[level])) {
+            adjusted++;
+            const fromDark = deltaEOk('#242121', txtOn[level]), fromLight = deltaEOk('#fdfdfd', txtOn[level]);
+            assert.ok(Math.min(fromDark, fromLight) < 0.2, `${txtOn[level]} deveria ficar perto de #242121 ou #FDFDFD`);
+          }
         }
       }
     }
   }
+  assert.ok(adjusted > 0, 'o teste deveria exercitar o ajuste');
+  const { surface, txtOn } = decompose({ base: '#e7398a', preset: 'standard' }).light.palette;
+  assert.ok(contrastRatio(surface[100], '#242121') < 4.5 && contrastRatio(surface[100], '#fdfdfd') < 4.5, 'a marca rosa não passa com nenhuma das duas');
+  assert.ok(contrastRatio(surface[100], txtOn[100]) >= 4.5 && txtOn[100] !== '#000000');
   assert.ok(decompose({ base: '#ffd23f', preset: 'standard' }).light.palette.txtOn[20] === '#242121');
   assert.ok(decompose({ base: '#ffd23f', preset: 'aplica' }).light.palette.txtOn[10] === '#000000');
 });
