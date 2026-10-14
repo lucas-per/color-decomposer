@@ -66,3 +66,11 @@ export function behaviorLevels(preset, anchor) {
     (o) => anchor + ((o - baseLevel) * (last - anchor)) / (last - baseLevel));
   return Object.fromEntries(entries.map(([name]) => [name, out[name]]));
 }
+
+// Peso da cor viva (0 a 1) em um nível: a intensidade sobe aos poucos a partir da cor base e chega ao máximo
+// no nível padrão da paleta (100 no Aplica). `source` e `anchor` estão no modo claro (no escuro, use o nível espelhado).
+export function vividWeight(source, anchor, preset) {
+  const ref = preset.palette.baseLevel;
+  if (anchor === ref) return 1;
+  return Math.min(1, Math.abs(source - anchor) / Math.abs(ref - anchor));
+}

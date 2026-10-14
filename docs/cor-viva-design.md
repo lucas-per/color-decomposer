@@ -20,7 +20,8 @@ A Cor viva **não** é oferecida quando a paleta já funciona sem o Auto. A ferr
 ## Motor
 
 - Opção `vividChroma` (booleano, padrão `false`). É uma extensão, como `brandLevel` e `behaviorFollowsBrand`. Sem ela, o resultado é idêntico ao atual, e os testes de paridade com o Aplica não mudam.
-- Para cada tom, exceto o da cor base: `C = max(C_atual, 0,85 × maxChroma(L, matiz))`. O modo só aumenta a intensidade, nunca reduz.
+- Para cada tom, exceto o da cor base: o alvo é `0,85 × maxChroma(L, matiz)`. A intensidade vai da atual até o alvo na proporção de um peso `w`, e o modo só aumenta a intensidade, nunca reduz.
+- **Peso gradual (revisado após o primeiro teste):** `w = |nível − nível da cor base| / |100 − nível da cor base|`, limitado a 1. Ou seja, a intensidade sobe aos poucos a partir da cor base e chega ao máximo no nível 100. Com o off-white no 20, o 40 fica com 25% do alvo, o 60 com 50%, o 80 com 75% e o 100 com 100%. Se a cor base já está no 100, todos os tons têm peso 1.
 - O tom da cor base continua exato no nível dele.
 - Dentro do sRGB: `maxChroma` já respeita o gamut.
 - Cor sem matiz (cinza puro): a opção não faz nada.
@@ -50,7 +51,7 @@ Seguem a skill `ux-microcopy`: pt-BR, "você", sentence case.
 
 ## Decisões abertas
 
-- **Limite de "mudaria de forma visível":** calibrado em 0,05 (ΔE OK, maior diferença entre um tom normal e o mesmo tom com cor viva). Âmbar, rosa e azul dão 0; verde dá cerca de 0,03; bege, off-white e cinzas azulados dão 0,09 ou mais.
+- **Limite de "mudaria de forma visível":** calibrado em 0,045 (ΔE OK, maior diferença entre um tom normal e o mesmo tom com cor viva, já com o peso gradual). Âmbar, rosa e azul dão 0; verde dá cerca de 0,037; bege dá cerca de 0,052; off-white, creme e cinzas azulados dão 0,06 ou mais.
 - **Percentual de 85%:** valor inicial, ajustar depois de ver o resultado.
 
 ## Decisões fechadas
@@ -61,4 +62,4 @@ Seguem a skill `ux-microcopy`: pt-BR, "você", sentence case.
 ## Fora do escopo
 
 - Intensidade ajustável pela pessoa: ver `docs/backlog.md`.
-- Transição suave a partir da cor base: descartada.
+- Salto direto da cor base para a intensidade máxima: era a regra inicial (abordagem A). Foi trocada pelo peso gradual depois de ver o resultado, porque o 40 ficava intenso demais.

@@ -77,8 +77,13 @@ export const VIVID_MIN_CHROMA = 0.004;
 // `base` é o OKLCh da cor de origem; `chromaFactor` multiplica o croma antes da redução.
 export function colorAtLightness(base, targetL, chromaFactor = 1, vivid = false) {
   let C = base.C * chromaFactor;
-  // Cor viva (extensão): sobe a intensidade até a fração do máximo possível para a claridade e o matiz. Nunca reduz.
-  if (vivid && base.C >= VIVID_MIN_CHROMA) C = Math.max(C, Math.min(VIVID_RATIO * chromaFactor, 1) * maxChroma(targetL, base.h));
+  // Cor viva (extensão): sobe a intensidade até a fração do máximo possível para a claridade e o matiz, de forma gradual. Nunca reduz.
+  // `vivid` é o peso de 0 a 1 (true vale 1): a intensidade vai da atual até o alvo na proporção do peso.
+  const w = vivid === true ? 1 : Number(vivid) || 0;
+  if (w > 0 && base.C >= VIVID_MIN_CHROMA) {
+    const target = Math.min(VIVID_RATIO * chromaFactor, 1) * maxChroma(targetL, base.h);
+    if (target > C) C += (target - C) * w;
+  }
   if (targetL > 0.9 || targetL < 0.1) C *= 1 - Math.abs(targetL - 0.5) * 0.5;
   const { r, g, b } = oklchToRgb(targetL, C, base.h);
   return rgbToHex(r, g, b);

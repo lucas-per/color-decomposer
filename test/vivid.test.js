@@ -32,12 +32,22 @@ for (const preset of ['aplica', 'standard']) {
   });
 }
 
-test('cor viva: o croma dos tons chega perto da fração do máximo do matiz', () => {
+test('cor viva: o croma dos tons chega perto da fração do máximo do matiz no nível 100', () => {
   const vivid = palette('#FCFBF2', 'standard', { vividChroma: true, brandLevel: 20 });
   const { h } = hexToOklch('#FCFBF2');
-  const tone = hexToOklch(vivid[100]);
-  const limit = maxChroma(tone.L, h) * VIVID_RATIO;
-  assert.ok(Math.abs(tone.C - limit) < 0.01, `${tone.C} x ${limit}`);
+  for (const level of [100, 120, 140]) {
+    const tone = hexToOklch(vivid[level]);
+    const limit = maxChroma(tone.L, h) * VIVID_RATIO;
+    assert.ok(Math.abs(tone.C - limit) < 0.01, `nível ${level}: ${tone.C} x ${limit}`);
+  }
+});
+
+test('cor viva: a intensidade sobe aos poucos a partir da cor base até o nível 100', () => {
+  const vivid = palette('#FCFBF2', 'standard', { vividChroma: true, brandLevel: 20 });
+  const { h } = hexToOklch('#FCFBF2');
+  const share = (level) => { const t = hexToOklch(vivid[level]); return t.C / (maxChroma(t.L, h) * VIVID_RATIO); };
+  assert.ok(share(40) < share(60) && share(60) < share(80) && share(80) < share(100));
+  assert.ok(share(40) < 0.5, `o 40 já está em ${share(40)} do máximo`);
 });
 
 test('cor viva: cinza puro não muda', () => {

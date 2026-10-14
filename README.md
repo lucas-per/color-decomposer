@@ -54,7 +54,7 @@ Os nomes seguem os do Aplica sempre que existem lá.
 | Opção | Valores (padrão em negrito) | Efeito |
 |---|---|---|
 | `preset` | **`aplica`**, `standard` ou um objeto | Escala de níveis (ver abaixo). |
-| `vividChroma` | `false` (padrão) ou `true` | Extensão: dá intensidade aos tons de uma cor com pouca intensidade (85% do máximo do matiz). A cor base fica exata e nenhum tom perde intensidade. Ver `docs/cor-viva-design.md`. |
+| `vividChroma` | `false` (padrão) ou `true` | Extensão: dá intensidade aos tons de uma cor com pouca intensidade (até 85% do máximo do matiz, de forma gradual: a intensidade sobe a partir da cor base e chega ao máximo no nível 100). A cor base fica exata e nenhum tom perde intensidade. Ver `docs/cor-viva-design.md`. |
 | `txtOnStrategy` | **`high-contrast`**, `brand-tint`, `custom-tint` | Cor do texto sobre cada tom. |
 | `txtOnCustomTint` | `{ light?, dark?, fallback }` | Obrigatório no `custom-tint`. `fallback`: `brand-tint` ou `high-contrast`. |
 | `colorContrastDecompose` | **`startDark`**, `startLight` | Ponta da escala que o texto tenta primeiro. |
@@ -142,7 +142,7 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 - **Ajuste da cor da marca:** sliders de claridade, intensidade e matiz em OKLCh (a mesma base da decomposição), sincronizados com o campo hexadecimal. Se a intensidade não cabe no sRGB, o croma é reduzido e a interface avisa.
 - **Tons parecidos:** `checkToneSeparation` mede a distância perceptual (ΔE em OKLab) entre tons vizinhos, por 10 níveis, e avisa quando fica abaixo de `SEPARATION_LIMIT` (0,016). O limite foi calibrado com cores conhecidas e com o olho de quem usa (amarelos, âmbar, limões e ciano ficam abaixo; laranja, rosa, azul e verde, acima). Não é um padrão de mercado.
 - **Auto:** botão ao lado da barra de tons. Fica desabilitado quando a gradação está ok e habilitado quando há tons parecidos. Ao clicar, coloca a cor da marca no nível de claridade mais próxima (`suggestBrandLevel`) e refaz a paleta. O nível fica na URL (`lvl`) e volta ao 100 quando você muda a cor ou o sistema de níveis. Na aba Comportamento, depois do Auto, aparece o toggle "Usar sua cor no estado normal" (`normal=brand` na URL).
-- **Cor viva:** botão ao lado do Auto, com estado pressionado. Começa desabilitado. Habilita depois do Auto, quando a cor tem pouca intensidade e a opção muda a paleta de forma visível (`vividGain` acima de `VIVID_VISIBLE_LIMIT`, 0,05). Ligada, os tons ganham intensidade e a cor digitada fica exata no nível dela. Fica na URL (`vivid=1`) e desliga quando você muda a cor ou o sistema de níveis.
+- **Cor viva:** botão ao lado do Auto, com estado pressionado. Começa desabilitado. Habilita depois do Auto, quando a cor tem pouca intensidade e a opção muda a paleta de forma visível (`vividGain` acima de `VIVID_VISIBLE_LIMIT`, 0,045). Ligada, os tons ganham intensidade e a cor digitada fica exata no nível dela. Fica na URL (`vivid=1`) e desliga quando você muda a cor ou o sistema de níveis.
 - O estado fica na URL: dá para compartilhar um ajuste.
 - Exporta tokens do Aplica (JSON), variáveis CSS, JSON completo e variables do Figma (para o plugin).
 - Verificada com axe (WCAG 2.2 AA) em claro, escuro e mobile.

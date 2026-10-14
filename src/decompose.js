@@ -2,7 +2,7 @@
 import { normalizeHex, hexToOklch, colorAtLightness } from './color.js';
 import { resolvePreset } from './presets.js';
 import { resolveOptions } from './options.js';
-import { paletteLightness, neutralsLightness, mirrorSum, behaviorLevels } from './scale.js';
+import { paletteLightness, neutralsLightness, mirrorSum, behaviorLevels, vividWeight } from './scale.js';
 import { txtOnFor, checkPair, resolveFailures } from './txton.js';
 
 const MODES = ['light', 'dark'];
@@ -34,7 +34,7 @@ function generatePalette(cfg, preset, baseHex, mode, warnings) {
   for (const level of levels) {
     const source = mode === 'dark' ? sum - level : level;
     if (source === anchor) { surface[level] = baseHex; continue; } // a marca, sem ida e volta por OKLCh
-    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma, cfg.vividChroma);
+    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma, cfg.vividChroma ? vividWeight(source, anchor, preset) : 0);
   }
 
   const border = borderBySteps(levels, surface, cfg.borderSteps.palette);
