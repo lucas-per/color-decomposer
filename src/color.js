@@ -85,10 +85,10 @@ export function colorAtLightness(base, targetL, chromaFactor = 1, vivid = false,
     if (target > C) C += (target - C) * w;
   }
   if (gamutMap !== 'full' && (targetL > 0.9 || targetL < 0.1)) C *= 1 - Math.abs(targetL - 0.5) * 0.5; // contra o corte nas pontas; com mapeamento total não precisa
-  // Extensão (presets com `gamutMap`): nos tons escuros, reduz a intensidade até caber no sRGB, mantendo o matiz. Sem ela,
-  // o corte por canal do Aplica desloca o matiz (um amarelo escuro vira vermelho). Os tons claros seguem o Aplica.
-  // Com `'full'` (cor de apoio), todos os tons são mapeados, para os passos entre as cores ficarem iguais.
-  if (gamutMap === 'full' || (gamutMap && targetL < 0.5)) C = Math.min(C, maxChroma(targetL, base.h));
+  // Extensão (presets com `gamutMap`): reduz a intensidade até caber no sRGB, mantendo o matiz. Sem ela, o corte por canal
+  // do Aplica desloca o matiz (um amarelo escuro vira vermelho, um azul muito claro vira ciano). `'full'` mapeia todos os
+  // tons; `'dark'`, só os escuros.
+  if (gamutMap === 'full' || (gamutMap === 'dark' && targetL < 0.5)) C = Math.min(C, maxChroma(targetL, base.h));
   const { r, g, b } = oklchToRgb(targetL, C, base.h);
   return rgbToHex(r, g, b);
 }

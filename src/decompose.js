@@ -42,7 +42,7 @@ function generatePalette(cfg, preset, baseHex, mode, warnings, curves) {
       continue;
     }
     if (source === anchor) { surface[level] = baseHex; continue; } // a marca, sem ida e volta por OKLCh
-    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma, cfg.vividChroma ? vividWeight(source, anchor, preset) : 0, preset.gamutMap === true);
+    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma, cfg.vividChroma ? vividWeight(source, anchor, preset) : 0, preset.gamutMap ?? false);
   }
 
   const border = borderBySteps(levels, surface, cfg.borderSteps.palette);
@@ -75,7 +75,7 @@ function generateNeutrals(cfg, preset, baseHex, mode, override, warnings) {
   const surface = {};
   for (const level of levels) {
     const source = mode === 'dark' ? sum - level : level;
-    surface[level] = colorAtLightness(origin, neutralsLightness(source, preset, reference), chroma, 0, preset.gamutMap === true);
+    surface[level] = colorAtLightness(origin, neutralsLightness(source, preset, reference), chroma, 0, preset.gamutMap ?? false);
   }
   // Como no Aplica, a borda vem das superfícies geradas: sobrescrever a superfície não muda a borda.
   const border = borderBySteps(levels, surface, cfg.borderSteps.neutrals);

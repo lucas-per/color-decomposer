@@ -145,3 +145,12 @@ test('Padrão: o texto usa #242121 e #FDFDFD e, quando nenhum passa, a cor mais 
   assert.ok(decompose({ base: '#ffd23f', preset: 'standard' }).light.palette.txtOn[20] === '#242121');
   assert.ok(decompose({ base: '#ffd23f', preset: 'aplica' }).light.palette.txtOn[10] === '#000000');
 });
+
+test('Padrão: um azul muito claro continua azul quase branco, sem virar ciano', () => {
+  const s = decompose({ base: '#057abd', preset: 'standard' }).light.palette.surface;
+  const first = hexToOklch(s[20]);
+  assert.ok(first.L > 0.97, `claridade ${first.L}`);
+  assert.ok(Math.abs(first.h - hexToOklch('#057abd').h) < 8, `matiz ${first.h}`);
+  // o Aplica segue o corte por canal dele
+  assert.ok(hexToOklch(decompose({ base: '#057abd', preset: 'aplica' }).light.palette.surface[10]).h < 215);
+});

@@ -11,8 +11,11 @@ test('ΔE OK: igual é 0 e preto contra branco é 1', () => {
 });
 
 test('marcas muito claras ficam com tons colados, nos dois presets', () => {
+  // No Padrão, os tons claros mantêm o matiz em vez do corte por canal do Aplica (que deixava amarelo e ciano coladas
+  // por causa de um recorte, não por falta de diferença real); por isso só as cores realmente próximas entram.
+  const cases = { aplica: ['#ffd23f', '#d4e157', '#22d3ee', '#fde68a'], standard: ['#d4e157', '#fde68a'] };
   for (const preset of ['aplica', 'standard']) {
-    for (const color of ['#ffd23f', '#d4e157', '#22d3ee', '#fde68a']) {
+    for (const color of cases[preset]) {
       const r = checkToneSeparation(paletteOf(color, preset), color);
       assert.ok(r.runs.length > 0, `${color} (${preset}) devia ter tons colados`);
     }

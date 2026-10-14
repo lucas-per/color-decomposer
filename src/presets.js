@@ -58,7 +58,7 @@ export const STANDARD = Object.freeze({
   // "Preto" e "branco" do texto no Padrão (usados também no cálculo de contraste). Se nenhum dos dois alcança o contraste
   // pedido numa superfície, o texto usa a cor mais próxima deles que alcança (escurecida ou clareada o mínimo).
   ink: Object.freeze({ dark: '#242121', light: '#fdfdfd' }),
-  gamutMap: true, // tons escuros mantêm o matiz quando não cabem no sRGB (o Aplica corta por canal e o matiz foge)
+  gamutMap: 'full', // tons que não cabem no sRGB perdem intensidade e mantêm o matiz (o Aplica corta por canal e o matiz foge)
   palette: {
     levels: range(20, 180, 20),
     baseLevel: 100,
