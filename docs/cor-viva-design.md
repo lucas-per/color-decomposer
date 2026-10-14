@@ -1,6 +1,6 @@
 # Cor viva: desenho
 
-Status: aguardando revisão. Data: 2026-10-14.
+Status: aprovado e implementado. Data: 2026-10-14.
 
 ## Objetivo
 
@@ -50,9 +50,13 @@ Seguem a skill `ux-microcopy`: pt-BR, "você", sentence case.
 
 ## Decisões abertas
 
-- **Limite de "mudaria de forma visível":** calibrar com exemplos, como foi feito com o limite de tons parecidos.
+- **Limite de "mudaria de forma visível":** calibrado em 0,05 (ΔE OK, maior diferença entre um tom normal e o mesmo tom com cor viva). Âmbar, rosa e azul dão 0; verde dá cerca de 0,03; bege, off-white e cinzas azulados dão 0,09 ou mais.
 - **Percentual de 85%:** valor inicial, ajustar depois de ver o resultado.
-- **Descoberta do botão:** quando a Cor viva fica habilitada, o status pode sugerir o próximo passo. Proposta de texto: `Tons bem separados. Sua cor está no nível 20. Quer mais cor nos tons? Use a Cor viva.` Ainda não aprovado.
+
+## Decisões fechadas
+
+- **Descoberta do botão (aprovada):** quando a Cor viva fica habilitada e desligada, o status diz `Tons bem separados. Sua cor está no nível 20. Quer mais cor nos tons? Use a Cor viva.`
+- **Regra de habilitação (aprovada):** só depois do Auto e só quando a opção muda a paleta de forma visível.
 
 ## Fora do escopo
 

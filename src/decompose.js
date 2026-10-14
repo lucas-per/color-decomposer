@@ -34,7 +34,7 @@ function generatePalette(cfg, preset, baseHex, mode, warnings) {
   for (const level of levels) {
     const source = mode === 'dark' ? sum - level : level;
     if (source === anchor) { surface[level] = baseHex; continue; } // a marca, sem ida e volta por OKLCh
-    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma);
+    surface[level] = colorAtLightness(base, paletteLightness(source, base.L, preset, anchor), chroma, cfg.vividChroma);
   }
 
   const border = borderBySteps(levels, surface, cfg.borderSteps.palette);

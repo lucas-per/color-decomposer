@@ -14,6 +14,7 @@ export const DEFAULTS = {
   borderNeutrals: '',
   lvl: '',
   normal: 'mid',
+  vivid: false,
   failure: 'accept-aa',
   customLight: '',
   customDark: '',

@@ -38,7 +38,10 @@
         <div class="tune" id="tune">
           <div class="tune__check">
             <div class="mini" id="mini" aria-hidden="true"></div>
-            <button type="button" class="btn" id="auto" disabled aria-describedby="tune-status" aria-label="Auto: colocar a cor no melhor nível da paleta">Auto</button>
+            <div class="tune__actions">
+              <button type="button" class="btn" id="auto" disabled aria-describedby="tune-status" aria-label="Auto: colocar a cor no melhor nível da paleta">Auto</button>
+              <button type="button" class="btn" id="vivid" disabled aria-pressed="false" aria-describedby="tune-status" aria-label="Cor viva: dar mais intensidade aos tons">Cor viva</button>
+            </div>
           </div>
           <p class="field__help tune__status" id="tune-status" tabindex="-1"></p>
           <details class="tune__more" id="tune-more" open>

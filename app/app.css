@@ -142,6 +142,9 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after, det
 .tune__check { display: grid; grid-template-columns: 1fr auto; gap: .5rem; align-items: center; margin-top: .25rem; }
 .tune__check { align-items: start; }
 .tune__check .btn { height: 1.5rem; padding: 0 .75rem; font-size: .8125rem; }
+.tune__actions { display: flex; gap: .5rem; }
+.btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn[aria-pressed="true"]:hover { background: var(--fg); }
 .btn:disabled { opacity: .45; cursor: default; }
 .btn:disabled:hover { background: transparent; }
 .tune__status:focus { outline: none; }

@@ -4,5 +4,7 @@ export { generateGrayscale } from './grayscale.js';
 export { auditResult } from './audit.js';
 export { PRESETS, APLICA, STANDARD, resolvePreset } from './presets.js';
 export { contrastRatio, hexToOklch, normalizeHex, deltaEOk, oklchToHex, maxChroma } from './color.js';
+export { vividGain, VIVID_VISIBLE_LIMIT } from './vivid.js';
+export { VIVID_RATIO } from './color.js';
 export { checkToneSeparation, suggestBrandLevel, SEPARATION_LIMIT } from './separation.js';
 export { toCssVariables, toPlainJson, toFigmaVariables, toFigmaJson, FIGMA_FORMAT } from './export.js';

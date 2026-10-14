@@ -69,10 +69,16 @@ export function hexToOklch(hex) {
   return rgbToOklch(r, g, b);
 }
 
+// Fração do croma máximo (dentro do sRGB) que a cor viva dá a cada tom, e croma mínimo para a cor ter matiz.
+export const VIVID_RATIO = 0.85;
+export const VIVID_MIN_CHROMA = 0.004;
+
 // Cor com a luminosidade pedida, mantendo matiz e croma (com redução nos extremos).
 // `base` é o OKLCh da cor de origem; `chromaFactor` multiplica o croma antes da redução.
-export function colorAtLightness(base, targetL, chromaFactor = 1) {
+export function colorAtLightness(base, targetL, chromaFactor = 1, vivid = false) {
   let C = base.C * chromaFactor;
+  // Cor viva (extensão): sobe a intensidade até a fração do máximo possível para a claridade e o matiz. Nunca reduz.
+  if (vivid && base.C >= VIVID_MIN_CHROMA) C = Math.max(C, Math.min(VIVID_RATIO * chromaFactor, 1) * maxChroma(targetL, base.h));
   if (targetL > 0.9 || targetL < 0.1) C *= 1 - Math.abs(targetL - 0.5) * 0.5;
   const { r, g, b } = oklchToRgb(targetL, C, base.h);
   return rgbToHex(r, g, b);

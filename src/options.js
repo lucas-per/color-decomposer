@@ -81,6 +81,7 @@ export function resolveOptions(raw = {}, preset, warnings = []) {
     borderSteps: { palette: paletteSteps, neutrals: neutralsSteps, grayscale: grayscaleSteps },
     brandLevel,
     behaviorFollowsBrand: o.behaviorFollowsBrand === true,
+    vividChroma: o.vividChroma === true,
     generateTxt: o.generateTxt === true,
     txtBaseColorLevel: Number.isFinite(txtBase) ? txtBase : 140
   };

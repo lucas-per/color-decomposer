@@ -1,5 +1,5 @@
 import {
-  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, suggestBrandLevel, oklchToHex, hexToOklch
+  decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, suggestBrandLevel, oklchToHex, hexToOklch, vividGain, VIVID_VISIBLE_LIMIT
 } from '../src/index.js';
 import { T, fmt } from './strings.js';
 import { chromeTokens, applyChrome } from './chrome.js';
@@ -31,6 +31,7 @@ function buildOptions(s) {
   if (s.lvl !== '' && PRESETS[s.preset].palette.levels.includes(Number(s.lvl))) {
     o.brandLevel = Number(s.lvl);
     o.behaviorFollowsBrand = s.normal === 'brand';
+    if (s.vivid) o.vividChroma = true;
   }
   if (s.overlap !== '') o.overlap = { level: Number(s.overlap) };
   if (s.strategy === 'custom-tint') {
@@ -111,7 +112,7 @@ function brandLevelIn(mode) {
   return mode === 'dark' ? levels[0] + levels.at(-1) - brandLevel() : brandLevel();
 }
 const anchored = () => brandLevel() !== current.preset.palette.baseLevel;
-const resetLevel = () => { state.lvl = ''; state.normal = 'mid'; };
+const resetLevel = () => { state.lvl = ''; state.normal = 'mid'; state.vivid = false; };
 
 /* ---------- Tons parecidos ---------- */
 
@@ -127,6 +128,12 @@ function autoState() {
   const suggested = suggestBrandLevel(state.color, state.preset);
   const can = !!sep && sep.runs.length > 0 && suggested !== brandLevel();
   return { sep, suggested, can };
+}
+
+// Cor viva: só vale a pena depois do Auto e quando a opção muda a paleta de forma visível. Ligada, continua disponível para desligar.
+function vividAvailable() {
+  if (!anchored()) return false;
+  return state.vivid || vividGain(state.color, state.preset, brandLevel()) >= VIVID_VISIBLE_LIMIT;
 }
 
 const rangeText = (r) => `${r.from} a ${r.to}`;
@@ -454,6 +461,7 @@ function bindControls() {
     update();
     $('tune-status').focus(); // o botão fica desabilitado: o foco vai para o resultado, que é lido em seguida
   });
+  $('vivid').addEventListener('click', () => { state.vivid = !state.vivid; update(); });
   for (const id of FIELD_SIMPLE) {
     $(id).addEventListener('change', (e) => {
       state[id] = e.target.value;
@@ -501,6 +509,9 @@ function renderMini() {
   const { sep, suggested, can } = autoState();
   if (!sep) return;
   $('auto').disabled = !can;
+  const vividOk = vividAvailable();
+  $('vivid').disabled = !vividOk;
+  $('vivid').setAttribute('aria-pressed', String(state.vivid));
   const surface = current.theme.colors[NAME][state.mode].palette.surface;
   const flagged = new Set(sep.tones);
   const mini = $('mini');
@@ -522,7 +533,9 @@ function renderMini() {
   $('tune-status').classList.toggle('is-warn', sep.tones.length > 0);
   $('tune-status').textContent = sep.tones.length
     ? T.tune.some(sep.tones.length, sep.total, can ? shown(suggested) : null)
-    : (anchored() ? T.tune.okAt(brandLevelIn(state.mode)) : T.tune.ok);
+    : state.vivid ? T.tune.vividOn
+    : anchored() ? (vividOk ? T.tune.okVivid(brandLevelIn(state.mode)) : T.tune.okAt(brandLevelIn(state.mode)))
+    : T.tune.ok;
 }
 
 function syncControls() {
@@ -662,6 +675,7 @@ function update() {
   }
   if (!current) { current = build(DEFAULTS); }
   if (state.lvl !== '' && !PRESETS[state.preset].palette.levels.includes(Number(state.lvl))) resetLevel();
+  if (state.vivid && !anchored()) state.vivid = false; // a cor viva só existe depois do Auto
   if (state.lvl === '') state.normal = 'mid';
   syncControls();
   render();

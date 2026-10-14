@@ -60,6 +60,8 @@ export const T = {
     ok: 'Tons bem separados.',
     okAt: (level) => `Tons bem separados. Sua cor está no nível ${level}.`,
     some: (n, total, level) => `${n} de ${total} tons quase iguais ao tom ao lado, marcados abaixo da barra.${level ? ` O Auto coloca sua cor no nível ${level} e refaz a paleta.` : ''}`,
+    okVivid: (level) => `Tons bem separados. Sua cor está no nível ${level}. Quer mais cor nos tons? Use a Cor viva.`,
+    vividOn: 'Cor viva aplicada.',
     auto: 'Auto',
     autoAria: 'Auto: colocar a cor no melhor nível da paleta'
   },
