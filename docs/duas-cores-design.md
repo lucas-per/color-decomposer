@@ -55,7 +55,7 @@ Os níveis aparecem só como resultado ("Fica no nível 20").
 - Os sliders têm a alternância "Cor a ajustar".
 - O tom de apoio ganha a etiqueta "Cor de apoio" na faixa. Avisos: níveis iguais e cor que não cabe na ordem de claridade.
 - Nível da cor de apoio (`supportLevel`): o de claridade mais próxima, mas sempre do lado certo da principal. Mais clara que a principal fica antes do 100; mais escura, depois. Assim o aviso de ordem e o de níveis iguais só aparecem com nível informado à mão ou sem espaço do lado certo.
-- Preset Padrão: o último tom da paleta e o último neutro têm claridade 0,21 (o Aplica usa 0,05) e o primeiro neutro 0,99 (Aplica: 0,98); o texto usa #242121 e #FDFDFD no lugar de preto e branco e os tons mantêm o matiz quando não cabem no sRGB (`gamutMap: 'full'`: o azul muito claro não vira ciano). O Aplica não muda.
+- Preset Padrão: o último tom da paleta e o último neutro têm claridade 0,21 (o Aplica usa 0,05) e o primeiro neutro 0,995 (Aplica: 0,98); o texto usa #242121 e #FDFDFD no lugar de preto e branco e os tons mantêm o matiz quando não cabem no sRGB (`gamutMap: 'full'`: o azul muito claro não vira ciano). O Aplica não muda.
 - Botão de copiar o hex em cada tom das abas Paleta e Neutros (ícone no canto do tom; aparece com foco, seleção ou mouse; sempre visível no celular).
 
 ## Decisões abertas
