@@ -86,7 +86,7 @@ function itemsFor(tab, mode) {
   };
   if (tab === 'behavior') {
     return Object.entries(c[mode].behavior.level).map(([name, level]) => {
-      const nice = T.behaviorNames[name] ?? name;
+      const nice = T.behaviorNamesByPreset[preset.id]?.[name] ?? T.behaviorNames[name] ?? name;
       return mk(name, level, T.detail.behavior(nice, level), T.detail.behavior(nice, level),
         pair(c[mode].behavior, name), pair(c[other].behavior, name), { name: nice, base: anchored() ? (state.normal === 'brand' && name === 'normal') : level === preset.palette.baseLevel });
     });

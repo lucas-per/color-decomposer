@@ -48,6 +48,8 @@ export const T = {
     grayscale: 'Cinzas, em ordem numérica'
   },
   behaviorNames: { lightest: 'Início da escala', active: 'Ativo', normal: 'Normal', action: 'Ação', pressed: 'Pressionado', darkest: 'Fim da escala' },
+  // Rótulos que o preset Padrão troca (a chave do motor continua a do Aplica)
+  behaviorNamesByPreset: { standard: { action: 'Hover' } },
   yourColor: 'Sua cor',
   mainColor: 'Cor principal',
   supportColor: 'Cor de apoio',

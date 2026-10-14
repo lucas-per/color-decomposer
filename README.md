@@ -8,7 +8,7 @@ A partir de **uma cor**, o projeto gera:
 |---|---|---|
 | Paleta | 19 (10 a 190) | Tons da cor. O nível 100 é a cor informada, sem alteração. |
 | Neutros | 15 (5 a 140) | Cinzas com um toque da cor, para fundos, textos e bordas. |
-| Behavior | 6 | Apelidos de níveis da paleta para estados: `lightest` 10, `active` 50, `normal` 100, `action` 120, `pressed` 140, `darkest` 170. |
+| Behavior | 6 | Apelidos de níveis da paleta para estados: `lightest` 10, `active` 50, `normal` 100, `action` 120, `pressed` 140, `darkest` 170. Na interface do preset Padrão, `action` aparece como "Hover". |
 | Cinzas | 15 | Escala fixa do Aplica, igual para qualquer cor. |
 
 Cada nível tem `surface` (fundo), `txtOn` (texto sobre o fundo) e `border`, em **light** e **dark**.
