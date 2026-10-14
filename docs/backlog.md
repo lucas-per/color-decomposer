@@ -9,6 +9,13 @@ Ideias avaliadas e adiadas. Cada item diz de onde veio e por que ficou de fora.
 - **Por que adiou:** acrescenta uma peça de interface que ninguém pediu ainda. Primeiro ver como a regra fixa se comporta.
 - **Quando retomar:** se o percentual fixo não servir para vários matizes ou projetos.
 
+## Preset com escala por contraste (estilo Spectrum)
+
+- **O que é:** um terceiro preset em que o índice de cada tom corresponde a um contraste fixo com o branco, igual em todas as famílias (no Spectrum: 1,06 no 100 até cerca de 19,5 no 1600, 16 tons). Quem usa o número já sabe o contraste.
+- **De onde veio:** análise do Spectrum (Adobe) em 2026-10-14. Os valores estão em `spectrum-paleta-de-cores.xlsx`.
+- **Por que adiou:** é uma entrega grande (a claridade de cada tom passa a vir do contraste, não de uma rampa linear) e não é urgente.
+- **Quando retomar:** quando houver necessidade de garantir contraste por índice.
+
 ## Adiados por decisão
 
 - **Requisitos do UaiUI para o preset Padrão:** ficaram para depois. Hoje o preset segue as mesmas regras do Aplica em escala menor.
@@ -22,6 +29,9 @@ Ideias avaliadas e adiadas. Cada item diz de onde veio e por que ficou de fora.
 - **Aviso de cor com pouca intensidade:** avisar que a paleta vai sair acinzentada quando a cor base é quase neutra. Depende do desenho da cor viva.
 - **Aviso de contraste no estilo de warning:** aplicar o visual âmbar também ao aviso de contraste do texto ("Ver quais"), para os avisos ficarem consistentes.
 - **Nome "Cor base" no lugar de "Cor da marca":** a cor pode ser de fundo de site ou de botão, não só de marca. Precisa passar pelos textos da interface.
+
+- **Deriva de matiz nos tons escuros:** no Spectrum, o amarelo vai de 100° nos tons claros para 72° nos escuros (dourado, não oliva); o laranja vai de 81° para 42°; o azul quase não muda. Poderia resolver o oliva de uma cor só, sem segunda cor.
+- **Intensidade da Cor viva por matiz:** o Spectrum usa de 95% a 100% da intensidade máxima em amarelo e laranja. Os 85% atuais da Cor viva são mais conservadores.
 
 ## Pendências técnicas
 
