@@ -28,13 +28,24 @@
       <h2 class="rail__title" id="rail-title">Ajustes</h2>
 
       <div class="field">
-        <label class="field__label" for="hex">Cor da marca</label>
+        <label class="field__label" for="hex" id="hex-label">Cor da marca</label>
         <div class="hexrow">
           <input class="color" type="color" id="picker" aria-label="Escolher a cor no seletor">
           <input class="input input--hex" type="text" id="hex" inputmode="text" autocomplete="off" spellcheck="false" maxlength="7" aria-describedby="hex-help hex-error" placeholder="#E7398A">
         </div>
         <p class="field__help" id="hex-help">Use 6 letras ou números, como #E7398A.</p>
         <p class="field__error" id="hex-error" hidden></p>
+        <button type="button" class="btn support__add" id="support-add" aria-describedby="support-add-help">Adicionar cor de apoio</button>
+        <p class="field__help" id="support-add-help">Uma segunda cor, como um fundo claro, que também faz parte da paleta.</p>
+        <div class="field support" id="support-field" hidden>
+          <label class="field__label" for="support-hex">Cor de apoio</label>
+          <div class="hexrow hexrow--remove">
+            <input class="color" type="color" id="support-picker" aria-label="Escolher a cor de apoio no seletor">
+            <input class="input input--hex" type="text" id="support-hex" inputmode="text" autocomplete="off" spellcheck="false" maxlength="7" aria-describedby="support-status" placeholder="#FCFBF2">
+            <button type="button" class="btn btn--quiet" id="support-remove" aria-label="Remover a cor de apoio">Remover</button>
+          </div>
+          <p class="field__help" id="support-status"></p>
+        </div>
         <div class="tune" id="tune">
           <div class="tune__check">
             <div class="mini" id="mini" aria-hidden="true"></div>
@@ -46,6 +57,13 @@
           <p class="field__help tune__status" id="tune-status" tabindex="-1"></p>
           <details class="tune__more" id="tune-more" open>
             <summary class="tune__summary">Ajustar a cor</summary>
+            <div class="tune__edit" id="edit-wrap" hidden>
+              <span class="tune__label" id="edit-label">Cor a ajustar</span>
+              <div class="segmented" role="radiogroup" aria-labelledby="edit-label" id="edit">
+                <label class="segmented__item"><input type="radio" name="edit" value="main"><span>Cor principal</span></label>
+                <label class="segmented__item"><input type="radio" name="edit" value="support"><span>Cor de apoio</span></label>
+              </div>
+            </div>
             <div class="tune__row">
               <label class="tune__label" for="tuneL">Claridade <output id="tuneL-out" for="tuneL"></output></label>
               <input class="range range--tune" type="range" id="tuneL" min="0" max="100" step="1">

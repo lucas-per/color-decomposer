@@ -15,7 +15,8 @@ const up = (hex) => hex.toUpperCase();
 let state = parseHash(location.hash, systemMode());
 let current = null; // último resultado válido: { theme, preset }
 let lastError = '';
-let tune = null; // { L, C, h, hex }: valores dos controles de claridade, intensidade e matiz
+let tune = null;
+let editing = 'main'; // qual cor os controles de claridade, intensidade e matiz editam: 'main' ou 'support' // { L, C, h, hex }: valores dos controles de claridade, intensidade e matiz
 
 /* ---------- Motor ---------- */
 
@@ -28,7 +29,9 @@ function buildOptions(s) {
     onAccessibilityFailure: s.failure,
     generateTxt: s.txt
   };
-  if (s.lvl !== '' && PRESETS[s.preset].palette.levels.includes(Number(s.lvl))) {
+  if (s.support) {
+    o.anchors = [{ hex: s.support }]; // com cor de apoio, a principal fica no nível padrão e o Auto e a Cor viva ficam de fora
+  } else if (s.lvl !== '' && PRESETS[s.preset].palette.levels.includes(Number(s.lvl))) {
     o.brandLevel = Number(s.lvl);
     o.behaviorFollowsBrand = s.normal === 'brand';
     if (s.vivid) o.vividChroma = true;
@@ -95,8 +98,10 @@ function itemsFor(tab, mode) {
   const levels = preset[tab].levels;
   return levels.map((l) => {
     const base = tab === 'palette' && l === brandLevelIn(mode);
-    const label = base ? `${T.detail.level(l)}, ${T.yourColor.toLowerCase()}` : T.detail.level(l);
-    return mk(l, l, label, T.detail.level(l), pair(c[mode][tab], l), pair(c[other][tab], l), { base });
+    const isSupport = tab === 'palette' && hasSupport() && !supportIssue() && l === supportLevelIn(mode);
+    const tag = base ? (hasSupport() ? T.mainColor : T.yourColor) : isSupport ? T.supportColor : '';
+    const label = tag ? `${T.detail.level(l)}, ${tag.toLowerCase()}` : T.detail.level(l);
+    return mk(l, l, label, T.detail.level(l), pair(c[mode][tab], l), pair(c[other][tab], l), { base: base || isSupport, tag, support: isSupport });
   });
 }
 
@@ -114,6 +119,16 @@ function brandLevelIn(mode) {
 const anchored = () => brandLevel() !== current.preset.palette.baseLevel;
 const resetLevel = () => { state.lvl = ''; state.normal = 'mid'; state.vivid = false; };
 
+/* ---------- Cor de apoio ---------- */
+
+const hasSupport = () => state.support !== '';
+const mirror = (level) => { const { levels } = current.preset.palette; return levels[0] + levels.at(-1) - level; };
+const supportLevelLight = () => suggestBrandLevel(state.support, state.preset);
+const supportLevelIn = (mode) => (mode === 'dark' ? mirror(supportLevelLight()) : supportLevelLight());
+// Problema da cor de apoio que o motor devolveu: { reason: 'same-level' | 'order' } ou null.
+const supportIssue = () => (hasSupport() && current?.theme.warnings.find((w) => w.type === 'anchors')) || null;
+const colorOf = (which) => (which === 'support' && hasSupport() ? state.support : state.color);
+
 /* ---------- Tons parecidos ---------- */
 
 function separation() {
@@ -126,13 +141,13 @@ function separation() {
 function autoState() {
   const sep = separation();
   const suggested = suggestBrandLevel(state.color, state.preset);
-  const can = !!sep && sep.runs.length > 0 && suggested !== brandLevel();
+  const can = !hasSupport() && !!sep && sep.runs.length > 0 && suggested !== brandLevel();
   return { sep, suggested, can };
 }
 
 // Cor viva: só vale a pena depois do Auto e quando a opção muda a paleta de forma visível. Ligada, continua disponível para desligar.
 function vividAvailable() {
-  if (!anchored()) return false;
+  if (hasSupport() || !anchored()) return false;
   return state.vivid || vividGain(state.color, state.preset, brandLevel()) >= VIVID_VISIBLE_LIMIT;
 }
 
@@ -186,7 +201,13 @@ function renderAlerts() {
   if (sep && sep.runs.length) {
     const sides = new Set(sep.runs.map((r) => r.side));
     const side = sides.size === 1 ? [...sides][0] : 'both';
-    add(`${WARN_ICON}<p>${T.similar.msg(sep.runs.map(rangeText), side, can)}</p>`, 'status', similarHost).classList.add('notice--warn');
+    add(`${WARN_ICON}<p>${T.similar.msg(sep.runs.map(rangeText), side, can, hasSupport())}</p>`, 'status', similarHost).classList.add('notice--warn');
+  }
+  const issue = supportIssue();
+  if (issue) {
+    const level = state.mode === 'dark' ? mirror(issue.level) : issue.level;
+    const text = issue.reason === 'same-level' ? T.support.warnSame(level) : T.support.warnOrder(level);
+    add(`${WARN_ICON}<p>${text}</p>`, 'status', similarHost).classList.add('notice--warn');
   }
   const ov = ws.filter((x) => x.type === 'override');
   if (ov.length) add(`<p>${T.warnings.override(ov.length)}</p>`, 'status').classList.add('notice--compact');
@@ -244,7 +265,7 @@ function swatchHtml(it, tab) {
   const inner = flagEl + (tab === 'behavior'
     ? `<span class="swatch__num">${it.num}</span><span class="swatch__stack"><span class="swatch__aa" aria-hidden="true">Aa</span><span class="swatch__name">${esc(it.name)}</span></span>`
     : `<span class="swatch__num">${it.num}</span><span class="swatch__aa" aria-hidden="true">Aa</span>`);
-  const tag = it.base ? `<span class="swatch__tag">${T.yourColor}</span>` : '';
+  const tag = it.base ? `<span class="swatch__tag">${esc(it.tag || T.yourColor)}</span>` : '';
   return `${inner}<span class="swatch__meta" aria-hidden="true">${tag}<span class="swatch__hex">${up(it.a.s)}</span><br>${fmt(it.ratio)} para 1</span>`;
 }
 
@@ -261,7 +282,7 @@ function renderRibbon() {
   const host = $('ribbon-host');
   const tab = state.tab;
   const items = itemsFor(tab, state.mode);
-  const sig = `${tab}|${state.preset}|${items.map((i) => `${i.key}:${i.num}${i.base ? '*' : ''}`).join(',')}|${narrow()}`;
+  const sig = `${tab}|${state.preset}|${items.map((i) => `${i.key}:${i.num}${i.base ? '*' : ''}${i.tag ?? ''}`).join(',')}|${narrow()}`;
   const focusedKey = document.activeElement?.closest?.('.swatch')?.dataset.key;
 
   let ribbon = host.firstElementChild;
@@ -278,7 +299,7 @@ function renderRibbon() {
       ribbon.append(b);
       if (it.base && !narrow() && tab !== 'behavior') {
         const tagEl = document.createElement('span');
-        tagEl.className = 'ribbon__base'; tagEl.style.gridColumn = String(i + 1); tagEl.textContent = T.yourColor;
+        tagEl.className = 'ribbon__base'; tagEl.style.gridColumn = String(i + 1); tagEl.textContent = it.tag || T.yourColor;
         tagEl.setAttribute('aria-hidden', 'true');
         ribbon.append(tagEl);
       }
@@ -348,7 +369,7 @@ function detailPanel(it, index, count) {
   el.innerHTML = `
     <div class="detail__head">
       <h3 class="detail__title">${esc(it.title)}</h3>
-      ${it.base && state.tab !== 'behavior' ? `<span class="detail__note">${T.detail.baseNote}</span>` : ''}
+      ${it.base && state.tab !== 'behavior' ? `<span class="detail__note">${it.support ? T.support.note : T.detail.baseNote}</span>` : ''}
       <button type="button" class="btn btn--quiet" data-close>${T.detail.close}</button>
     </div>
     <div>
@@ -451,11 +472,42 @@ function bindControls() {
       tune = { ...tune, L: Number($('tuneL').value), C: Number($('tuneC').value), h: Number($('tuneH').value) };
       const r = oklchToHex(tune.L / 100, tune.C / 100, tune.h);
       tune.hex = r.hex;
-      state.color = r.hex; resetLevel();
-      $('hex').value = up(r.hex); setInvalid($('hex'), false);
+      if (editing === 'support' && hasSupport()) {
+        state.support = r.hex;
+        setInvalid($('support-hex'), false);
+      } else {
+        state.color = r.hex; resetLevel();
+        $('hex').value = up(r.hex); setInvalid($('hex'), false);
+      }
       update();
     });
   }
+  const setSupport = (hex) => { state.support = hex; update(); };
+  $('support-hex').addEventListener('input', () => {
+    const hex = toHex($('support-hex').value);
+    if (hex) { setInvalid($('support-hex'), false); $('support-picker').value = hex; setSupport(hex); }
+    else if ($('support-hex').value.trim().replace('#', '').length >= 6) setInvalid($('support-hex'), true);
+  });
+  $('support-hex').addEventListener('blur', () => setInvalid($('support-hex'), !toHex($('support-hex').value)));
+  $('support-picker').addEventListener('input', (e) => {
+    setInvalid($('support-hex'), false);
+    setSupport(e.target.value.toLowerCase());
+  });
+  $('support-add').addEventListener('click', () => {
+    // Ponto de partida: um tom bem claro da cor principal (ou um bem escuro, se ela já for clara).
+    const o = hexToOklch(state.color);
+    state.support = (o.L > 0.85 ? oklchToHex(0.3, 0.06, o.h) : oklchToHex(0.96, 0.03, o.h)).hex;
+    resetLevel();
+    update();
+    $('support-hex').focus();
+  });
+  $('support-remove').addEventListener('click', () => {
+    state.support = ''; editing = 'main';
+    update();
+    $('support-add').focus();
+    say(T.support.removed);
+  });
+  for (const r of document.querySelectorAll('input[name="edit"]')) r.addEventListener('change', () => { editing = r.value; update(); });
   $('auto').addEventListener('click', () => {
     state.lvl = String(suggestBrandLevel(state.color, state.preset));
     update();
@@ -485,9 +537,10 @@ function bindControls() {
 const decimal = (n) => n.toFixed(2).replace('.', ',');
 
 function syncTune() {
-  if (!tune || tune.hex !== state.color) {
-    const o = hexToOklch(state.color);
-    tune = { L: Math.round(o.L * 100), C: Math.min(40, Math.round(o.C * 100)), h: Math.round(o.h) % 360, hex: state.color };
+  const edited = colorOf(editing);
+  if (!tune || tune.hex !== edited) {
+    const o = hexToOklch(edited);
+    tune = { L: Math.round(o.L * 100), C: Math.min(40, Math.round(o.C * 100)), h: Math.round(o.h) % 360, hex: edited };
   }
   $('tuneL').value = tune.L; $('tuneC').value = tune.C; $('tuneH').value = tune.h;
   $('tuneL-out').textContent = `${tune.L}%`;
@@ -533,6 +586,7 @@ function renderMini() {
   $('tune-status').classList.toggle('is-warn', sep.tones.length > 0);
   $('tune-status').textContent = sep.tones.length
     ? T.tune.some(sep.tones.length, sep.total, can ? shown(suggested) : null)
+    : hasSupport() ? T.support.tuneOn
     : state.vivid ? T.tune.vividOn
     : anchored() ? (vividOk ? T.tune.okVivid(brandLevelIn(state.mode)) : T.tune.okAt(brandLevelIn(state.mode)))
     : T.tune.ok;
@@ -543,6 +597,22 @@ function syncControls() {
   $('hex').value = up(state.color);
   if (document.activeElement !== $('hex')) setInvalid($('hex'), false);
   $('picker').value = state.color;
+  if (!hasSupport()) editing = 'main';
+  const sup = hasSupport();
+  $('hex-label').textContent = sup ? T.mainColor : 'Cor da marca';
+  $('support-add').hidden = sup;
+  $('support-add-help').hidden = sup;
+  $('support-field').hidden = !sup;
+  $('edit-wrap').hidden = !sup;
+  document.querySelector(`input[name="edit"][value="${editing}"]`).checked = true;
+  if (sup) {
+    if (document.activeElement !== $('support-hex')) { $('support-hex').value = up(state.support); setInvalid($('support-hex'), false); }
+    $('support-picker').value = state.support;
+    const issue = supportIssue();
+    $('support-status').textContent = !issue ? T.support.atLevel(supportLevelIn(state.mode))
+      : issue.reason === 'same-level' ? T.support.sameLevel(state.mode === 'dark' ? mirror(issue.level) : issue.level)
+      : T.support.outOfOrder(state.mode === 'dark' ? mirror(issue.level) : issue.level);
+  }
   syncTune();
   for (const id of FIELD_SIMPLE) if (!['overlap', 'neutralsRef'].includes(id)) $(id).value = state[id];
   $('borderPalette').placeholder = String(preset.palette.step);
@@ -675,6 +745,7 @@ function update() {
   }
   if (!current) { current = build(DEFAULTS); }
   if (state.lvl !== '' && !PRESETS[state.preset].palette.levels.includes(Number(state.lvl))) resetLevel();
+  if (hasSupport() && state.lvl !== '') resetLevel();
   if (state.vivid && !anchored()) state.vivid = false; // a cor viva só existe depois do Auto
   if (state.lvl === '') state.normal = 'mid';
   syncControls();

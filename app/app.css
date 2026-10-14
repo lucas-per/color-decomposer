@@ -336,3 +336,9 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after, det
   .tab { flex: none; }
   .tab[aria-selected="true"]::after { bottom: 0; }
 }
+
+/* Cor de apoio */
+.support__add { justify-self: start; margin-top: .5rem; }
+.support { margin-top: .5rem; }
+.hexrow--remove { grid-template-columns: var(--control) 1fr auto; align-items: center; }
+.tune__edit { display: grid; gap: .25rem; margin-bottom: .5rem; }

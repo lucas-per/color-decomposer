@@ -1,6 +1,6 @@
 # Duas cores: desenho
 
-Status: aprovado. Entrega 1 (motor e testes) feita; entrega 2 (interface) pendente. Data: 2026-10-14.
+Status: aprovado. Entregas 1 (motor e testes) e 2 (interface) feitas. Data: 2026-10-14.
 
 ## Objetivo
 
@@ -47,6 +47,14 @@ Os níveis aparecem só como resultado ("Fica no nível 20").
 
 1. Motor e testes.
 2. Interface.
+
+## Como ficou
+
+- Botão "Adicionar cor de apoio" abaixo do campo principal. O ponto de partida é um tom bem claro da cor principal (ou bem escuro, se ela já for clara). O campo da cor de apoio tem seletor, hex e "Remover".
+- O rótulo "Cor da marca" vira "Cor principal" enquanto houver cor de apoio.
+- Os sliders têm a alternância "Cor a ajustar".
+- O tom de apoio ganha a etiqueta "Cor de apoio" na faixa. Avisos: níveis iguais e cor que não cabe na ordem de claridade.
+- Observação: a cor principal fica sempre no nível 100. Uma cor de apoio de claridade média, perto da principal, cai do lado "errado" (por exemplo, #FFD23F com um cinza médio) e gera o aviso de ordem.
 
 ## Decisões abertas
 

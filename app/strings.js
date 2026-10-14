@@ -49,6 +49,8 @@ export const T = {
   },
   behaviorNames: { lightest: 'Início da escala', active: 'Ativo', normal: 'Normal', action: 'Ação', pressed: 'Pressionado', darkest: 'Fim da escala' },
   yourColor: 'Sua cor',
+  mainColor: 'Cor principal',
+  supportColor: 'Cor de apoio',
   overlapOff: 'Desligado',
   resetDone: 'Ajustes voltaram ao padrão.',
   tune: {
@@ -72,11 +74,22 @@ export const T = {
   },
 
   similar: {
-    msg: (ranges, side, canAuto) => {
-      const tip = canAuto ? 'Use o Auto, ao lado da barra de tons, para refazer a paleta.' : side === 'lighter' ? 'Tente deixar a cor da marca menos clara.'
+    msg: (ranges, side, canAuto, hasSupport) => {
+      const tip = hasSupport ? 'Tente ajustar a cor de apoio ou a principal.' : canAuto ? 'Use o Auto, ao lado da barra de tons, para refazer a paleta.' : side === 'lighter' ? 'Tente deixar a cor da marca menos clara.'
         : side === 'darker' ? 'Tente deixar a cor da marca mais clara.' : 'Tente ajustar a claridade da cor da marca.';
       return `${ranges.length === 1 ? 'Os tons' : 'Os trechos'} ${ranges.join(' e ')} estão muito parecidos entre si. ${tip}`;
     }
+  },
+
+  support: {
+    atLevel: (level) => `Fica no nível ${level}.`,
+    sameLevel: (level) => `Cai no mesmo nível da cor principal (${level}).`,
+    outOfOrder: (level) => `Não cabe no nível ${level}.`,
+    tuneOn: 'Tons bem separados. Com a cor de apoio, o Auto e a Cor viva ficam desligados.',
+    warnSame: (level) => `As duas cores caem no mesmo nível (${level}). Escolha uma cor de apoio mais clara ou mais escura.`,
+    warnOrder: (level) => `A cor de apoio não cabe no nível ${level}, porque quebra a ordem de claridade da cor principal. Escolha uma cor de apoio mais clara ou mais escura.`,
+    note: 'Sua cor de apoio, sem alteração.',
+    removed: 'Cor de apoio removida.'
   },
 
   hexError: 'Esse código não funciona. Use 6 letras ou números, como #E7398A.',
