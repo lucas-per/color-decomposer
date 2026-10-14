@@ -55,12 +55,13 @@ export const APLICA = Object.freeze({
 export const STANDARD = Object.freeze({
   id: 'standard',
   label: 'Padrão (9 níveis)',
+  gamutMap: true, // tons escuros mantêm o matiz quando não cabem no sRGB (o Aplica corta por canal e o matiz foge)
   palette: {
     levels: range(20, 180, 20),
     baseLevel: 100,
     step: 20,
     lightest: 0.98,
-    darkest: 0.05
+    darkest: 0.18 // o Aplica usa 0,05; no Padrão o último tom não vira quase preto
   },
   neutrals: {
     levels: range(10, 130, 15),

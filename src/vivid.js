@@ -16,7 +16,7 @@ export function vividGain(baseHex, preset = 'aplica', anchor) {
   for (const level of p.palette.levels) {
     if (level === at) continue;
     const L = paletteLightness(level, base.L, p, at);
-    max = Math.max(max, deltaEOk(colorAtLightness(base, L), colorAtLightness(base, L, 1, vividWeight(level, at, p))));
+    max = Math.max(max, deltaEOk(colorAtLightness(base, L, 1, 0, p.gamutMap === true), colorAtLightness(base, L, 1, vividWeight(level, at, p), p.gamutMap === true)));
   }
   return max;
 }

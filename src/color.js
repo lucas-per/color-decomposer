@@ -75,7 +75,7 @@ export const VIVID_MIN_CHROMA = 0.004;
 
 // Cor com a luminosidade pedida, mantendo matiz e croma (com redução nos extremos).
 // `base` é o OKLCh da cor de origem; `chromaFactor` multiplica o croma antes da redução.
-export function colorAtLightness(base, targetL, chromaFactor = 1, vivid = false) {
+export function colorAtLightness(base, targetL, chromaFactor = 1, vivid = false, gamutMap = false) {
   let C = base.C * chromaFactor;
   // Cor viva (extensão): sobe a intensidade até a fração do máximo possível para a claridade e o matiz, de forma gradual. Nunca reduz.
   // `vivid` é o peso de 0 a 1 (true vale 1): a intensidade vai da atual até o alvo na proporção do peso.
@@ -84,7 +84,11 @@ export function colorAtLightness(base, targetL, chromaFactor = 1, vivid = false)
     const target = Math.min(VIVID_RATIO * chromaFactor, 1) * maxChroma(targetL, base.h);
     if (target > C) C += (target - C) * w;
   }
-  if (targetL > 0.9 || targetL < 0.1) C *= 1 - Math.abs(targetL - 0.5) * 0.5;
+  if (gamutMap !== 'full' && (targetL > 0.9 || targetL < 0.1)) C *= 1 - Math.abs(targetL - 0.5) * 0.5; // contra o corte nas pontas; com mapeamento total não precisa
+  // Extensão (presets com `gamutMap`): nos tons escuros, reduz a intensidade até caber no sRGB, mantendo o matiz. Sem ela,
+  // o corte por canal do Aplica desloca o matiz (um amarelo escuro vira vermelho). Os tons claros seguem o Aplica.
+  // Com `'full'` (cor de apoio), todos os tons são mapeados, para os passos entre as cores ficarem iguais.
+  if (gamutMap === 'full' || (gamutMap && targetL < 0.5)) C = Math.min(C, maxChroma(targetL, base.h));
   const { r, g, b } = oklchToRgb(targetL, C, base.h);
   return rgbToHex(r, g, b);
 }

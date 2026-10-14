@@ -43,8 +43,9 @@ test('a claridade nunca sobe quando o nível sobe, e todos os tons são hex vál
 test('o matiz dos tons escuros vem da cor principal, não do off-white', () => {
   const r = run();
   const dark = hexToOklch(r.light.palette.surface[160]);
-  const olive = hexToOklch(SUPPORT).h; // 101°: o matiz que os tons escuros herdariam se só o off-white mandasse
-  assert.ok(dark.h < olive - 15, `matiz ${dark.h} deveria ficar bem longe de ${olive}`);
+  const main = hexToOklch(MAIN).h; // 91°
+  assert.ok(Math.abs(dark.h - main) < 3, `matiz ${dark.h} deveria ficar perto de ${main}`);
+  assert.ok(Math.abs(dark.h - hexToOklch(SUPPORT).h) > 5, 'não herda o matiz do off-white (101°)');
   assert.ok(dark.C > 0.05, 'tons escuros mantêm intensidade, não ficam oliva apagados');
 });
 
@@ -99,4 +100,21 @@ test('sem nível informado, a cor de apoio vai para o lado certo da principal', 
       assert.equal(r.warnings.length, 0, `${m} + ${s} (${preset})`);
     }
   }
+});
+
+test('entre a cor de apoio e a principal, os passos de claridade e cor são iguais', async () => {
+  const { deltaEOk } = await import('../src/index.js');
+  const s = run({}, 'standard').light.palette.surface;
+  const steps = [20, 40, 60, 80].map((l) => deltaEOk(s[l], s[l + 20]));
+  const min = Math.min(...steps), max = Math.max(...steps);
+  assert.ok(max / min < 1.1, `passos ${steps.map((x) => x.toFixed(3)).join(' ')} deveriam ser iguais`);
+});
+
+test('Padrão: o tom mais escuro não vira quase preto e mantém o matiz da cor', () => {
+  const s = decompose({ base: MAIN, preset: 'standard' }).light.palette.surface;
+  const last = hexToOklch(s[180]);
+  assert.ok(last.L > 0.15 && last.L < 0.22, `claridade ${last.L}`);
+  assert.ok(Math.abs(last.h - hexToOklch(MAIN).h) < 12, `matiz ${last.h}`);
+  // o Aplica continua com a regra dele
+  assert.ok(hexToOklch(decompose({ base: MAIN, preset: 'aplica' }).light.palette.surface[190]).L < 0.1);
 });

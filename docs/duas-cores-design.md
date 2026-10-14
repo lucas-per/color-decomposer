@@ -21,7 +21,7 @@ Os níveis aparecem só como resultado ("Fica no nível 20").
 
 - Uma opção nova, `anchors: [{ hex, level? }]`, com as cores de apoio. A cor principal (`base`) fica no `brandLevel`; sem `level`, a de apoio vai para o nível de claridade mais próxima. Implementado em `src/anchors.js`.
 - Com uma âncora, o resultado é idêntico ao de hoje. Sem nenhuma extensão, o Aplica continua igual ao oficial (3.23.4).
-- Com duas âncoras, a claridade em função do nível deixa de ser uma reta: passa pelos pontos das duas cores, pelo tom mais claro e pelo mais escuro. Interpolação monotônica (sem subir e descer no meio), para não ter quebras.
+- Com duas âncoras, a claridade em função do nível deixa de ser uma reta: passa pelos pontos das duas cores, pelo tom mais claro e pelo mais escuro. Linhas retas entre os pontos (passos iguais de claridade entre as cores, sem subir e descer no meio). Os tons são mapeados para dentro do sRGB mantendo o matiz, sem o recorte nas pontas.
 - Entre as âncoras, a intensidade e o matiz se interpolam (o matiz pelo caminho mais curto no círculo).
 - Depois da última âncora, vale a regra atual a partir dela (matiz e intensidade da última âncora, claridade até o mais escuro). Antes da primeira, o mesmo, em direção ao mais claro.
 - Modo escuro: os níveis das âncoras são espelhados.
@@ -55,12 +55,13 @@ Os níveis aparecem só como resultado ("Fica no nível 20").
 - Os sliders têm a alternância "Cor a ajustar".
 - O tom de apoio ganha a etiqueta "Cor de apoio" na faixa. Avisos: níveis iguais e cor que não cabe na ordem de claridade.
 - Nível da cor de apoio (`supportLevel`): o de claridade mais próxima, mas sempre do lado certo da principal. Mais clara que a principal fica antes do 100; mais escura, depois. Assim o aviso de ordem e o de níveis iguais só aparecem com nível informado à mão ou sem espaço do lado certo.
+- Preset Padrão: o último tom tem claridade 0,18 (o Aplica usa 0,05) e os tons escuros mantêm o matiz quando não cabem no sRGB (`gamutMap`). O Aplica não muda.
 - Botão de copiar o hex em cada tom das abas Paleta e Neutros (ícone no canto do tom; aparece com foco, seleção ou mouse; sempre visível no celular).
 
 ## Decisões abertas
 
 - **Dois níveis iguais:** decidido. Com nível automático, a cor de apoio vai para o lado certo da principal; só com nível informado o motor avisa e usa só a principal.
-- **Interpolação:** monotônica suave. Alternativa: linhas retas entre âncoras.
+- **Interpolação:** decidido em 2026-10-14: linhas retas entre âncoras. A curva suave deixava o salto de 80 para 100 (ΔE 0,078 contra 0,045 no passo anterior).
 - **Nome do campo:** hoje é "Cor da marca". Com papéis, os nomes viram "Cor principal" e "Cor de apoio". O nome da cor única fica para decidir (ver `docs/backlog.md`).
 
 ## Fora do escopo

@@ -1,5 +1,5 @@
 // Cor de apoio (extensão): a paleta passa por mais de uma cor. Cada cor ocupa um nível exato;
-// entre elas, a claridade segue uma curva suave que nunca sobe, e o matiz e a intensidade se interpolam.
+// entre elas, a claridade segue linhas retas entre as cores e nunca sobe, e o matiz e a intensidade se interpolam.
 import { normalizeHex, hexToOklch } from './color.js';
 import { suggestBrandLevel } from './separation.js';
 
@@ -64,35 +64,14 @@ export function resolveAnchors(baseHex, brandLevel, extras, preset, warnings = [
   return list.length > 1 ? { list, lightest, darkest, levels } : null;
 }
 
-// Interpolação monotônica (Fritsch-Carlson): passa pelos pontos e não cria subidas entre eles.
-function monotoneCurve(xs, ys) {
-  const n = xs.length;
-  const h = [], d = [];
-  for (let i = 0; i < n - 1; i++) { h.push(xs[i + 1] - xs[i]); d.push((ys[i + 1] - ys[i]) / h[i]); }
-  const m = new Array(n);
-  if (n === 2) { m[0] = m[1] = d[0]; }
-  else {
-    for (let i = 1; i < n - 1; i++) {
-      if (d[i - 1] * d[i] <= 0) { m[i] = 0; continue; }
-      const w1 = 2 * h[i] + h[i - 1], w2 = h[i] + 2 * h[i - 1];
-      m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i]);
-    }
-    const end = (h0, h1, d0, d1) => {
-      let s = ((2 * h0 + h1) * d0 - h0 * d1) / (h0 + h1);
-      if (Math.sign(s) !== Math.sign(d0)) s = 0;
-      else if (Math.sign(d0) !== Math.sign(d1) && Math.abs(s) > 3 * Math.abs(d0)) s = 3 * d0;
-      return s;
-    };
-    m[0] = end(h[0], h[1], d[0], d[1]);
-    m[n - 1] = end(h[n - 2], h[n - 3], d[n - 2], d[n - 3]);
-  }
+// Linhas retas entre os pontos: cada trecho tem o mesmo passo de claridade por nível, então os tons entre duas cores
+// ficam com a mesma diferença visual. A claridade não sobe porque os pontos já vêm em ordem decrescente.
+function piecewiseLinear(xs, ys) {
   return (x) => {
     let i = 0;
-    while (i < n - 2 && x > xs[i + 1]) i++;
-    const t = (x - xs[i]) / h[i];
-    const t2 = t * t, t3 = t2 * t;
-    return (2 * t3 - 3 * t2 + 1) * ys[i] + (t3 - 2 * t2 + t) * h[i] * m[i]
-      + (-2 * t3 + 3 * t2) * ys[i + 1] + (t3 - t2) * h[i] * m[i + 1];
+    while (i < xs.length - 2 && x > xs[i + 1]) i++;
+    const t = (x - xs[i]) / (xs[i + 1] - xs[i]);
+    return ys[i] + (ys[i + 1] - ys[i]) * t;
   };
 }
 
@@ -109,7 +88,7 @@ export function buildCurves(anchors) {
   if (first < xs[0]) { xs.unshift(first); ys.unshift(Math.max(lightest, list[0].L)); }
   const tail = list[list.length - 1];
   if (last > xs[xs.length - 1]) { xs.push(last); ys.push(Math.min(darkest, tail.L)); }
-  const lightness = monotoneCurve(xs, ys);
+  const lightness = piecewiseLinear(xs, ys);
 
   const colorAt = (level) => {
     if (level <= list[0].level) return { C: list[0].C, h: list[0].h };
