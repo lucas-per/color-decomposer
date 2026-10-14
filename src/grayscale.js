@@ -1,5 +1,7 @@
 // Escala de cinzas. No Aplica ela é fixa (não calculada) e pode ser sobrescrita pelo tema.
-import { colorAtLightness, contrastRatio } from './color.js';
+import { colorAtLightness } from './color.js';
+import { highContrast } from './txton.js';
+import { PURE_INK } from './options.js';
 import { resolvePreset } from './presets.js';
 import { neutralsLightness } from './scale.js';
 import { normalizeHex } from './color.js';
@@ -9,9 +11,9 @@ function ramp(preset) {
   const surface = {}, txtOn = {}, border = {};
   for (const level of levels) {
     surface[level] = colorAtLightness({ C: 0, h: 0 }, neutralsLightness(level, preset), 1);
-    txtOn[level] = contrastRatio(surface[level], '#000000') >= 4.5 ? '#000000' : '#ffffff';
+    txtOn[level] = highContrast({ ink: preset.ink ?? PURE_INK, order: 'startDark', requiredRatio: 4.5 }, surface[level]);
   }
-  levels.forEach((level, i) => { border[level] = i < levels.length - 1 ? surface[levels[i + 1]] : '#000000'; });
+  levels.forEach((level, i) => { border[level] = i < levels.length - 1 ? surface[levels[i + 1]] : (preset.ink ?? PURE_INK).dark; });
   return { surface, txtOn, border };
 }
 

@@ -1,8 +1,14 @@
 // Cor do texto sobre cada superfície (txtOn) e verificação de contraste.
 import { contrastRatio, hexToOklch } from './color.js';
-import { WCAG_AA, WCAG_AAA } from './options.js';
+import { WCAG_AA, WCAG_AAA, PURE_INK } from './options.js';
 
 export function highContrast(cfg, surface, required = cfg.requiredRatio) {
+  const ink = cfg.ink ?? PURE_INK;
+  if (ink !== PURE_INK) {
+    const keys = cfg.order === 'startLight' ? ['light', 'dark'] : ['dark', 'light'];
+    for (const k of keys) if (contrastRatio(surface, ink[k]) >= required) return ink[k];
+    // nenhum dos dois passa: cai para preto ou branco puros, como no Aplica
+  }
   if (cfg.order === 'startLight') {
     return contrastRatio(surface, '#ffffff') >= required ? '#ffffff' : '#000000';
   }

@@ -31,7 +31,7 @@ for (const presetId of Object.keys(PRESETS)) {
     const r = decompose({ base: '#e7398a', preset: presetId });
     const L = palette.map((l) => hexToOklch(r.light.palette.surface[l]).L);
     for (let i = 1; i < L.length; i++) assert.ok(L[i] < L[i - 1], `nível ${palette[i]} deveria ser mais escuro que ${palette[i - 1]}`);
-    assert.ok(L[0] > 0.85 && L.at(-1) < 0.2); // o recorte de gamut tira alguns centésimos do alvo (0,98 e 0,05)
+    assert.ok(L[0] > 0.85 && L.at(-1) < 0.25); // o recorte de gamut tira alguns centésimos do alvo (0,98 e 0,05; o Padrão usa 0,21 no último)
     const N = neutrals.map((l) => hexToOklch(r.light.neutrals.surface[l]).L);
     for (let i = 1; i < N.length; i++) assert.ok(N[i] < N[i - 1]);
   });

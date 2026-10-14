@@ -113,8 +113,26 @@ test('entre a cor de apoio e a principal, os passos de claridade e cor são igua
 test('Padrão: o tom mais escuro não vira quase preto e mantém o matiz da cor', () => {
   const s = decompose({ base: MAIN, preset: 'standard' }).light.palette.surface;
   const last = hexToOklch(s[180]);
-  assert.ok(last.L > 0.15 && last.L < 0.22, `claridade ${last.L}`);
+  assert.ok(last.L > 0.18 && last.L < 0.25, `claridade ${last.L}`);
   assert.ok(Math.abs(last.h - hexToOklch(MAIN).h) < 12, `matiz ${last.h}`);
   // o Aplica continua com a regra dele
   assert.ok(hexToOklch(decompose({ base: MAIN, preset: 'aplica' }).light.palette.surface[190]).L < 0.1);
+});
+
+test('Padrão: o texto usa #242121 e #FDFDFD, e cai para preto ou branco só quando nenhum dos dois passa', async () => {
+  const { contrastRatio } = await import('../src/index.js');
+  for (const color of ['#ffd23f', '#e7398a', '#1e3a8a', '#22c55e', '#808080']) {
+    const r = decompose({ base: color, preset: 'standard' });
+    for (const mode of ['light', 'dark']) {
+      for (const group of ['palette', 'neutrals']) {
+        const { surface, txtOn } = r[mode][group];
+        for (const level of Object.keys(surface)) {
+          assert.ok(contrastRatio(surface[level], txtOn[level]) >= 4.5, `${color} ${mode} ${group} ${level}`);
+          assert.ok(['#242121', '#fdfdfd', '#000000', '#ffffff'].includes(txtOn[level]));
+        }
+      }
+    }
+  }
+  assert.ok(decompose({ base: '#ffd23f', preset: 'standard' }).light.palette.txtOn[20] === '#242121');
+  assert.ok(decompose({ base: '#ffd23f', preset: 'aplica' }).light.palette.txtOn[10] === '#000000');
 });

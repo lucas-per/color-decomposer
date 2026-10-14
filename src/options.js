@@ -5,6 +5,9 @@ import { parseAnchors } from './anchors.js';
 export const WCAG_AA = 4.5;
 export const WCAG_AAA = 7.0;
 
+// Cores de texto "preto e branco" quando o preset não define as suas (Aplica).
+export const PURE_INK = Object.freeze({ dark: '#000000', light: '#ffffff' });
+
 export function resolveOptions(raw = {}, preset, warnings = []) {
   const o = raw ?? {};
 
@@ -80,6 +83,7 @@ export function resolveOptions(raw = {}, preset, warnings = []) {
     requiredRatio: accessibilityLevel === 'AAA' ? WCAG_AAA : WCAG_AA,
     onAccessibilityFailure,
     borderSteps: { palette: paletteSteps, neutrals: neutralsSteps, grayscale: grayscaleSteps },
+    ink: preset.ink ?? PURE_INK,
     brandLevel,
     behaviorFollowsBrand: o.behaviorFollowsBrand === true,
     vividChroma: o.vividChroma === true,
