@@ -71,7 +71,7 @@ export const STANDARD = Object.freeze({
     referenceLevel: 100,
     chroma: 0.1,
     lightest: 0.98,
-    darkest: 0.05
+    darkest: 0.21 // o Aplica usa 0,05; igual ao último tom da paleta do Padrão
   },
   behavior: { lightest: 20, active: 60, normal: 100, action: 120, pressed: 140, darkest: 180 },
   grayscale: null // gerada como rampa neutra; ver grayscale.js

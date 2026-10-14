@@ -87,7 +87,7 @@ Um preset é um dado (`src/presets.js`), sem código. Regras comuns:
 
 O `standard` é uma extensão para o UaiUI: **não existe no Aplica**. Aplica as mesmas regras a uma escala menor.
 Diferenças do `standard` em relação às regras do Aplica (o `aplica` não muda):
-- o último tom da paleta tem claridade 0,21 (Aplica: 0,05);
+- o último tom da paleta e o último neutro têm claridade 0,21 (Aplica: 0,05);
 - os tons que não cabem no sRGB perdem intensidade e mantêm o matiz (`gamutMap: 'full'`). O Aplica corta por canal e o matiz foge: um azul muito claro vira ciano, um amarelo escuro vira vermelho;
 - o texto "preto" é `#242121` e o "branco" é `#FDFDFD`, também no cálculo de contraste (`ink`). Se nenhum dos dois alcança o contraste pedido numa superfície, o texto usa a cor mais próxima deles que alcança: o `#242121` escurecido ou o `#FDFDFD` clareado o mínimo necessário (por exemplo, `#1A1818` sobre `#E7398A`).
 
