@@ -1,6 +1,6 @@
 # Estética do site no Decomposer: desenho
 
-Status: aprovado. Entrega 1 feita. Data: 2026-10-15.
+Status: aprovado. Entregas 1 e 2 feitas. Data: 2026-10-15.
 
 ## Objetivo
 
@@ -104,3 +104,13 @@ Depois de cada entrega, mando capturas de tela claro e mobile para você aprovar
 - Faixa de 5 px sob o cabeçalho na cor digitada (`chromeTokens` devolve `band`). O cabeçalho ganhou o contêiner `.top__inner`.
 - Foco por teclado em 2 px, com 2 px de distância, em `--fg`.
 - Ainda não aplicados (entrega 2): bordas de 2 e 3 px, sombras duras, levante dos botões e os cantos arredondados escritos direto no CSS (marcador de tom, sublinhado da aba).
+
+### Entrega 2 (2026-10-15)
+
+- **Botões:** borda de 3 px em `--fg`, sombra de 3 px, levante de 2 px no hover (a sombra vai a 5 px e fica parada), afundamento de 1 px no clique com a sombra sumindo, transição de 0,1 s. O botão discreto (sublinhado) não levanta. O botão sólido usa um aro na cor do fundo para a sombra se separar do corpo. Desabilitado: sem sombra e sem movimento. Auto e Cor viva ficaram com 36 px de altura.
+- **Abas:** a aba selecionada vira um bloco preenchido (como o alternador Claro e Escuro), no lugar do sublinhado. Linha de 2 px sob as abas. Em alto contraste, `Highlight`.
+- **Faixa de tons:** cada tom é uma célula com borda de 2 px (as linhas se sobrepõem, sem dobrar) e sombra de 5 px, que forma uma sombra contínua. O tom selecionado ganha um aro interno de 3 px na cor do próprio texto do tom (contraste garantido pelo motor). O foco fica por fora, em 2 px.
+- **Painéis, diálogos, avisos e blocos de código:** borda de 2 px em `--fg` e sombra (5 px nos painéis e diálogos, 3 px nos avisos e blocos de código). O aviso de tons parecidos mantém as cores fixas de aviso. A seta do painel de detalhe ganhou a borda. No celular, o painel de Ajustes continua sem caixa.
+- **Campos, seletor de cor, sliders (quadrados, com sombra) e alternadores:** borda de 2 ou 3 px em `--fg`, cantos retos. Campo inválido: aro interno extra.
+- **Ajuda:** perguntas e seções com linha de 2 px em `--fg`; foco em 2 px.
+- Verificado: nenhum elemento com canto arredondado, hover e clique dos botões, fontes, faixa, axe em claro, escuro e mobile, e os scripts de ajuda e de cor de apoio.
