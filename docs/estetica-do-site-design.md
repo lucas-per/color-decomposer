@@ -1,6 +1,6 @@
 # Estética do site no Decomposer: desenho
 
-Status: aguardando revisão. Data: 2026-10-15.
+Status: aprovado. Entrega 1 feita. Data: 2026-10-15.
 
 ## Objetivo
 
@@ -93,3 +93,14 @@ Mesmo mecanismo do site (`Button.astro`):
 4. Publicação no artefato (o script que gera o arquivo único passa a embutir as três fontes).
 
 Depois de cada entrega, mando capturas de tela claro e mobile para você aprovar antes da próxima.
+
+## Como ficou
+
+### Entrega 1 (2026-10-15)
+
+- Fontes do site em `app/fonts/` (Plus Jakarta Sans, DM Sans, JetBrains Mono), com `LICENSES.md`. A Bricolage e a dependência `@fontsource-variable/bricolage-grotesque` saíram.
+- Tokens em `app/app.css`: `--font`, `--font-title`, `--font-label`, `--bw` (2 px), `--bw-strong` (3 px), `--shadow-comp` (3 px), `--shadow-layout` (5 px), `--band` e `--band-w`. Os três raios (`--r-strip`, `--r-panel`, `--r-control`) valem 0.
+- Famílias e pesos aplicados em toda a interface. Rótulos de botões e abas, números dos tons e códigos hex em JetBrains Mono 700; títulos em Plus Jakarta Sans; o resto em DM Sans. Sem `font-stretch`. Caixa alta só por CSS.
+- Faixa de 5 px sob o cabeçalho na cor digitada (`chromeTokens` devolve `band`). O cabeçalho ganhou o contêiner `.top__inner`.
+- Foco por teclado em 2 px, com 2 px de distância, em `--fg`.
+- Ainda não aplicados (entrega 2): bordas de 2 e 3 px, sombras duras, levante dos botões e os cantos arredondados escritos direto no CSS (marcador de tom, sublinhado da aba).

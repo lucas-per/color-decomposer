@@ -26,7 +26,9 @@ export function chromeTokens(theme, name, mode, preset) {
     edge: firstLevelWith(n.surface, levels, bg, 3.2),
     // divisores decorativos
     line: n.border[levels[0]],
-    ring: fg
+    ring: fg,
+    // faixa do cabeçalho: a cor da marca digitada, sem alteração
+    band: theme.colors[name].base
   };
 }
 
