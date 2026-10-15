@@ -149,6 +149,7 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 - **Auto:** botão ao lado da barra de tons. Fica desabilitado quando a gradação está ok e habilitado quando há tons parecidos. Ao clicar, coloca a cor da marca no nível de claridade mais próxima (`suggestBrandLevel`) e refaz a paleta. O nível fica na URL (`lvl`) e volta ao 100 quando você muda a cor ou o sistema de níveis. Na aba Comportamento, depois do Auto, aparece o toggle "Usar sua cor no estado normal" (`normal=brand` na URL).
 - **Cor viva:** botão ao lado do Auto, com estado pressionado. Começa desabilitado. Habilita depois do Auto, quando a cor tem pouca intensidade e a opção muda a paleta de forma visível (`vividGain` acima de `VIVID_VISIBLE_LIMIT`, 0,045). Ligada, os tons ganham intensidade e a cor digitada fica exata no nível dela. Fica na URL (`vivid=1`) e desliga quando você muda a cor ou o sistema de níveis.
 - O estado fica na URL: dá para compartilhar um ajuste.
+- **Ajuda:** o link "Ajuda", no cabeçalho, abre uma página dentro do app (`view=ajuda`) com guia rápido e perguntas frequentes, para quem usa a interface e para devs. Desenho: [`docs/ajuda-design.md`](docs/ajuda-design.md).
 - Exporta tokens do Aplica (JSON), variáveis CSS, JSON completo e variables do Figma (para o plugin).
 - Verificada com axe (WCAG 2.2 AA) em claro, escuro e mobile.
 - Decisões de espaçamento, agrupamento e destaque: [`docs/principios-visuais.md`](docs/principios-visuais.md).

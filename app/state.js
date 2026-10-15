@@ -24,7 +24,8 @@ export const DEFAULTS = {
   neutralsBase: '#6b7280',
   neutralsRef: '',
   txt: false,
-  sel: ''
+  sel: '',
+  view: ''
 };
 
 const ENUMS = {
@@ -36,7 +37,8 @@ const ENUMS = {
   order: ['startDark', 'startLight'],
   normal: ['mid', 'brand'],
   failure: ['accept-aa', 'warn', 'throw'],
-  customFallback: ['high-contrast', 'brand-tint']
+  customFallback: ['high-contrast', 'brand-tint'],
+  view: ['', 'ajuda']
 };
 const HEX = /^#[0-9a-f]{6}$/;
 

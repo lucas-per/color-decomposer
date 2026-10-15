@@ -1,6 +1,6 @@
 # Ajuda (guia rápido e FAQ): desenho
 
-Status: aguardando revisão. Data: 2026-10-15.
+Status: aprovado e entregue. Data: 2026-10-15.
 
 ## Objetivo
 
@@ -18,9 +18,9 @@ Dar a quem usa o Color Decomposer um lugar dentro do app para aprender o fluxo b
 - A ajuda é uma visão do app: a chave `view=ajuda` entra no estado que já fica na URL (`app/state.js`). Sem ela, o app abre como hoje.
 - Na visão de ajuda, o conteúdo principal (ajustes e tons) fica oculto e o conteúdo da ajuda aparece. O tema continua o da cor atual.
 - O primeiro elemento é o botão "Voltar para a paleta", que restaura a visão normal com o estado anterior (cor, preset, aba, modo).
-- Abrir a ajuda leva o foco para o título (`h1` da ajuda). Voltar leva o foco para o link "Ajuda" no cabeçalho.
+- Abrir a ajuda leva o foco para o título (`h2` da ajuda). Voltar leva o foco para o link "Ajuda" no cabeçalho.
 - O botão Voltar do navegador também fecha a ajuda (a visão entra no histórico).
-- Um índice com âncoras no topo: Guia rápido, Perguntas frequentes, Para devs.
+- Um índice com atalhos no topo (não mexem no endereço, que guarda o estado): Guia rápido, Perguntas frequentes, Para devs.
 
 ## Conteúdo
 
@@ -70,7 +70,7 @@ Cada resposta é conferida contra o motor, o README e os textos do app. Não ent
 ## Interface e acessibilidade
 
 - Perguntas em `<details>` nativos, fechados por padrão. Botão "Abrir todas" e "Fechar todas" por seção de FAQ.
-- Um único `h1` na visão de ajuda; seções em `h2`; perguntas em `summary`.
+- O `h1` continua sendo o nome do produto, no cabeçalho. A ajuda usa `h2` no título, `h3` nas seções, `h4` nas subseções de devs e `summary` nas perguntas.
 - Largura de leitura limitada (cerca de 70 caracteres), mesma tipografia e tokens do app (`frontend-design`).
 - Funciona no tema claro e no escuro, no celular e com `forced-colors`; respeita `prefers-reduced-motion`.
 - Exemplos de código em blocos com botão de copiar, como nos tons.
@@ -92,3 +92,10 @@ Cada resposta é conferida contra o motor, o README e os textos do app. Não ent
 - Busca dentro da FAQ.
 - Capturas de tela.
 - Tradução para inglês.
+
+## Como ficou
+
+- Código: `app/help.js` monta a estrutura, `helpText` em `app/strings.js` guarda os textos (números e cores citados vêm dos presets) e `view` entra no estado (`app/state.js`).
+- Abrir cria uma entrada no histórico. Abrir direto por `#view=ajuda` também funciona; nesse caso, "Voltar para a paleta" fecha sem histórico anterior.
+- 10 perguntas para designers e 6 para devs. O guia de devs tem os comandos e um exemplo de código, cada um com botão de copiar.
+- Verificado em navegador (claro, escuro e 390 px) com axe, teclado e foco.

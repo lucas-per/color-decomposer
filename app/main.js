@@ -1,7 +1,8 @@
 import {
   decomposeTheme, contrastRatio, PRESETS, toPrimitiveTheme, toGrayscaleTheme, toCssVariables, toFigmaJson, toPlainJson, checkToneSeparation, suggestBrandLevel, supportLevel, oklchToHex, hexToOklch, vividGain, VIVID_VISIBLE_LIMIT
 } from '../src/index.js';
-import { T, fmt } from './strings.js';
+import { T, fmt, helpText } from './strings.js';
+import { buildHelp } from './help.js';
 import { chromeTokens, applyChrome } from './chrome.js';
 import { DEFAULTS, parseHash, serialize } from './state.js';
 
@@ -735,6 +736,50 @@ function bindLearn() {
   });
 }
 
+/* ---------- Ajuda ---------- */
+
+// A ajuda é uma visão da mesma página: `view=ajuda` no endereço. Abrir cria uma entrada no histórico,
+// então o botão Voltar do navegador também fecha a ajuda.
+let helpBuilt = false;
+let helpPushed = false;
+const APP_TITLE = document.title;
+
+function applyView({ focus = false } = {}) {
+  const open = state.view === 'ajuda';
+  if (open && !helpBuilt) {
+    buildHelp($('help'), helpText({ standard: PRESETS.standard, aplica: PRESETS.aplica }), copyText);
+    helpBuilt = true;
+  }
+  $('help').hidden = !open;
+  document.querySelector('.shell').hidden = open;
+  $('open-help').setAttribute('aria-expanded', String(open));
+  document.title = open ? helpText({ standard: PRESETS.standard, aplica: PRESETS.aplica }).docTitle : APP_TITLE;
+  if (!focus) return;
+  window.scrollTo(0, 0);
+  (open ? $('help-title') : $('open-help')).focus({ preventScroll: true });
+}
+
+function bindHelp() {
+  $('open-help').addEventListener('click', () => {
+    state.view = 'ajuda';
+    const hash = serialize(state, systemMode());
+    try { history.pushState(null, '', hash || location.pathname + location.search); helpPushed = true; } catch { helpPushed = false; }
+    applyView({ focus: true });
+  });
+  $('help').addEventListener('click', (e) => {
+    if (!e.target.closest('#help-back')) return;
+    if (helpPushed) { helpPushed = false; history.back(); return; }
+    state.view = '';
+    render();
+    applyView({ focus: true });
+  });
+  addEventListener('popstate', () => {
+    state.view = parseHash(location.hash, systemMode()).view;
+    helpPushed = false;
+    applyView({ focus: true });
+  });
+}
+
 /* ---------- Ciclo principal ---------- */
 
 function render() {
@@ -796,5 +841,7 @@ placeMore();
 bindControls();
 bindExport();
 bindLearn();
+bindHelp();
 matchMedia('(max-width: 56.25rem)').addEventListener('change', () => { placeMore(); $('ribbon-host').dataset.sig = ''; update(); });
 update();
+applyView();
