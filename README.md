@@ -154,7 +154,8 @@ Análise crítica, uma a uma. Onde o Aplica tem regra, vale a do Aplica.
 - Verificada com axe (WCAG 2.2 AA) em claro, escuro e mobile.
 - Decisões de espaçamento, agrupamento e destaque: [`docs/principios-visuais.md`](docs/principios-visuais.md).
 - Textos escritos em PT-BR com a skill `ux-microcopy`. Os fixos estão em `app/index.html`; os dinâmicos, em `app/strings.js`.
-- Fonte: [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (OFL), incluída em `app/fonts/`.
+- **Forma do site pessoal:** cantos retos, bordas de 2 e 3 px, sombras duras e botões que levantam no hover e afundam no clique, sempre na cor de texto derivada da cor escolhida. O cabeçalho tem uma faixa de 5 px na cor digitada. Desenho: [`docs/estetica-do-site-design.md`](docs/estetica-do-site-design.md).
+- Fontes: Plus Jakarta Sans (títulos), DM Sans (texto) e JetBrains Mono (rótulos e códigos hex), do site, todas OFL, em `app/fonts/` (ver `LICENSES.md`).
 
 ## Figma
 

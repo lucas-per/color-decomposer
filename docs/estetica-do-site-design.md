@@ -1,6 +1,6 @@
 # Estética do site no Decomposer: desenho
 
-Status: aprovado. Entregas 1 e 2 feitas. Data: 2026-10-15.
+Status: aprovado. Entregas 1, 2 e 3 feitas. Data: 2026-10-15.
 
 ## Objetivo
 
@@ -114,3 +114,9 @@ Depois de cada entrega, mando capturas de tela claro e mobile para você aprovar
 - **Campos, seletor de cor, sliders (quadrados, com sombra) e alternadores:** borda de 2 ou 3 px em `--fg`, cantos retos. Campo inválido: aro interno extra.
 - **Ajuda:** perguntas e seções com linha de 2 px em `--fg`; foco em 2 px.
 - Verificado: nenhum elemento com canto arredondado, hover e clique dos botões, fontes, faixa, axe em claro, escuro e mobile, e os scripts de ajuda e de cor de apoio.
+
+### Entrega 3 (2026-10-15)
+
+- Revisão com capturas de tela: desktop e celular em claro, tom 100 aberto, diálogo de exportação, ajuda, paleta de 19 tons do Aplica e modo escuro (sem ajuste fino, como combinado).
+- `docs/principios-visuais.md`: "Hierarquia por papel" deixa de falar de arredondamento e passa a falar de espessura de borda e tamanho de sombra; "Ousadia em um lugar só" cita a forma do site e a faixa do cabeçalho.
+- README: seção da interface com a forma do site e as três fontes (a Bricolage saiu).
