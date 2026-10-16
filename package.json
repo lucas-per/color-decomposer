@@ -1,11 +1,21 @@
 {
   "name": "color-decomposer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Gerador de paletas em OKLCh que decompõe uma cor de marca em níveis, neutros e behavior, para light e dark. Base: Aplica DS.",
   "type": "module",
   "private": true,
   "license": "Apache-2.0",
   "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "sideEffects": false,
   "engines": {
     "node": ">=18"
   },
