@@ -29,6 +29,12 @@
   --edge: #8c7b80;
   --line: #f7e9ed;
   --ring: #010000;
+  /* alternador ligado: fundo e texto de cada estado (ver chrome.js) */
+  --on-fg: #fff4f8;
+  --fg-hover: #1b1315;
+  --on-fg-hover: #fff4f8;
+  --fg-pressed: #3a2e32;
+  --on-fg-pressed: #fff4f8;
   /* aviso (semântico, fixo: não vem dos neutros da cor escolhida) */
   --warn-bg: #ffe08a;
   --warn-edge: #8a5f00;
@@ -172,7 +178,9 @@ details[open] > .more__summary::after, details[open] > .adv__summary::after, det
 .range--tune::-moz-range-thumb { width: 1.5rem; height: 1.5rem; box-sizing: border-box; border-radius: 0; background: var(--bg); border: var(--bw) solid var(--fg); box-shadow: var(--shadow-comp); }
 .tune__actions { display: flex; gap: .5rem; }
 .tune__actions .btn { height: 2.25rem; padding: 0 .75rem; font-size: .75rem; }
-.btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.btn[aria-pressed="true"] { background: var(--fg); color: var(--on-fg); }
+.btn[aria-pressed="true"]:not(:disabled):hover { background: var(--fg-hover); color: var(--on-fg-hover); }
+.btn[aria-pressed="true"]:not(:disabled):active { background: var(--fg-pressed); color: var(--on-fg-pressed); }
 .btn:disabled { opacity: .45; cursor: default; box-shadow: none; }
 .btn:disabled:hover, .btn:disabled:active { transform: none; box-shadow: none; }
 .tune__status:focus { outline: none; }
