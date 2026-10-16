@@ -192,7 +192,7 @@ export function helpText({ standard: S, aplica: A }) {
       },
       {
         title: 'Escolha o sistema de níveis',
-        text: `Em Mais ajustes, o Padrão tem ${s.pal} tons e ${s.neu} neutros. O Aplica tem ${a.pal} tons e ${a.neu} neutros e segue as regras do Aplica Design System.`
+        text: `Em Ajustes básicos, o Padrão tem ${s.pal} tons e ${s.neu} neutros. O Aplica tem ${a.pal} tons e ${a.neu} neutros e segue as regras do Aplica Design System.`
       },
       {
         title: 'Leia os tons',

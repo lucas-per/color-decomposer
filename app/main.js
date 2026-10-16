@@ -830,8 +830,7 @@ function update() {
 
 function placeMore() {
   const more = $('more');
-  more.classList.toggle('more--static', !narrow());
-  if (!narrow()) more.open = true; else if (!more.dataset.seen) more.open = false;
+  if (!more.dataset.seen) more.open = !narrow(); // aberto no computador, fechado no celular; depois disso, a pessoa decide
   more.dataset.seen = '1';
   const tm = $('tune-more');
   if (!tm.dataset.seen) tm.open = !narrow();

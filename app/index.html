@@ -28,36 +28,33 @@
 
   <div class="shell">
     <form class="rail" id="rail" aria-labelledby="rail-title" novalidate>
-      <h2 class="rail__title" id="rail-title">Ajustes</h2>
+      <div class="rail__head">
+        <h2 class="rail__title" id="rail-title">Ajustes</h2>
+        <button type="button" class="btn btn--quiet" id="reset" aria-label="Redefinir todos os ajustes">Redefinir</button>
+      </div>
+
+      <div class="field">
+        <span class="field__label" id="mode-label">Modo de cor</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="mode-label" id="mode">
+          <label class="segmented__item"><input type="radio" name="mode" value="light"><span>Claro</span></label>
+          <label class="segmented__item"><input type="radio" name="mode" value="dark"><span>Escuro</span></label>
+        </div>
+      </div>
+
 
       <div class="field">
         <label class="field__label" for="hex" id="hex-label">Cor da marca</label>
         <div class="hexrow">
           <input class="color" type="color" id="picker" aria-label="Escolher a cor no seletor">
+          <div class="mini" id="mini" aria-hidden="true"></div>
           <input class="input input--hex" type="text" id="hex" inputmode="text" autocomplete="off" spellcheck="false" maxlength="7" aria-describedby="hex-help hex-error" placeholder="#E7398A">
         </div>
         <p class="field__help" id="hex-help">Use 6 letras ou números, como #E7398A.</p>
         <p class="field__error" id="hex-error" hidden></p>
-        <button type="button" class="btn support__add" id="support-add" aria-describedby="support-add-help">Adicionar cor de apoio</button>
-        <p class="field__help" id="support-add-help">Uma segunda cor, como um fundo claro, que também faz parte da paleta.</p>
-        <div class="field support" id="support-field" hidden>
-          <label class="field__label" for="support-hex">Cor de apoio</label>
-          <div class="hexrow hexrow--remove">
-            <input class="color" type="color" id="support-picker" aria-label="Escolher a cor de apoio no seletor">
-            <input class="input input--hex" type="text" id="support-hex" inputmode="text" autocomplete="off" spellcheck="false" maxlength="7" aria-describedby="support-status" placeholder="#FCFBF2">
-            <button type="button" class="btn btn--quiet" id="support-remove" aria-label="Remover a cor de apoio">Remover</button>
-          </div>
-          <p class="field__help" id="support-status"></p>
-        </div>
-        <div class="tune" id="tune">
-          <div class="tune__check">
-            <div class="mini" id="mini" aria-hidden="true"></div>
-            <div class="tune__actions">
-              <button type="button" class="btn" id="auto" disabled aria-describedby="tune-status" aria-label="Auto: colocar a cor no melhor nível da paleta">Auto</button>
-              <button type="button" class="btn" id="vivid" disabled aria-pressed="false" aria-describedby="tune-status" aria-label="Cor viva: dar mais intensidade aos tons">Cor viva</button>
-            </div>
-          </div>
-          <p class="field__help tune__status" id="tune-status" tabindex="-1"></p>
+        <p class="field__help tune__status" id="tune-status" tabindex="-1"></p>
+      </div>
+
+      <div class="tune" id="tune">
           <details class="tune__more" id="tune-more" open>
             <summary class="tune__summary">Ajustar a cor</summary>
             <div class="tune__edit" id="edit-wrap" hidden>
@@ -81,19 +78,30 @@
               <input class="range range--tune" type="range" id="tuneH" min="0" max="360" step="1">
             </div>
           </details>
+        <div class="tune__actions">
+          <button type="button" class="btn" id="auto" disabled aria-describedby="tune-status" aria-label="Auto: colocar a cor no melhor nível da paleta">Auto</button>
+          <button type="button" class="btn" id="vivid" disabled aria-pressed="false" aria-describedby="tune-status" aria-label="Cor viva: dar mais intensidade aos tons">Cor viva</button>
         </div>
       </div>
 
-      <details class="more more--static" id="more" open>
-        <summary class="more__summary">Mais ajustes</summary>
+      <div class="rail__divider" role="presentation"></div>
+
       <div class="field">
-        <span class="field__label" id="mode-label">Modo de cor</span>
-        <div class="segmented" role="radiogroup" aria-labelledby="mode-label" id="mode">
-          <label class="segmented__item"><input type="radio" name="mode" value="light"><span>Claro</span></label>
-          <label class="segmented__item"><input type="radio" name="mode" value="dark"><span>Escuro</span></label>
+        <button type="button" class="btn support__add" id="support-add" aria-describedby="support-add-help">Adicionar cor de apoio</button>
+        <p class="field__help" id="support-add-help">Segunda cor para compor a paleta.</p>
+        <div class="field support" id="support-field" hidden>
+          <label class="field__label" for="support-hex">Cor de apoio</label>
+          <div class="hexrow hexrow--remove">
+            <input class="color" type="color" id="support-picker" aria-label="Escolher a cor de apoio no seletor">
+            <input class="input input--hex" type="text" id="support-hex" inputmode="text" autocomplete="off" spellcheck="false" maxlength="7" aria-describedby="support-status" placeholder="#FCFBF2">
+            <button type="button" class="btn btn--quiet" id="support-remove" aria-label="Remover a cor de apoio">Remover</button>
+          </div>
+          <p class="field__help" id="support-status"></p>
         </div>
       </div>
 
+      <details class="more" id="more" open>
+        <summary class="more__summary">Ajustes básicos</summary>
       <div class="field">
         <label class="field__label" for="preset">Sistema de níveis</label>
         <select class="input" id="preset" aria-describedby="preset-help">
@@ -113,14 +121,17 @@
         <p class="field__help" id="strategy-help">O texto sempre respeita o contraste mínimo escolhido.</p>
       </div>
 
+
+
       <div class="field">
         <label class="field__label" for="level">Contraste mínimo</label>
-        <select class="input" id="level" aria-describedby="level-help">
+        <select class="input" id="level">
           <option value="AA">AA: 4,5 para 1</option>
           <option value="AAA">AAA: 7 para 1</option>
         </select>
-        <p class="field__help" id="level-help">AA é o recomendado. No AAA, alguns tons não chegam a 7 para 1 com preto ou branco.</p>
       </div>
+
+      </details>
 
       <details class="adv" id="adv">
         <summary class="adv__summary">Ajustes avançados</summary>
@@ -209,14 +220,11 @@
         </div>
         <p class="field__help field__help--check" id="txt-help">Uma cor de texto para usar direto sobre o fundo da interface.</p>
       </details>
-      </details>
-
-      <button type="button" class="btn btn--quiet" id="reset">Voltar ao padrão</button>
     </form>
 
     <main class="stage" id="tons" tabindex="-1">
       <div class="tabs" role="tablist" aria-label="Grupos de tons" id="tabs"></div>
-      <button type="button" class="btn btn--solid stage__export" id="open-export">Exportar tokens</button>
+      <button type="button" class="btn stage__export" id="open-export">Exportar tokens</button>
       <div id="panel" role="tabpanel" tabindex="-1" class="stage__panel">
         <div class="choice" id="normal-choice" hidden>
           <label class="switch" for="normal-switch">

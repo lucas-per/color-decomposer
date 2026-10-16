@@ -1,6 +1,6 @@
 # Layout do protótipo do Figma no app: desenho
 
-Status: aprovado em conversa; aguardando revisão deste texto. Data: 2026-10-15.
+Status: aprovado e implementado. Data: 2026-10-15.
 
 ## Objetivo
 
