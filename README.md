@@ -2,6 +2,20 @@
 
 Gerador de paletas em OKLCh que decompõe uma cor de marca em níveis, neutros e behavior, para light e dark. Base: Aplica DS.
 
+> **Interface congelada.** A interface oficial do Color Decomposer passa a viver no site, em `lpereira.me/ferramentas/color-decomposer/` (repositório [`lucas-per/portifa`](https://github.com/lucas-per/portifa)). Este repositório fica com o motor (`src/`), os testes e o plugin do Figma. O `app/` é mantido só como está, sem mudanças de interface, até a página do site estar publicada.
+
+## Usar como dependência
+
+```bash
+pnpm add github:lucas-per/color-decomposer#v0.2.0
+```
+
+```js
+import { decompose, decomposeTheme } from 'color-decomposer';
+```
+
+O pacote publica só `src/`, `LICENSE` e `README.md`. As versões saem como tags (`v0.2.0`, …); o site fixa uma tag.
+
 A partir de **uma cor**, o projeto gera:
 
 | Grupo | Níveis (preset `aplica`) | O que é |
