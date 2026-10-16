@@ -16,6 +16,19 @@ Ideias avaliadas e adiadas. Cada item diz de onde veio e por que ficou de fora.
 - **Por que adiou:** é uma entrega grande (a claridade de cada tom passa a vir do contraste, não de uma rampa linear) e não é urgente.
 - **Quando retomar:** quando houver necessidade de garantir contraste por índice.
 
+## Segunda cor do tema na interface
+
+- **O que é:** a interface passa a aceitar uma segunda cor, decomposta à parte, com paleta e behavior próprios (o `secondary` do Aplica). Não é a "cor de apoio" atual, que é uma âncora dentro da mesma paleta.
+- **De onde veio:** decisão D1 da arquitetura de tokens da UaiUI (2026-10-15). Exemplo usado: #51475C, o roxo do botão primary atual do site.
+- **Estado do motor:** o `decomposeTheme` já aceita várias cores (`colors: { marca, apoio }`) e o export para o Figma já inclui todas. Falta só a interface: campo, estado na URL, abas e exportação com as duas cores.
+- **Quando retomar:** ao montar as coleções da UaiUI, que precisam de `interface/function/secondary/*`.
+
+## Coleção Interface no export, por contraste
+
+- **O que é:** o export para o Figma passa a gerar também a coleção Interface (`ui/bg/page`, `ui/bg/panel`, `ui/fg/default`, `ui/fg/muted`, `ui/border/field` e os demais), com o nível de cada papel escolhido por contraste para a cor exportada, como o `chromeTokens` já faz no app (texto secundário com 5 para 1, contorno de campo com 3 para 1).
+- **De onde veio:** decisão D6 da arquitetura de tokens da UaiUI (2026-10-15). O Figma não calcula contraste, então o nível precisa vir pronto do export.
+- **Quando retomar:** junto com a segunda cor, antes de montar as coleções no Figma.
+
 ## Adiados por decisão
 
 - **Requisitos do UaiUI para o preset Padrão:** ficaram para depois. Hoje o preset segue as mesmas regras do Aplica em escala menor.

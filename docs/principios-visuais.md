@@ -58,8 +58,8 @@ O que se destaca vira figura, e o resto vira fundo.
 
 A espessura da borda e o tamanho da sombra mostram o nível de cada elemento, no lugar do arredondamento (a interface tem cantos retos, como o site).
 
-- Blocos de layout (painel de Ajustes, faixa de tons, painel de detalhe, diálogos): borda de 2 px e sombra de 5 px.
-- Componentes pequenos (botões, avisos, blocos de código): sombra de 3 px. A borda do botão tem 3 px.
+- Blocos de layout (painel de Ajustes, faixa de tons, painel de detalhe, diálogos): borda de 2 px e sombra de 4 px.
+- Componentes pequenos (botões, avisos, blocos de código): borda de 2 px e sombra de 2 px, que vai a 4 px no hover do botão.
 - Campos e linhas divisórias: borda de 2 px, sem sombra. Texto não tem borda nem sombra.
 - Só o que se aciona levanta no hover e afunda no clique. Um só tamanho de sombra em tudo achataria essa hierarquia.
 

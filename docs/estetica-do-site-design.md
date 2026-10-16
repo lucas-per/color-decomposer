@@ -1,6 +1,6 @@
 # Estética do site no Decomposer: desenho
 
-Status: aprovado. Entregas 1, 2 e 3 feitas. Data: 2026-10-15.
+Status: aprovado. Entregas 1, 2 e 3 feitas; medidas revistas em 2026-10-15 (ver "Ajuste de escala"). Data: 2026-10-15.
 
 ## Objetivo
 
@@ -120,3 +120,12 @@ Depois de cada entrega, mando capturas de tela claro e mobile para você aprovar
 - Revisão com capturas de tela: desktop e celular em claro, tom 100 aberto, diálogo de exportação, ajuda, paleta de 19 tons do Aplica e modo escuro (sem ajuste fino, como combinado).
 - `docs/principios-visuais.md`: "Hierarquia por papel" deixa de falar de arredondamento e passa a falar de espessura de borda e tamanho de sombra; "Ousadia em um lugar só" cita a forma do site e a faixa do cabeçalho.
 - README: seção da interface com a forma do site e as três fontes (a Bricolage saiu).
+
+### Ajuste de escala (2026-10-15)
+
+Decisão D5 da arquitetura de tokens da UaiUI: as medidas da forma passam a caber na escala de espaçamento (passos de 2 e 4 px).
+
+- Bordas: todas em 2 px. O token `--bw-strong` (3 px) saiu; botões, contorno do tom selecionado, polegar dos sliders e erro de campo usam `--bw`.
+- Sombras: 2 px em componentes (`--shadow-comp`), 4 px no hover do botão (`--shadow-comp-hover`, os 2 px do levante continuam) e 4 px nos blocos de layout (`--shadow-layout`).
+- A faixa de 5 px do cabeçalho não muda: é um elemento do site, não uma borda nem sombra.
+- O site (`portifa`) ainda usa 3 e 5 px e precisa do mesmo ajuste para os dois continuarem iguais.
